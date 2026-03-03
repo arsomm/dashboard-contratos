@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Contratos 2026</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a0c10">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/idb-keyval@6/dist/umd.js"></script>
+
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #1a1d26;
+    --border: #252836;
+    --accent: #00e5ff;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --accent4: #10b981;
+    --danger: #ef4444;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --font: 'Syne', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+
+  /* Header */
+  .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 40px; flex-wrap: wrap; gap: 16px; }
+  .header-tag { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; opacity: 0.8; }
+  .header-title { font-size: clamp(28px, 5vw, 48px); font-weight: 800; letter-spacing: -1px; line-height: 1; background: linear-gradient(135deg, #fff 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .header-subtitle { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+  
+  .fx-rate-box { background: var(--surface2); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; display: flex; align-items: center; gap: 10px; }
+  .fx-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; }
+  .fx-input { background: var(--bg); border: 1px solid var(--border); color: var(--accent); font-family: var(--mono); font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 4px; width: 80px; text-align: right; outline: none; }
+  .fx-input:focus { border-color: var(--accent); }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 4px; margin-bottom: 32px; overflow-x: auto; white-space: nowrap; }
+  .tab { padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; background: none; color: var(--muted); transition: all 0.2s; font-family: var(--font); letter-spacing: 0.3px; }
+  .tab:hover { color: var(--text); background: var(--surface2); }
+  .tab.active { background: var(--accent2); color: #fff; }
+
+  /* Panels */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* KPI Grid */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px 24px; position: relative; overflow: hidden; transition: border-color 0.2s, transform 0.2s; }
+  .kpi:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+  .kpi.cyan::before { background: var(--accent); }
+  .kpi.purple::before { background: var(--accent2); }
+  .kpi.amber::before { background: var(--accent3); }
+  .kpi.green::before { background: var(--accent4); }
+  .kpi.red::before { background: var(--danger); }
+  .kpi.emerald::before { background: #34d399; }
+  .kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; font-family: var(--mono); margin-bottom: 10px; display: flex; justify-content: space-between;}
+  .kpi-value { font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+  .kpi.cyan .kpi-value { color: var(--accent); }
+  .kpi.purple .kpi-value { color: #a78bfa; }
+  .kpi.amber .kpi-value { color: var(--accent3); }
+  .kpi.green .kpi-value { color: var(--accent4); }
+  .kpi.red .kpi-value { color: var(--danger); }
+  .kpi.emerald .kpi-value { color: #34d399; }
+  .kpi-sub { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+  .kpi-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 32px; opacity: 0.08; }
+
+  /* Chart & Tables */
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+  @media (max-width: 768px) { .chart-grid { grid-template-columns: 1fr; } .chart-card.wide { grid-column: span 1; } }
+  .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+  .chart-card.wide { grid-column: span 2; }
+  .chart-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; font-family: var(--mono); display: flex; justify-content: space-between; }
+  .chart-wrap { position: relative; height: 260px; }
+  .chart-wrap.tall { height: 320px; }
+
+  .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 24px; }
+  .table-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .table-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; font-family: var(--mono); }
+  .search-input { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; color: var(--text); font-size: 12px; font-family: var(--mono); outline: none; width: 220px; }
+  .search-input:focus { border-color: var(--accent); }
+
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead tr { background: var(--surface2); }
+  thead th { padding: 12px 16px; text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-family: var(--mono); white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:hover { background: var(--surface2); }
+  tbody td { padding: 11px 16px; color: var(--text); white-space: nowrap; font-family: var(--mono); font-size: 11.5px; }
+  tbody td.name-cell { font-family: var(--font); font-size: 12px; font-weight: 600; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .num { text-align: right; }
+
+  /* Badges & UI Elements */
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; font-family: var(--mono); }
+  .badge-cyan { background: rgba(0,229,255,0.12); color: var(--accent); border: 1px solid rgba(0,229,255,0.2); }
+  .badge-green { background: rgba(16,185,129,0.12); color: var(--accent4); border: 1px solid rgba(16,185,129,0.2); }
+  .badge-amber { background: rgba(245,158,11,0.12); color: var(--accent3); border: 1px solid rgba(245,158,11,0.2); }
+  .badge-red { background: rgba(239,68,68,0.12); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); }
+  .badge-purple { background: rgba(124,58,237,0.12); color: #a78bfa; border: 1px solid rgba(124,58,237,0.2); }
+  .badge-gray { background: rgba(107,114,128,0.12); color: var(--muted); border: 1px solid rgba(107,114,128,0.2); }
+  .badge-outline { border: 1px solid var(--muted); color: var(--text); background: transparent; }
+
+  .urgency-bar { display: flex; align-items: center; gap: 8px; }
+  .urgency-track { width: 80px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .urgency-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
+  
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .kpi { animation: fadeUp 0.4s ease both; }
+  .kpi:nth-child(1) { animation-delay: 0.05s; } .kpi:nth-child(2) { animation-delay: 0.1s; } .kpi:nth-child(3) { animation-delay: 0.15s; }
+  .kpi:nth-child(4) { animation-delay: 0.2s; } .kpi:nth-child(5) { animation-delay: 0.25s; } .kpi:nth-child(6) { animation-delay: 0.3s; }
+  .glowing { box-shadow: 0 0 30px rgba(0,229,255,0.08); }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="header">
+    <div class="header-left">
+      <div class="header-tag">◈ Control de Contratos</div>
+      <h1 class="header-title">DASHBOARD<br>CONTRATOS 2026</h1>
+      <div class="header-subtitle">// Conexión directa a Excel local & Cálculo Inteligente</div>
+    </div>
+    <div class="header-actions">
+      <div class="fx-rate-box">
+        <span class="fx-label">T.C. USD/CRC:</span>
+        <input type="number" id="inputTC" class="fx-input" value="515" onchange="recalcularFinanzas()">
+      </div>
+      <button id="btnSync" onclick="vincularExcel()" style="background: var(--accent); color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 800; cursor: pointer; font-family: var(--mono); font-size: 13px; transition: 0.2s; width: 100%;">
+        Vincular Excel Local
+      </button>
+      <div id="statusText" style="font-size: 10px; color: var(--muted); font-family: var(--mono); text-align: right; width: 100%;">
+        Esperando archivo...
+      </div>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('general')">Resumen Ejecutivo</button>
+    <button class="tab" onclick="switchTab('flujo')">Proyecciones y Flujo</button>
+    <button class="tab" onclick="switchTab('mes')">Facturación <span id="lblMesTab">del Mes</span></button>
+    <button class="tab" onclick="switchTab('contratos')">Todos los Contratos</button>
+    <button class="tab" onclick="switchTab('renovar')">Por Renovar</button>
+  </div>
+
+  <div class="panel active" id="tab-general">
+    <div class="kpi-grid">
+      <div class="kpi emerald glowing"><div class="kpi-icon">📅</div><div class="kpi-label">Facturar este mes <span class="badge badge-outline" id="lblMesKPI">Mes</span></div><div class="kpi-value" id="kpiMesUsd">$0</div><div class="kpi-sub" id="kpiMesCrc">₡0 colones</div></div>
+      <div class="kpi cyan"><div class="kpi-icon">$</div><div class="kpi-label">Proyectado Anual USD</div><div class="kpi-value" id="kpiTotalUsd">$0</div><div class="kpi-sub" id="kpiConsolidadoUsd">Consolidado: $0 (TC actual)</div></div>
+      <div class="kpi purple"><div class="kpi-icon">₡</div><div class="kpi-label">Proyectado Anual CRC</div><div class="kpi-value" id="kpiTotalCrc">₡0</div><div class="kpi-sub" id="kpiTotalContratos">0 contratos activos</div></div>
+      <div class="kpi green"><div class="kpi-icon">✓</div><div class="kpi-label">Contratos Activos</div><div class="kpi-value" id="kpiActivos">0</div><div class="kpi-sub">en vigencia</div></div>
+      <div class="kpi amber"><div class="kpi-icon">↻</div><div class="kpi-label">Por Renovar</div><div class="kpi-value" id="kpiRenovar">0</div><div class="kpi-sub">requieren atención</div></div>
+      <div class="kpi red"><div class="kpi-icon">!</div><div class="kpi-label">Expirados</div><div class="kpi-value" id="kpiExpirados">0</div><div class="kpi-sub">contratos vencidos</div></div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card"><div class="chart-title">// Distribución por Frecuencia</div><div class="chart-wrap"><canvas id="chartFreq"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">// Modalidad de Cobertura</div><div class="chart-wrap"><canvas id="chartModalidad"></canvas></div></div>
+      <div class="chart-card wide"><div class="chart-title">// Monto Anual USD — Top Contratos</div><div class="chart-wrap tall"><canvas id="chartTop"></canvas></div></div>
+    </div>
+  </div>
+
+  <div class="panel" id="tab-flujo">
+    <div class="chart-grid">
+      <div class="chart-card wide"><div class="chart-title"><span>// Proyección de Facturación Mensual (Año Actual)</span><span class="badge badge-gray" id="lblYearProy">2026</span></div><div class="chart-wrap tall"><canvas id="chartProyeccionMensual"></canvas></div></div>
+      <div class="chart-card wide"><div class="chart-title">// Flujo Acumulado Consolidado (Convertido a USD)</div><div class="chart-wrap tall"><canvas id="chartFlujoAcumulado"></canvas></div></div>
+    </div>
+  </div>
+
+  <div class="panel" id="tab-mes">
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-title">// Contratos a Facturar en <span id="lblMesTabla" style="color:var(--accent)">Mes</span></div>
+        <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblMes', this.value)">
+      </div>
+      <div class="table-wrap">
+        <table id="tblMes">
+          <thead><tr><th>Contrato</th><th>Frecuencia</th><th>Ciclo Evaluado</th><th>Modalidad</th><th class="num">Cuota USD</th><th class="num">Cuota ₡</th><th>Vencimiento</th></tr></thead>
+          <tbody id="tbodyMes"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="tab-contratos">
+    <div class="table-card">
+      <div class="table-header"><div class="table-title">// Todos los Contratos Activos</div><input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblAll', this.value)"></div>
+      <div class="table-wrap">
+        <table id="tblAll">
+          <thead><tr><th>Contrato</th><th>Modalidad</th><th>Facturación</th><th>IVA</th><th class="num">Anual $</th><th class="num">Anual ₡</th><th>Inicio</th><th>Vencimiento</th><th class="num">Días Restantes</th></tr></thead>
+          <tbody id="tbodyAll"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="tab-renovar">
+    <div class="kpi-grid">
+      <div class="kpi amber"><div class="kpi-icon">⚠</div><div class="kpi-label">Por Renovar</div><div class="kpi-value" id="renovarTotal">0</div><div class="kpi-sub">próximos 90 días</div></div>
+      <div class="kpi red"><div class="kpi-icon">!</div><div class="kpi-label">Urgentes (&lt;30 días)</div><div class="kpi-value" id="urgentCount">0</div><div class="kpi-sub">acción inmediata</div></div>
+      <div class="kpi green"><div class="kpi-icon">◷</div><div class="kpi-label">Tiempo Promedio</div><div class="kpi-value" id="avgDays">0d</div><div class="kpi-sub">días promedio</div></div>
+    </div>
+    <div class="table-card">
+      <div class="table-header"><div class="table-title">// Contratos Por Renovar</div><input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblRenovar', this.value)"></div>
+      <div class="table-wrap">
+        <table id="tblRenovar">
+          <thead><tr><th>Contrato</th><th>Facturación</th><th class="num">Anual $</th><th class="num">Anual ₡</th><th>Vencimiento</th><th>Urgencia</th><th class="num">Días</th></tr></thead>
+          <tbody id="tbodyRenovar"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ──────────────────────────────────────────────────────────────
+// ESTADO GLOBAL Y CONFIGURACIÓN
+// ──────────────────────────────────────────────────────────────
+let fileHandle;
+let tasaCambio = 515;
+const DATA = { all_contracts: [], renew_contracts: [], current_month_billing: [], projection_usd: [], projection_crc: [] };
+const COLORS = ['#00e5ff','#7c3aed','#f59e0b','#10b981','#ef4444','#f472b6','#a78bfa','#34d399'];
+Chart.defaults.color = '#6b7280';
+Chart.defaults.font.family = "'JetBrains Mono', monospace";
+Chart.defaults.font.size = 11;
+
+const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+const HOY = new Date();
+const MES_ACTUAL = HOY.getMonth();
+const ANIO_ACTUAL = HOY.getFullYear();
+
+document.getElementById('lblMesTab').innerText = MESES[MES_ACTUAL];
+document.getElementById('lblMesKPI').innerText = MESES[MES_ACTUAL];
+document.getElementById('lblMesTabla').innerText = MESES[MES_ACTUAL].toUpperCase() + ' ' + ANIO_ACTUAL;
+document.getElementById('lblYearProy').innerText = ANIO_ACTUAL;
+
+// ──────────────────────────────────────────────────────────────
+// LECTURA DE EXCEL Y PARSEADO DE DATOS
+// ──────────────────────────────────────────────────────────────
+async function vincularExcel() {
+  try {
+    [fileHandle] = await window.showOpenFilePicker({ types: [{ description: 'Archivo Excel', accept: { 'application/vnd.ms-excel.sheet.macroEnabled.12': ['.xlsm'], 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] } }] });
+    await idbKeyval.set('excelHandle', fileHandle);
+    await cargarDatosDelExcel();
+  } catch (error) { console.log("Selección cancelada"); }
+}
+
+async function verificarArchivoGuardado() {
+  fileHandle = await idbKeyval.get('excelHandle');
+  if (fileHandle) { 
+    document.getElementById('btnSync').innerText = "Actualizar Dashboard"; 
+    document.getElementById('statusText').innerText = "Archivo enlazado. Clic para leer."; 
+  }
+}
+
+async function verificarPermiso(handle) {
+  const options = { mode: 'read' };
+  if ((await handle.queryPermission(options)) === 'granted') return true;
+  if ((await handle.requestPermission(options)) === 'granted') return true;
+  return false;
+}
+
+const parseNum = (val) => {
+  if (!val) return 0;
+  if (typeof val === 'number') return val;
+  const cleaned = parseFloat(val.toString().replace(/[^\d.-]/g, ''));
+  return isNaN(cleaned) ? 0 : cleaned;
+};
+
+// Conversión robusta de fechas de Excel
+function parseDateObject(val) {
+  if (!val) return null;
+  if (val instanceof Date) return val;
+  if (typeof val === 'number') { return new Date(Math.round((val - 25569) * 86400 * 1000)); }
+  let parsed = new Date(val);
+  return isNaN(parsed) ? null : parsed;
+}
+
+const parseDateString = (dateObj) => {
+  if (!dateObj) return '—';
+  return dateObj.toLocaleDateString('es-CR');
+};
+
+function calcularDias(fechaObj) {
+  if (!fechaObj) return 0;
+  let f = new Date(fechaObj);
+  f.setHours(0,0,0,0);
+  let h = new Date(HOY);
+  h.setHours(0,0,0,0);
+  return Math.ceil((f - h) / (1000 * 60 * 60 * 24));
+}
+
+async function cargarDatosDelExcel() {
+  if (!fileHandle) return;
+  document.getElementById('statusText').innerText = "Analizando lógica de facturación...";
+  tasaCambio = parseFloat(document.getElementById('inputTC').value) || 515;
+  
+  try {
+    const permiso = await verificarPermiso(fileHandle);
+    if (!permiso) return;
+    const file = await fileHandle.getFile();
+    const arrayBuffer = await file.arrayBuffer();
+    const workbook = XLSX.read(arrayBuffer, { type: 'array', cellDates: true });
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const jsonDatos = XLSX.utils.sheet_to_json(worksheet, { raw: false, range: 1, defval: "" });
+
+    DATA.all_contracts = jsonDatos.map(fila => {
+      const getExact = (keyName) => {
+        if (fila[keyName] !== undefined) return fila[keyName];
+        const cleanTarget = keyName.replace(/^\//, '').trim().toLowerCase();
+        for (let k of Object.keys(fila)) {
+            if (k.replace(/^\//, '').trim().toLowerCase() === cleanTarget) return fila[k];
+        }
+        return null;
+      };
+
+      const rawIni = parseDateObject(getExact('/Fecha de inicio'));
+      const rawExp = parseDateObject(getExact('/Fecha de expiración'));
+
+      return {
+        nombre: getExact('Nombre de contrato') || 'Desconocido',
+        modalidad: getExact('Modalidad') || '—',
+        frecuencia: getExact('/Facturación') || '—',
+        iva: getExact('/IVA') || '—',
+        anual_usd: parseNum(getExact('/Monto Anual $')),
+        anual_crc: parseNum(getExact('/Monto anual ₡')),
+        inicio_obj: rawIni,
+        expiracion_obj: rawExp,
+        inicio: parseDateString(rawIni),
+        expiracion: parseDateString(rawExp),
+        dias: getExact('/Días restantes para renovar') !== null ? parseInt(parseNum(getExact('/Días restantes para renovar'))) : calcularDias(rawExp)
+      };
+    });
+
+    procesarLogicaInteligente();
+    
+    const hora = new Date().toLocaleTimeString();
+    document.getElementById('btnSync').innerText = "Actualizar Datos";
+    document.getElementById('statusText').innerText = `Cálculo exitoso: ${hora}`;
+    
+  } catch (error) {
+    console.error("Error interpretando Excel:", error);
+    document.getElementById('statusText').innerText = "Error leyendo formato del Excel.";
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+// LÓGICA INTELIGENTE DE FACTURACIÓN
+// ──────────────────────────────────────────────────────────────
+function determinaFacturacion(inicio, mesObjetivo, anioObjetivo, frecuencia) {
+  if (!inicio || isNaN(inicio)) {
+    // Si no hay fecha inicio, asumimos que factura según la frecuencia base si es mensual.
+    return (frecuencia || '').toUpperCase().includes('MENSUAL');
+  }
+  
+  // Meses transcurridos desde el inicio del contrato hasta el mes objetivo
+  const mesesDiferencia = (anioObjetivo - inicio.getFullYear()) * 12 + (mesObjetivo - inicio.getMonth());
+  if (mesesDiferencia < 0) return false; // El contrato no ha iniciado
+
+  const freq = (frecuencia || '').toUpperCase();
+  if (freq.includes('MENSUAL')) return true;
+  if (freq.includes('TRIMESTRAL')) return mesesDiferencia % 3 === 0;
+  if (freq.includes('SEMESTRAL')) return mesesDiferencia % 6 === 0;
+  if (freq.includes('ANUAL')) return mesesDiferencia % 12 === 0;
+  
+  return false;
+}
+
+function fraccionarMonto(montoAnual, frecuencia) {
+  if (!montoAnual) return 0;
+  const freq = (frecuencia || '').toUpperCase();
+  if (freq.includes('MENSUAL')) return montoAnual / 12;
+  if (freq.includes('TRIMESTRAL')) return montoAnual / 4;
+  if (freq.includes('SEMESTRAL')) return montoAnual / 2;
+  if (freq.includes('ANUAL')) return montoAnual;
+  return 0; // Por defecto si no coincide no fracciona
+}
+
+function procesarLogicaInteligente() {
+  DATA.renew_contracts = DATA.all_contracts.filter(c => c.dias >= 0 && c.dias <= 90);
+  DATA.current_month_billing = [];
+  
+  DATA.projection_usd = Array(12).fill(0);
+  DATA.projection_crc = Array(12).fill(0);
+
+  DATA.all_contracts.forEach(c => {
+    // 1. Evaluar mes actual
+    let facturaEsteMes = determinaFacturacion(c.inicio_obj, MES_ACTUAL, ANIO_ACTUAL, c.frecuencia);
+    
+    // Solo cobrar si no ha vencido severamente o si la lógica de negocio lo permite (acá permitimos si dias > -30 por margen)
+    if (facturaEsteMes && c.dias > -30) {
+      c.cuota_usd_mes = fraccionarMonto(c.anual_usd, c.frecuencia);
+      c.cuota_crc_mes = fraccionarMonto(c.anual_crc, c.frecuencia);
+      DATA.current_month_billing.push(c);
+    }
+
+    // 2. Generar Proyección para todo el año actual (Mes 0 al 11)
+    for (let m = 0; m < 12; m++) {
+      let facturaEnMesM = determinaFacturacion(c.inicio_obj, m, ANIO_ACTUAL, c.frecuencia);
+      // Validar si para ese mes el contrato seguirá activo (aproximación rápida)
+      let activoEnMes = true;
+      if (c.expiracion_obj) {
+        let fechaEval = new Date(ANIO_ACTUAL, m, 1);
+        if (fechaEval > c.expiracion_obj) activoEnMes = false;
+      }
+      
+      if (facturaEnMesM && activoEnMes) {
+        DATA.projection_usd[m] += fraccionarMonto(c.anual_usd, c.frecuencia);
+        DATA.projection_crc[m] += fraccionarMonto(c.anual_crc, c.frecuencia);
+      }
+    }
+  });
+
+  actualizarUI();
+}
+
+function recalcularFinanzas() {
+  tasaCambio = parseFloat(document.getElementById('inputTC').value) || 515;
+  if (DATA.all_contracts.length > 0) {
+    procesarLogicaInteligente();
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+// RENDERIZADO DE INTERFAZ Y GRÁFICOS
+// ──────────────────────────────────────────────────────────────
+function actualizarUI() {
+  let totalUsd = 0, totalCrc = 0, expirados = 0;
+  let mesUsd = 0, mesCrc = 0;
+
+  DATA.all_contracts.forEach(c => {
+    totalUsd += c.anual_usd; totalCrc += c.anual_crc;
+    if (c.dias < 0) expirados++;
+  });
+
+  DATA.current_month_billing.forEach(c => {
+    mesUsd += c.cuota_usd_mes; mesCrc += c.cuota_crc_mes;
+  });
+
+  let consolidadoUsd = totalUsd + (totalCrc / tasaCambio);
+
+  // General KPIs
+  document.getElementById('kpiTotalUsd').innerText = fmtUSD(totalUsd);
+  document.getElementById('kpiTotalCrc').innerText = fmtCRC(totalCrc);
+  document.getElementById('kpiConsolidadoUsd').innerText = `Consolidado: ${fmtUSD(consolidadoUsd)} (TC: ₡${tasaCambio})`;
+  document.getElementById('kpiTotalContratos').innerText = `${DATA.all_contracts.length} contratos activos`;
+  document.getElementById('kpiActivos').innerText = DATA.all_contracts.length;
+  document.getElementById('kpiRenovar').innerText = DATA.renew_contracts.length;
+  document.getElementById('kpiExpirados').innerText = expirados;
+  
+  // Current Month KPIs
+  document.getElementById('kpiMesUsd').innerText = fmtUSD(mesUsd);
+  document.getElementById('kpiMesCrc').innerText = fmtCRC(mesCrc);
+
+  limpiarDashboard();
+  initCharts();
+  buildMes();
+  buildAll();
+  buildRenew();
+}
+
+function fmtUSD(v) { if(v>=1e6) return '$'+(v/1e6).toFixed(2)+'M'; if(v>=1e3) return '$'+v.toLocaleString('es-CR',{maximumFractionDigits:0}); return '$'+v.toFixed(2); }
+function fmtCRC(v) { if(v>=1e6) return '₡'+(v/1e6).toFixed(2)+'M'; if(v>=1e3) return '₡'+v.toLocaleString('es-CR',{maximumFractionDigits:0}); return '₡'+v.toFixed(0); }
+function ivaBadge(iva) { if(!iva) return `<span class="badge badge-gray">—</span>`; if(iva.toUpperCase().includes('INCLUIR')) return `<span class="badge badge-amber">IVA 13%</span>`; if(iva.toUpperCase().includes('EXONERADO')) return `<span class="badge badge-green">Exonerado</span>`; return `<span class="badge badge-gray">${iva}</span>`; }
+function freqBadge(f) { if(!f) return `<span class="badge badge-gray">—</span>`; const t=f.toUpperCase(); if(t.includes('MENSUAL')) return `<span class="badge badge-cyan">${f}</span>`; if(t.includes('TRIMESTRAL')) return `<span class="badge badge-purple">${f}</span>`; if(t.includes('SEMESTRAL')) return `<span class="badge badge-amber">${f}</span>`; return `<span class="badge badge-red">${f}</span>`; }
+function daysBadge(d) { if(d<0) return `<span class="badge badge-red">VENCIDO</span>`; if(d<30) return `<span style="color:var(--danger);font-weight:700">${d}</span>`; if(d<90) return `<span style="color:var(--accent3);font-weight:700">${d}</span>`; return `<span style="color:var(--accent4)">${d}</span>`; }
+
+function switchTab(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function filterTable(tableId, query) { const q = query.toLowerCase(); document.querySelectorAll(`#${tableId} tbody tr`).forEach(tr => { tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none'; }); }
+function limpiarDashboard() { document.getElementById('tbodyAll').innerHTML = ''; document.getElementById('tbodyRenovar').innerHTML = ''; document.getElementById('tbodyMes').innerHTML = ''; for (let id in Chart.instances) Chart.instances[id].destroy(); }
+
+function initCharts() {
+  if (DATA.all_contracts.length === 0) return;
+  
+  // Gráficos Generales
+  let freqCounts = {}, modCounts = { '24x7': 0, '8x5 / Otras': 0 };
+  DATA.all_contracts.forEach(c => {
+    freqCounts[c.frecuencia] = (freqCounts[c.frecuencia] || 0) + 1;
+    if (c.modalidad && c.modalidad.includes('24x7')) modCounts['24x7']++; else modCounts['8x5 / Otras']++;
+  });
+
+  new Chart(document.getElementById('chartFreq'), { type: 'doughnut', data: { labels: Object.keys(freqCounts), datasets: [{ data: Object.values(freqCounts), backgroundColor: COLORS, borderWidth: 0 }] }, options: { cutout: '68%', plugins: { legend: { position: 'right' } } } });
+  
+  const top = [...DATA.all_contracts].sort((a,b) => b.anual_usd - a.anual_usd).slice(0, 8);
+  new Chart(document.getElementById('chartTop'), { type: 'bar', data: { labels: top.map(c => c.nombre.substring(0,20)), datasets: [{ data: top.map(c => c.anual_usd), backgroundColor: 'rgba(0,229,255,0.25)', borderColor: '#00e5ff', borderWidth: 1.5, borderRadius: 6 }] }, options: { indexAxis: 'y', plugins: { legend: { display: false } } } });
+
+  new Chart(document.getElementById('chartModalidad'), { type: 'pie', data: { labels: Object.keys(modCounts), datasets: [{ data: Object.values(modCounts), backgroundColor: ['#00e5ff', '#7c3aed'], borderWidth: 0 }] } });
+  
+  // Gráficos de Proyección y Flujo
+  new Chart(document.getElementById('chartProyeccionMensual'), { 
+    type: 'bar', 
+    data: { 
+      labels: MESES.map(m=>m.substring(0,3)), 
+      datasets: [
+        { label: 'Facturación USD', data: DATA.projection_usd, backgroundColor: '#00e5ff', borderRadius: 4, yAxisID: 'y' },
+        { label: 'Facturación CRC', data: DATA.projection_crc, backgroundColor: '#7c3aed', borderRadius: 4, yAxisID: 'y1' }
+      ] 
+    }, 
+    options: { 
+      responsive: true, maintainAspectRatio: false,
+      scales: { 
+        y: { type: 'linear', position: 'left', grid: { color: 'rgba(255,255,255,0.05)' } },
+        y1: { type: 'linear', position: 'right', grid: { drawOnChartArea: false } }
+      } 
+    } 
+  });
+
+  // Calcular flujo acumulado convertido a USD
+  let acumuladoData = [];
+  let sum = 0;
+  for(let i=0; i<12; i++) {
+    sum += DATA.projection_usd[i] + (DATA.projection_crc[i] / tasaCambio);
+    acumuladoData.push(sum);
+  }
+
+  new Chart(document.getElementById('chartFlujoAcumulado'), { 
+    type: 'line', 
+    data: { 
+      labels: MESES.map(m=>m.substring(0,3)), 
+      datasets: [{ label: 'Ingreso Acumulado (Eq. USD)', data: acumuladoData, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#10b981' }] 
+    }, 
+    options: { responsive: true, maintainAspectRatio: false, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } } } } 
+  });
+}
+
+function buildMes() {
+  const tbody = document.getElementById('tbodyMes');
+  DATA.current_month_billing.forEach(c => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="name-cell" title="${c.nombre}">${c.nombre}</td><td>${freqBadge(c.frecuencia)}</td><td><span class="badge badge-outline">Aplicable</span></td><td><span class="badge badge-gray">${c.modalidad}</span></td><td class="num" style="color:var(--accent); font-weight:700">${c.cuota_usd_mes>0?fmtUSD(c.cuota_usd_mes):'—'}</td><td class="num" style="color:#a78bfa; font-weight:700">${c.cuota_crc_mes>0?fmtCRC(c.cuota_crc_mes):'—'}</td><td>${c.expiracion}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function buildAll() {
+  const tbody = document.getElementById('tbodyAll');
+  DATA.all_contracts.forEach(c => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="name-cell" title="${c.nombre}">${c.nombre}</td><td><span class="badge badge-gray">${c.modalidad}</span></td><td>${freqBadge(c.frecuencia)}</td><td>${ivaBadge(c.iva)}</td><td class="num">${c.anual_usd>0?fmtUSD(c.anual_usd):'—'}</td><td class="num">${c.anual_crc>0?fmtCRC(c.anual_crc):'—'}</td><td>${c.inicio}</td><td>${c.expiracion}</td><td class="num">${daysBadge(c.dias)}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function buildRenew() {
+  const tbody = document.getElementById('tbodyRenovar');
+  let urgent = 0, validDays = DATA.renew_contracts.filter(c => c.dias >= 0);
+  const avg = validDays.length ? Math.round(validDays.reduce((s,c)=>s+c.dias,0)/validDays.length) : 0;
+  DATA.renew_contracts.forEach(c => {
+    if (c.dias < 30) urgent++;
+    const pct = Math.min(100, Math.max(0, (90 - c.dias) / 90 * 100));
+    const barColor = c.dias < 0 ? '#ef4444' : c.dias < 30 ? '#ef4444' : c.dias < 60 ? '#f59e0b' : '#10b981';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="name-cell" title="${c.nombre}">${c.nombre}</td><td>${freqBadge(c.frecuencia)}</td><td class="num">${c.anual_usd>0?fmtUSD(c.anual_usd):'—'}</td><td class="num">${c.anual_crc>0?fmtCRC(c.anual_crc):'—'}</td><td>${c.expiracion}</td><td><div class="urgency-bar"><div class="urgency-track"><div class="urgency-fill" style="width:${pct}%;background:${barColor}"></div></div></div></td><td class="num">${daysBadge(c.dias)}</td>`;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('urgentCount').textContent = urgent;
+  document.getElementById('avgDays').textContent = avg + 'd';
+  document.getElementById('renovarTotal').textContent = DATA.renew_contracts.length;
+}
+
+window.addEventListener('load', verificarArchivoGuardado);
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(registration => console.log('PWA Lista y registrada'))
+        .catch(error => console.log('Error en PWA:', error));
+    });
+  }
+</script>
+
+</body>
+</html>
