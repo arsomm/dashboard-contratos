@@ -1,7 +1,7 @@
 {
   "name": "Dashboard Control de Contratos 2026",
   "short_name": "Contratos",
-  "start_url": "./DASHBOARD.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0a0c10",
   "theme_color": "#00e5ff",
@@ -18,4 +18,5 @@
       "type": "image/png"
     }
   ]
+
 }
