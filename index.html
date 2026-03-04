@@ -13,121 +13,74 @@
 
 <style>
   :root {
-    --bg: #0a0c10;
-    --surface: #111318;
-    --surface2: #1a1d26;
-    --border: #252836;
-    --accent: #00e5ff;
-    --accent2: #7c3aed;
-    --accent3: #f59e0b;
-    --accent4: #10b981;
-    --danger: #ef4444;
-    --text: #e8eaf0;
-    --muted: #6b7280;
-    --font: 'Syne', sans-serif;
-    --mono: 'JetBrains Mono', monospace;
+    --bg: #0a0c10; --surface: #111318; --surface2: #1a1d26; --border: #252836;
+    --accent: #00e5ff; --accent2: #7c3aed; --accent3: #f59e0b; --accent4: #10b981;
+    --danger: #ef4444; --text: #e8eaf0; --muted: #6b7280;
+    --font: 'Syne', sans-serif; --mono: 'JetBrains Mono', monospace;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .container {
-    position: relative;
-    z-index: 1;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 32px 24px;
-  }
-
-  /* Header */
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
+  .container { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+  
   .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 40px; flex-wrap: wrap; gap: 16px; }
   .header-tag { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; opacity: 0.8; }
   .header-title { font-size: clamp(28px, 5vw, 48px); font-weight: 800; letter-spacing: -1px; line-height: 1; background: linear-gradient(135deg, #fff 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .header-subtitle { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 8px; }
   .header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+  .header-buttons { display: flex; gap: 8px; width: 100%; justify-content: flex-end; flex-wrap: wrap; }
   
-  .fx-rate-box { background: var(--surface2); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; display: flex; align-items: center; gap: 10px; }
+  .fx-rate-box { background: var(--surface2); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; display: flex; align-items: center; gap: 10px; width: 100%; justify-content: space-between; }
   .fx-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; }
   .fx-input { background: var(--bg); border: 1px solid var(--border); color: var(--accent); font-family: var(--mono); font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 4px; width: 80px; text-align: right; outline: none; }
   .fx-input:focus { border-color: var(--accent); }
 
-  /* Tabs */
   .tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 4px; margin-bottom: 32px; overflow-x: auto; white-space: nowrap; }
   .tab { padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; background: none; color: var(--muted); transition: all 0.2s; font-family: var(--font); letter-spacing: 0.3px; }
   .tab:hover { color: var(--text); background: var(--surface2); }
   .tab.active { background: var(--accent2); color: #fff; }
+  .panel { display: none; } .panel.active { display: block; }
 
-  /* Panels */
-  .panel { display: none; }
-  .panel.active { display: block; }
-
-  /* KPI Grid */
   .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px; }
   .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px 24px; position: relative; overflow: hidden; transition: border-color 0.2s, transform 0.2s; }
   .kpi:hover { border-color: var(--accent); transform: translateY(-2px); }
   .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
-  .kpi.cyan::before { background: var(--accent); }
-  .kpi.purple::before { background: var(--accent2); }
-  .kpi.amber::before { background: var(--accent3); }
-  .kpi.green::before { background: var(--accent4); }
-  .kpi.red::before { background: var(--danger); }
-  .kpi.emerald::before { background: #34d399; }
+  .kpi.cyan::before { background: var(--accent); } .kpi.purple::before { background: var(--accent2); }
+  .kpi.amber::before { background: var(--accent3); } .kpi.green::before { background: var(--accent4); }
+  .kpi.red::before { background: var(--danger); } .kpi.emerald::before { background: #34d399; }
   .kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; font-family: var(--mono); margin-bottom: 10px; display: flex; justify-content: space-between;}
   .kpi-value { font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-  .kpi.cyan .kpi-value { color: var(--accent); }
-  .kpi.purple .kpi-value { color: #a78bfa; }
-  .kpi.amber .kpi-value { color: var(--accent3); }
-  .kpi.green .kpi-value { color: var(--accent4); }
-  .kpi.red .kpi-value { color: var(--danger); }
-  .kpi.emerald .kpi-value { color: #34d399; }
+  .kpi.cyan .kpi-value { color: var(--accent); } .kpi.purple .kpi-value { color: #a78bfa; }
+  .kpi.amber .kpi-value { color: var(--accent3); } .kpi.green .kpi-value { color: var(--accent4); }
+  .kpi.red .kpi-value { color: var(--danger); } .kpi.emerald .kpi-value { color: #34d399; }
   .kpi-sub { font-size: 11px; color: var(--muted); font-family: var(--mono); }
   .kpi-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 32px; opacity: 0.08; }
 
-  /* Chart & Tables */
   .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
   @media (max-width: 768px) { .chart-grid { grid-template-columns: 1fr; } .chart-card.wide { grid-column: span 1; } }
   .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
   .chart-card.wide { grid-column: span 2; }
-  .chart-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; font-family: var(--mono); display: flex; justify-content: space-between; }
-  .chart-wrap { position: relative; height: 260px; }
-  .chart-wrap.tall { height: 320px; }
+  .chart-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; font-family: var(--mono); display: flex; justify-content: space-between; align-items: center; }
+  .chart-wrap { position: relative; height: 260px; } .chart-wrap.tall { height: 320px; }
 
   .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 24px; }
   .table-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-  .table-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; font-family: var(--mono); }
+  .table-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; font-family: var(--mono); display: flex; align-items: center; gap: 12px; }
   .search-input { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; color: var(--text); font-size: 12px; font-family: var(--mono); outline: none; width: 220px; }
   .search-input:focus { border-color: var(--accent); }
+  select.search-input { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px; padding-right: 32px; }
 
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 12px; }
   thead tr { background: var(--surface2); }
   thead th { padding: 12px 16px; text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-family: var(--mono); white-space: nowrap; }
   tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
-  tbody tr:hover { background: var(--surface2); }
+  tbody tr.clickable { cursor: pointer; transition: all 0.2s ease; }
+  tbody tr.clickable:hover { background: var(--surface2); box-shadow: inset 4px 0 0 var(--accent); }
   tbody td { padding: 11px 16px; color: var(--text); white-space: nowrap; font-family: var(--mono); font-size: 11.5px; }
   tbody td.name-cell { font-family: var(--font); font-size: 12px; font-weight: 600; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .num { text-align: right; }
 
-  /* Badges & UI Elements */
   .badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; font-family: var(--mono); }
   .badge-cyan { background: rgba(0,229,255,0.12); color: var(--accent); border: 1px solid rgba(0,229,255,0.2); }
   .badge-green { background: rgba(16,185,129,0.12); color: var(--accent4); border: 1px solid rgba(16,185,129,0.2); }
@@ -142,12 +95,54 @@
   .urgency-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
   
   @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-  .kpi { animation: fadeUp 0.4s ease both; }
-  .kpi:nth-child(1) { animation-delay: 0.05s; } .kpi:nth-child(2) { animation-delay: 0.1s; } .kpi:nth-child(3) { animation-delay: 0.15s; }
-  .kpi:nth-child(4) { animation-delay: 0.2s; } .kpi:nth-child(5) { animation-delay: 0.25s; } .kpi:nth-child(6) { animation-delay: 0.3s; }
+  .kpi { animation: fadeUp 0.4s ease both; } .kpi:nth-child(1) { animation-delay: 0.05s; } .kpi:nth-child(2) { animation-delay: 0.1s; } .kpi:nth-child(3) { animation-delay: 0.15s; } .kpi:nth-child(4) { animation-delay: 0.2s; } .kpi:nth-child(5) { animation-delay: 0.25s; } .kpi:nth-child(6) { animation-delay: 0.3s; }
   .glowing { box-shadow: 0 0 30px rgba(0,229,255,0.08); }
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* ====== ESTILOS DEL MODAL ====== */
+  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10, 12, 16, 0.85); backdrop-filter: blur(8px); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; padding: 20px; }
+  .modal-overlay.active { display: flex; opacity: 1; }
+  .modal-content { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid var(--accent); border-radius: 16px; width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; padding: 32px; position: relative; transform: translateY(20px); transition: transform 0.3s ease; box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 40px rgba(0,229,255,0.05); }
+  .modal-overlay.active .modal-content { transform: translateY(0); }
+  .modal-close { position: absolute; top: 24px; right: 24px; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; transition: all 0.2s; z-index: 2; }
+  .modal-close:hover { color: var(--danger); border-color: var(--danger); background: rgba(239,68,68,0.1); }
+  .modal-header { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; padding-right: 40px;}
+  .modal-title { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 12px; line-height: 1.2;}
+  .modal-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+  .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 500px) { .modal-grid { grid-template-columns: 1fr; } }
+  .modal-field { background: var(--bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border); transition: 0.2s; }
+  .modal-field-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;}
+  .modal-field-value { font-size: 18px; font-weight: 700; color: var(--text); }
+  .modal-field.highlight { border-color: rgba(0,229,255,0.3); background: linear-gradient(145deg, var(--surface2), rgba(0,229,255,0.02)); }
+  .modal-field.highlight .modal-field-value { color: var(--accent); font-family: var(--mono); font-size: 22px; }
+  .modal-field.highlight-crc { border-color: rgba(124,58,237,0.3); background: linear-gradient(145deg, var(--surface2), rgba(124,58,237,0.02)); }
+  .modal-field.highlight-crc .modal-field-value { color: #a78bfa; font-family: var(--mono); font-size: 22px; }
+  .modal-section-title { grid-column: 1 / -1; font-family: var(--mono); font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; margin-top: 16px; margin-bottom: -4px; display: flex; align-items: center; gap: 8px;}
+  .modal-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  
+  .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--surface2); border: 1px solid var(--border); transition: .3s; border-radius: 20px; }
+  .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: var(--muted); transition: .3s; border-radius: 50%; }
+  input:checked + .slider { background-color: rgba(0,229,255,0.2); border-color: var(--accent); }
+  input:checked + .slider:before { transform: translateX(20px); background-color: var(--accent); }
+
+  .edit-mode { display: none; } .is-editing .view-mode { display: none; } .is-editing .edit-mode { display: block; }
+  .modal-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 6px; font-family: var(--mono); font-size: 13px; outline: none; transition: border-color 0.2s; }
+  .modal-input:focus { border-color: var(--accent); }
+  .btn-save { background: var(--accent); color: #000; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 800; cursor: pointer; font-family: var(--mono); font-size: 13px; width: 100%; margin-top: 24px; transition: opacity 0.2s; grid-column: 1 / -1; }
+  .btn-save:hover { opacity: 0.9; }
+
+  .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(65px, 1fr)); gap: 10px; margin-top: 8px; }
+  .chk-label { display: flex; align-items: center; gap: 6px; font-size: 11px; font-family: var(--mono); color: var(--text); cursor: pointer; background: var(--surface2); padding: 6px; border-radius: 6px; border: 1px solid var(--border); transition: 0.2s; }
+  .chk-label:hover { border-color: rgba(0,229,255,0.4); }
+
+  .btn-icon { background: var(--surface2); color: var(--text); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: var(--mono); font-size: 11px; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
+  .btn-icon:hover { background: var(--border); }
+  
+  .btn-primary { background: var(--accent); color: #000; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 800; cursor: pointer; font-family: var(--mono); font-size: 13px; transition: 0.2s; flex: 1; }
+  .btn-secondary { background: rgba(16, 185, 129, 0.1); color: var(--accent4); border: 1px solid rgba(16, 185, 129, 0.4); padding: 10px 16px; border-radius: 8px; font-weight: 800; cursor: pointer; font-family: var(--mono); font-size: 13px; transition: 0.2s; flex: 1; }
+  .btn-secondary:hover { background: rgba(16, 185, 129, 0.2); }
 </style>
 </head>
 <body>
@@ -164,11 +159,24 @@
         <span class="fx-label">T.C. USD/CRC:</span>
         <input type="number" id="inputTC" class="fx-input" value="515" onchange="recalcularFinanzas()">
       </div>
-      <button id="btnSync" onclick="vincularExcel()" style="background: var(--accent); color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 800; cursor: pointer; font-family: var(--mono); font-size: 13px; transition: 0.2s; width: 100%;">
-        Vincular Excel Local
-      </button>
+      <div class="header-buttons">
+        <button id="btnSync" onclick="accionPrincipal()" class="btn-primary">
+          Vincular Excel Base
+        </button>
+        <button id="btnElegirNuevo" onclick="seleccionarNuevoExcel()" class="btn-icon" style="display: none;" title="Cambiar a otro archivo Excel">
+          🔄 Cambiar Excel
+        </button>
+        <button id="btnJsonSync" onclick="vincularAutoGuardadoJSON()" class="btn-secondary" title="Crea un archivo local para guardar las configuraciones de facturación de forma silenciosa">
+          Vincular Auto-Guardado JSON
+        </button>
+      </div>
+      <div class="header-buttons" style="justify-content: flex-end;">
+        <button id="btnExport" onclick="exportarExcel()" class="btn-icon" style="display: none;" title="Exportar nueva tabla de Excel">
+          ↓ Generar Nuevo Excel Modificado
+        </button>
+      </div>
       <div id="statusText" style="font-size: 10px; color: var(--muted); font-family: var(--mono); text-align: right; width: 100%;">
-        Esperando archivo...
+        Esperando archivo Excel...
       </div>
     </div>
   </header>
@@ -176,7 +184,7 @@
   <div class="tabs">
     <button class="tab active" onclick="switchTab('general')">Resumen Ejecutivo</button>
     <button class="tab" onclick="switchTab('flujo')">Proyecciones y Flujo</button>
-    <button class="tab" onclick="switchTab('mes')">Facturación <span id="lblMesTab">del Mes</span></button>
+    <button class="tab" onclick="switchTab('mes')">Facturación por Mes</button>
     <button class="tab" onclick="switchTab('contratos')">Todos los Contratos</button>
     <button class="tab" onclick="switchTab('renovar')">Por Renovar</button>
   </div>
@@ -200,7 +208,7 @@
 
   <div class="panel" id="tab-flujo">
     <div class="chart-grid">
-      <div class="chart-card wide"><div class="chart-title"><span>// Proyección de Facturación Mensual (Año Actual)</span><span class="badge badge-gray" id="lblYearProy">2026</span></div><div class="chart-wrap tall"><canvas id="chartProyeccionMensual"></canvas></div></div>
+      <div class="chart-card wide"><div class="chart-title"><span>// Proyección de Facturación Mensual</span><span class="badge badge-gray" id="lblYearProy">2026</span></div><div class="chart-wrap tall"><canvas id="chartProyeccionMensual"></canvas></div></div>
       <div class="chart-card wide"><div class="chart-title">// Flujo Acumulado Consolidado (Convertido a USD)</div><div class="chart-wrap tall"><canvas id="chartFlujoAcumulado"></canvas></div></div>
     </div>
   </div>
@@ -208,12 +216,23 @@
   <div class="panel" id="tab-mes">
     <div class="table-card">
       <div class="table-header">
-        <div class="table-title">// Contratos a Facturar en <span id="lblMesTabla" style="color:var(--accent)">Mes</span></div>
-        <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblMes', this.value)">
+        <div class="table-title">
+          // Contratos a Facturar en 
+          <select id="monthSelector" class="search-input" style="width: auto;" onchange="updateMesTable()">
+            <!-- Los meses se inyectan via JS -->
+          </select>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <div id="resumenMesSeleccionado" style="display:flex; flex-direction:column; align-items:flex-end; justify-content:center; margin-right: 15px; display:none;">
+                <span id="resumenMesUsd" style="color:var(--accent); font-weight:700; font-family:var(--mono); font-size:12px;">$0</span>
+                <span id="resumenMesCrc" style="color:#a78bfa; font-weight:700; font-family:var(--mono); font-size:11px;">₡0</span>
+            </div>
+            <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblMes', this.value)">
+        </div>
       </div>
       <div class="table-wrap">
         <table id="tblMes">
-          <thead><tr><th>Contrato</th><th>Frecuencia</th><th>Ciclo Evaluado</th><th>Modalidad</th><th class="num">Cuota USD</th><th class="num">Cuota ₡</th><th>Vencimiento</th></tr></thead>
+          <thead><tr><th>Contrato</th><th>Frecuencia</th><th>Estado / Fecha</th><th>Modalidad</th><th class="num">Cuota USD</th><th class="num">Cuota ₡</th><th>Vencimiento</th></tr></thead>
           <tbody id="tbodyMes"></tbody>
         </table>
       </div>
@@ -250,371 +269,497 @@
   </div>
 </div>
 
+<!-- ====== MODAL DE DESGLOSE DE CONTRATO ====== -->
+<div class="modal-overlay" id="modalDetalleContrato" onclick="if(event.target===this) cerrarDetalleContrato()">
+  <div class="modal-content" id="modalContentBox">
+    <button class="modal-close" onclick="cerrarDetalleContrato()" title="Cerrar">&times;</button>
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="mdlNombre">Nombre del Contrato</div>
+        <div class="modal-badges" id="mdlBadges"></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size: 11px; color: var(--muted); font-family: var(--mono); font-weight: 600;">EDITAR</span>
+        <label class="switch">
+          <input type="checkbox" id="chkEditMode" onchange="toggleEditMode(this.checked)">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+    <div class="modal-grid">
+      <div class="modal-section-title">Datos Financieros (Anual)</div>
+      <div class="modal-field highlight"><div class="modal-field-label">Monto Anual USD</div><div class="modal-field-value view-mode" id="mdlAnualUsd">$0</div><input type="number" class="modal-input edit-mode" id="mdlAnualUsd_edit" step="0.01"></div>
+      <div class="modal-field highlight-crc"><div class="modal-field-label">Monto Anual CRC</div><div class="modal-field-value view-mode" id="mdlAnualCrc">₡0</div><input type="number" class="modal-input edit-mode" id="mdlAnualCrc_edit" step="0.01"></div>
+      
+      <div class="modal-section-title">Preferencia de Facturación</div>
+      <div class="modal-field">
+        <div class="modal-field-label">Frecuencia Principal</div>
+        <div class="modal-field-value view-mode" style="font-family:var(--mono);" id="mdlFrecuencia_view">-</div>
+        <select class="modal-input edit-mode" id="mdlFrecuencia_edit">
+          <option value="MENSUAL">MENSUAL (/12)</option>
+          <option value="BIMENSUAL">BIMENSUAL (/6)</option>
+          <option value="TRIMESTRAL">TRIMESTRAL (/4)</option>
+          <option value="CUATRIMESTRAL">CUATRIMESTRAL (/3)</option>
+          <option value="SEMESTRAL">SEMESTRAL (/2)</option>
+          <option value="ANUAL">ANUAL (/1)</option>
+          <option value="PERSONALIZADA">OTRA (Divide por checks marcados)</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <div class="modal-field-label">Exactitud de Facturación</div>
+        <div class="modal-field-value view-mode" style="font-family:var(--mono);" id="mdlTipoFact_view">-</div>
+        <select class="modal-input edit-mode" id="mdlTipoFact_edit" onchange="toggleFormatoFact()">
+          <option value="mes">Automático - Mes General</option>
+          <option value="dia">Automático - Día Específico</option>
+          <option value="manual_mes">Personalizado - Elegir Meses Manualmente</option>
+          <option value="manual_dia">Personalizado - Elegir Meses y Día Exacto</option>
+        </select>
+      </div>
+      <div class="modal-field" id="boxMesesCustom" style="display:none; grid-column: 1 / -1;">
+        <div class="modal-field-label">Seleccionar Meses Específicos</div>
+        <div class="modal-field-value view-mode" style="font-family:var(--mono); color:var(--accent);" id="mdlMesesCustom_view">-</div>
+        <div class="edit-mode checkbox-grid" id="mesesCheckboxes"></div>
+      </div>
+      <div class="modal-field" id="boxDiaFacturacion">
+        <div class="modal-field-label">Día de Facturación</div>
+        <div class="modal-field-value view-mode" style="font-family:var(--mono);" id="mdlDiaFact_view">-</div>
+        <input type="number" class="modal-input edit-mode" id="mdlDiaFact_edit" min="1" max="31" placeholder="Ej: 15">
+      </div>
+      <div class="modal-field" id="boxCuotaUsd"><div class="modal-field-label">Cuota USD (Calculada) <span id="mdlFrecuenciaLabelUsd" style="opacity:0.6;font-size:9px;"></span></div><div class="modal-field-value view-mode" style="color:var(--accent); font-family:var(--mono);" id="mdlCuotaUsd">$0</div><div class="modal-input edit-mode" style="color:var(--muted); background:var(--bg); cursor:not-allowed;">Auto-calculable</div></div>
+      <div class="modal-field" id="boxCuotaCrc"><div class="modal-field-label">Cuota CRC (Calculada) <span id="mdlFrecuenciaLabelCrc" style="opacity:0.6;font-size:9px;"></span></div><div class="modal-field-value view-mode" style="color:#a78bfa; font-family:var(--mono);" id="mdlCuotaCrc">₡0</div><div class="modal-input edit-mode" style="color:var(--muted); background:var(--bg); cursor:not-allowed;">Auto-calculable</div></div>
+      
+      <div class="modal-section-title">Vigencia y Tiempos</div>
+      <div class="modal-field"><div class="modal-field-label">Fecha de Inicio</div><div class="modal-field-value view-mode" id="mdlInicio">-</div><input type="date" class="modal-input edit-mode" id="mdlInicio_edit"></div>
+      <div class="modal-field"><div class="modal-field-label">Fecha de Expiración</div><div class="modal-field-value view-mode" id="mdlFin">-</div><input type="date" class="modal-input edit-mode" id="mdlFin_edit"></div>
+      
+      <!-- NUEVA SECCIÓN DE MAPEO DEL CLIENTE -->
+      <div class="modal-section-title">Mapeo y Notas</div>
+      <div class="modal-field" style="grid-column: 1 / -1;">
+        <div class="modal-field-label">Mapeo del Cliente / Información Adicional</div>
+        <div class="modal-field-value view-mode" id="mdlMapeo_view" style="font-size: 13px; font-weight: 500; font-family: var(--font); color: var(--text); white-space: pre-wrap; line-height: 1.5;">-</div>
+        <textarea class="modal-input edit-mode" id="mdlMapeo_edit" style="resize: vertical; min-height: 80px; font-family: var(--font);" placeholder="Escribe aquí el mapeo del cliente, notas, etc..."></textarea>
+      </div>
+
+      <div class="modal-section-title view-mode">Estado e Información Extra</div>
+      <div class="modal-field view-mode"><div class="modal-field-label">Días Restantes</div><div class="modal-field-value" id="mdlDias">-</div></div>
+      <div class="modal-field view-mode"><div class="modal-field-label">Condición del IVA</div><div class="modal-field-value" id="mdlIva">-</div></div>
+
+      <button class="btn-save edit-mode" onclick="guardarCambiosContrato()">Guardar Cambios Localmente</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ──────────────────────────────────────────────────────────────
 // ESTADO GLOBAL Y CONFIGURACIÓN
 // ──────────────────────────────────────────────────────────────
-let fileHandle;
+let fileHandle = null;
+let jsonFileHandle = null; // MANEJADOR DEL ARCHIVO JSON FÍSICO
 let tasaCambio = 515;
-const DATA = { all_contracts: [], renew_contracts: [], current_month_billing: [], projection_usd: [], projection_crc: [] };
+let contratoEnEdicion = null; 
+let configGuardada = {}; 
+
+const DATA = { all_contracts: [], renew_contracts: [], billing_by_month: Array.from({length: 12}, () => []), current_month_billing: [], projection_usd: [], projection_crc: [] };
 const COLORS = ['#00e5ff','#7c3aed','#f59e0b','#10b981','#ef4444','#f472b6','#a78bfa','#34d399'];
-Chart.defaults.color = '#6b7280';
-Chart.defaults.font.family = "'JetBrains Mono', monospace";
-Chart.defaults.font.size = 11;
+Chart.defaults.color = '#6b7280'; Chart.defaults.font.family = "'JetBrains Mono', monospace"; Chart.defaults.font.size = 11;
 
 const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-const HOY = new Date();
-const MES_ACTUAL = HOY.getMonth();
-const ANIO_ACTUAL = HOY.getFullYear();
+const HOY = new Date(); const MES_ACTUAL = HOY.getMonth(); const ANIO_ACTUAL = HOY.getFullYear();
 
-document.getElementById('lblMesTab').innerText = MESES[MES_ACTUAL];
-document.getElementById('lblMesKPI').innerText = MESES[MES_ACTUAL];
-document.getElementById('lblMesTabla').innerText = MESES[MES_ACTUAL].toUpperCase() + ' ' + ANIO_ACTUAL;
-document.getElementById('lblYearProy').innerText = ANIO_ACTUAL;
+document.addEventListener('DOMContentLoaded', async () => {
+  document.getElementById('lblMesKPI').innerText = MESES[MES_ACTUAL];
+  document.getElementById('lblYearProy').innerText = ANIO_ACTUAL;
+  
+  const monthSelector = document.getElementById('monthSelector');
+  MESES.forEach((m, idx) => {
+      let opt = document.createElement('option'); opt.value = idx; opt.text = m.toUpperCase() + ' ' + ANIO_ACTUAL;
+      if (idx === MES_ACTUAL) opt.selected = true; monthSelector.appendChild(opt);
+  });
+  const boxMeses = document.getElementById('mesesCheckboxes');
+  MESES.forEach((m, idx) => {
+      let lbl = document.createElement('label'); lbl.className = 'chk-label';
+      lbl.innerHTML = `<input type="checkbox" value="${idx}" class="chk-mes"> ${m.substring(0,3).toUpperCase()}`;
+      boxMeses.appendChild(lbl);
+  });
+
+  // RECUPERAR IDENTIFICADORES DE ARCHIVOS AL CARGAR LA PÁGINA
+  fileHandle = await idbKeyval.get('excelHandle');
+  jsonFileHandle = await idbKeyval.get('jsonFileHandle');
+
+  if (fileHandle) {
+      document.getElementById('btnSync').innerText = "▶ Cargar Datos Guardados";
+      document.getElementById('btnElegirNuevo').style.display = "flex";
+  }
+  if (jsonFileHandle) {
+      marcarJSONEnlazado();
+  }
+});
 
 // ──────────────────────────────────────────────────────────────
-// LECTURA DE EXCEL Y PARSEADO DE DATOS
+// VINCULACIÓN DEL JSON FÍSICO Y EXCEL
 // ──────────────────────────────────────────────────────────────
-async function vincularExcel() {
+
+// Acción principal del botón azul: Define si pedir nuevo archivo o cargar el existente
+async function accionPrincipal() {
+    if (fileHandle) {
+        await cargarDatosDelExcel();
+    } else {
+        await seleccionarNuevoExcel();
+    }
+}
+
+async function seleccionarNuevoExcel() {
   try {
     [fileHandle] = await window.showOpenFilePicker({ types: [{ description: 'Archivo Excel', accept: { 'application/vnd.ms-excel.sheet.macroEnabled.12': ['.xlsm'], 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] } }] });
     await idbKeyval.set('excelHandle', fileHandle);
+    document.getElementById('btnElegirNuevo').style.display = "flex";
     await cargarDatosDelExcel();
-  } catch (error) { console.log("Selección cancelada"); }
+  } catch (error) { console.log("Selección de Excel cancelada"); }
 }
 
-async function verificarArchivoGuardado() {
-  fileHandle = await idbKeyval.get('excelHandle');
-  if (fileHandle) { 
-    document.getElementById('btnSync').innerText = "Actualizar Dashboard"; 
-    document.getElementById('statusText').innerText = "Archivo enlazado. Clic para leer."; 
-  }
+async function vincularAutoGuardadoJSON() {
+    try {
+        const handle = await window.showSaveFilePicker({
+            suggestedName: 'Ajustes_Contratos.json',
+            types: [{ description: 'Archivo de Configuración JSON', accept: {'application/json': ['.json']} }]
+        });
+        jsonFileHandle = handle;
+        await idbKeyval.set('jsonFileHandle', jsonFileHandle); 
+        marcarJSONEnlazado();
+        await escribirJSONEnDisco();
+        alert("¡Éxito! Tu configuración ahora se guardará automáticamente en este archivo cada vez que edites algo.");
+    } catch (error) {
+        if (error.name !== 'AbortError') console.error("Error al vincular JSON:", error);
+    }
 }
 
+function marcarJSONEnlazado() {
+    const btn = document.getElementById('btnJsonSync');
+    btn.innerText = "JSON Enlazado ✓";
+    btn.style.background = "var(--accent4)";
+    btn.style.color = "#000";
+    btn.style.border = "none";
+}
+
+// ──────────────────────────────────────────────────────────────
+// LECTURA / ESCRITURA DE DATOS (CON PERMISOS DE SEGURIDAD)
+// ──────────────────────────────────────────────────────────────
 async function verificarPermiso(handle) {
   const options = { mode: 'read' };
   if ((await handle.queryPermission(options)) === 'granted') return true;
+  // Si no hay permiso, el navegador sacará un popup preguntando gracias a esto:
   if ((await handle.requestPermission(options)) === 'granted') return true;
   return false;
 }
 
-const parseNum = (val) => {
-  if (!val) return 0;
-  if (typeof val === 'number') return val;
-  const cleaned = parseFloat(val.toString().replace(/[^\d.-]/g, ''));
-  return isNaN(cleaned) ? 0 : cleaned;
-};
-
-// Conversión robusta de fechas de Excel
-function parseDateObject(val) {
-  if (!val) return null;
-  if (val instanceof Date) return val;
-  if (typeof val === 'number') { return new Date(Math.round((val - 25569) * 86400 * 1000)); }
-  let parsed = new Date(val);
-  return isNaN(parsed) ? null : parsed;
+async function cargarJSONGuardado() {
+    if (!jsonFileHandle) return;
+    try {
+        // Pedimos permiso de lectura y escritura de una vez para que no moleste al guardar después
+        const options = { mode: 'readwrite' }; 
+        if ((await jsonFileHandle.queryPermission(options)) !== 'granted') {
+            if ((await jsonFileHandle.requestPermission(options)) !== 'granted') {
+                console.warn("Permiso denegado para auto-cargar el JSON.");
+                return;
+            }
+        }
+        const file = await jsonFileHandle.getFile();
+        const text = await file.text();
+        if (text) configGuardada = JSON.parse(text);
+    } catch(e) { console.error("Error leyendo JSON físico:", e); }
 }
 
-const parseDateString = (dateObj) => {
-  if (!dateObj) return '—';
-  return dateObj.toLocaleDateString('es-CR');
-};
-
-function calcularDias(fechaObj) {
-  if (!fechaObj) return 0;
-  let f = new Date(fechaObj);
-  f.setHours(0,0,0,0);
-  let h = new Date(HOY);
-  h.setHours(0,0,0,0);
-  return Math.ceil((f - h) / (1000 * 60 * 60 * 24));
+async function escribirJSONEnDisco() {
+    if (!jsonFileHandle) return;
+    try {
+        const options = { mode: 'readwrite' };
+        if ((await jsonFileHandle.queryPermission(options)) !== 'granted') {
+            if ((await jsonFileHandle.requestPermission(options)) !== 'granted') return;
+        }
+        const writable = await jsonFileHandle.createWritable();
+        await writable.write(JSON.stringify(configGuardada, null, 2));
+        await writable.close();
+    } catch(e) { console.error("Fallo al escribir el JSON físicamente:", e); }
 }
+
+const parseNum = (v) => { if (!v) return 0; if (typeof v === 'number') return v; const c = parseFloat(v.toString().replace(/[^\d.-]/g, '')); return isNaN(c) ? 0 : c; };
+function parseDateObject(v) { if (!v) return null; if (v instanceof Date) return v; if (typeof v === 'number') return new Date(Math.round((v - 25569) * 86400 * 1000)); let p = new Date(v); return isNaN(p) ? null : p; }
+const parseDateString = (d) => { if (!d) return '—'; return d.toLocaleDateString('es-CR'); };
+const dateToInputStr = (d) => { if(!d) return ''; const y = d.getFullYear(), m = String(d.getMonth() + 1).padStart(2, '0'), dd = String(d.getDate()).padStart(2, '0'); return `${y}-${m}-${dd}`; }
+function calcularDias(fObj) { if (!fObj) return 0; let f = new Date(fObj); f.setHours(0,0,0,0); let h = new Date(HOY); h.setHours(0,0,0,0); return Math.ceil((f - h) / (1000 * 60 * 60 * 24)); }
 
 async function cargarDatosDelExcel() {
   if (!fileHandle) return;
-  document.getElementById('statusText').innerText = "Analizando lógica de facturación...";
+  document.getElementById('statusText').innerText = "Solicitando permisos de seguridad...";
   tasaCambio = parseFloat(document.getElementById('inputTC').value) || 515;
   
   try {
-    const permiso = await verificarPermiso(fileHandle);
-    if (!permiso) return;
+    // 1. Pedir permiso para Excel
+    const pExcel = await verificarPermiso(fileHandle); 
+    if (!pExcel) {
+        document.getElementById('statusText').innerText = "Permiso denegado para acceder al Excel.";
+        return;
+    }
+
+    // 2. Cargar datos del JSON físico (pedirá permiso si aplica)
+    await cargarJSONGuardado();
+    
+    // Fallback: si por alguna razón no hay JSON vinculado o falló, usar caché del navegador
+    if (Object.keys(configGuardada).length === 0) {
+        const saved = await idbKeyval.get('contractEdits');
+        if (saved) configGuardada = saved;
+    }
+
+    // 3. Leer y procesar Excel
+    document.getElementById('statusText').innerText = "Analizando lógica y aplicando ajustes...";
     const file = await fileHandle.getFile();
     const arrayBuffer = await file.arrayBuffer();
     const workbook = XLSX.read(arrayBuffer, { type: 'array', cellDates: true });
-    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-    const jsonDatos = XLSX.utils.sheet_to_json(worksheet, { raw: false, range: 1, defval: "" });
+    const jsonDatos = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { raw: false, range: 1, defval: "" });
 
     DATA.all_contracts = jsonDatos.map(fila => {
-      const getExact = (keyName) => {
-        if (fila[keyName] !== undefined) return fila[keyName];
-        const cleanTarget = keyName.replace(/^\//, '').trim().toLowerCase();
-        for (let k of Object.keys(fila)) {
-            if (k.replace(/^\//, '').trim().toLowerCase() === cleanTarget) return fila[k];
-        }
-        return null;
-      };
+      const getExact = (key) => { if (fila[key] !== undefined) return fila[key]; const clean = key.replace(/^\//, '').trim().toLowerCase(); for (let k of Object.keys(fila)) { if (k.replace(/^\//, '').trim().toLowerCase() === clean) return fila[k]; } return null; };
 
-      const rawIni = parseDateObject(getExact('/Fecha de inicio'));
-      const rawExp = parseDateObject(getExact('/Fecha de expiración'));
+      const nombre = getExact('Nombre de contrato') || 'Desconocido';
+      let rawIni = parseDateObject(getExact('/Fecha de inicio'));
+      let rawExp = parseDateObject(getExact('/Fecha de expiración'));
+      let anual_usd = parseNum(getExact('/Monto Anual $'));
+      let anual_crc = parseNum(getExact('/Monto anual ₡'));
+      let frecuencia = getExact('/Facturación') || '—';
+      let mapeo_cliente = getExact('Mapeo del Cliente') || '';
+      let tipo_facturacion = 'mes', dia_facturacion = null, meses_custom = [];
+
+      const editado = configGuardada[nombre];
+      if (editado) {
+          if (editado.anual_usd !== undefined) anual_usd = editado.anual_usd;
+          if (editado.anual_crc !== undefined) anual_crc = editado.anual_crc;
+          if (editado.frecuencia !== undefined) frecuencia = editado.frecuencia;
+          if (editado.tipo_facturacion !== undefined) tipo_facturacion = editado.tipo_facturacion;
+          if (editado.dia_facturacion !== undefined) dia_facturacion = editado.dia_facturacion;
+          if (editado.meses_custom !== undefined) meses_custom = editado.meses_custom;
+          if (editado.mapeo_cliente !== undefined) mapeo_cliente = editado.mapeo_cliente;
+          if (editado.inicio_obj) rawIni = new Date(editado.inicio_obj);
+          if (editado.expiracion_obj) rawExp = new Date(editado.expiracion_obj);
+      }
 
       return {
-        nombre: getExact('Nombre de contrato') || 'Desconocido',
-        modalidad: getExact('Modalidad') || '—',
-        frecuencia: getExact('/Facturación') || '—',
-        iva: getExact('/IVA') || '—',
-        anual_usd: parseNum(getExact('/Monto Anual $')),
-        anual_crc: parseNum(getExact('/Monto anual ₡')),
-        inicio_obj: rawIni,
-        expiracion_obj: rawExp,
-        inicio: parseDateString(rawIni),
-        expiracion: parseDateString(rawExp),
-        dias: getExact('/Días restantes para renovar') !== null ? parseInt(parseNum(getExact('/Días restantes para renovar'))) : calcularDias(rawExp)
+        nombre: nombre, modalidad: getExact('Modalidad') || '—', frecuencia: frecuencia, iva: getExact('/IVA') || '—',
+        anual_usd: anual_usd, anual_crc: anual_crc, inicio_obj: rawIni, expiracion_obj: rawExp,
+        inicio: parseDateString(rawIni), expiracion: parseDateString(rawExp), mapeo_cliente: mapeo_cliente,
+        dias: getExact('/Días restantes para renovar') !== null && !editado ? parseInt(parseNum(getExact('/Días restantes para renovar'))) : calcularDias(rawExp),
+        tipo_facturacion: tipo_facturacion, dia_facturacion: dia_facturacion, meses_custom: meses_custom
       };
     });
 
     procesarLogicaInteligente();
-    
-    const hora = new Date().toLocaleTimeString();
-    document.getElementById('btnSync').innerText = "Actualizar Datos";
-    document.getElementById('statusText').innerText = `Cálculo exitoso: ${hora}`;
-    
-  } catch (error) {
-    console.error("Error interpretando Excel:", error);
-    document.getElementById('statusText').innerText = "Error leyendo formato del Excel.";
-  }
+    document.getElementById('btnExport').style.display = 'flex';
+    document.getElementById('btnSync').innerText = "↻ Refrescar Datos";
+    document.getElementById('statusText').innerText = `Carga exitosa con ajustes aplicados: ${new Date().toLocaleTimeString()}`;
+  } catch (error) { console.error("Error interpretando Excel:", error); document.getElementById('statusText').innerText = "Error leyendo formato del Excel."; }
 }
 
-// ──────────────────────────────────────────────────────────────
-// LÓGICA INTELIGENTE DE FACTURACIÓN
-// ──────────────────────────────────────────────────────────────
-function determinaFacturacion(inicio, mesObjetivo, anioObjetivo, frecuencia) {
-  if (!inicio || isNaN(inicio)) {
-    // Si no hay fecha inicio, asumimos que factura según la frecuencia base si es mensual.
-    return (frecuencia || '').toUpperCase().includes('MENSUAL');
-  }
-  
-  // Meses transcurridos desde el inicio del contrato hasta el mes objetivo
-  const mesesDiferencia = (anioObjetivo - inicio.getFullYear()) * 12 + (mesObjetivo - inicio.getMonth());
-  if (mesesDiferencia < 0) return false; // El contrato no ha iniciado
+function exportarExcel() {
+  if (!DATA.all_contracts || DATA.all_contracts.length === 0) return;
+  const datosParaExportar = DATA.all_contracts.map(c => ({
+      'Nombre de contrato': c.nombre, 'Modalidad': c.modalidad, '/Facturación': c.frecuencia,
+      '/Monto Anual $': c.anual_usd, '/Monto anual ₡': c.anual_crc, '/IVA': c.iva,
+      '/Fecha de inicio': c.inicio_obj ? c.inicio_obj : '', '/Fecha de expiración': c.expiracion_obj ? c.expiracion_obj : '',
+      '/Días restantes para renovar': c.dias, 'Mapeo del Cliente': c.mapeo_cliente || ''
+  }));
+  const worksheet = XLSX.utils.json_to_sheet(datosParaExportar);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Dashboard Contratos");
+  XLSX.writeFile(workbook, "Contratos_Actualizados_Dashboard.xlsx");
+}
 
-  const freq = (frecuencia || '').toUpperCase();
+function determinaFacturacion(c, mesObjetivo, anioObjetivo) {
+  if (c.tipo_facturacion && c.tipo_facturacion.includes('manual')) return c.meses_custom && c.meses_custom.includes(mesObjetivo);
+  const freq = (c.frecuencia || '').toUpperCase();
+  if (!c.inicio_obj || isNaN(c.inicio_obj)) return freq.includes('MENSUAL') && !freq.includes('BIMENSUAL');
+  const mesesDiferencia = (anioObjetivo - c.inicio_obj.getFullYear()) * 12 + (mesObjetivo - c.inicio_obj.getMonth());
+  if (mesesDiferencia < 0) return false; 
   if (freq.includes('MENSUAL')) return true;
+  if (freq.includes('BIMENSUAL')) return mesesDiferencia % 2 === 0;
   if (freq.includes('TRIMESTRAL')) return mesesDiferencia % 3 === 0;
+  if (freq.includes('CUATRIMESTRAL')) return mesesDiferencia % 4 === 0;
   if (freq.includes('SEMESTRAL')) return mesesDiferencia % 6 === 0;
   if (freq.includes('ANUAL')) return mesesDiferencia % 12 === 0;
-  
   return false;
 }
 
-function fraccionarMonto(montoAnual, frecuencia) {
+function fraccionarMonto(c, montoAnual) {
   if (!montoAnual) return 0;
-  const freq = (frecuencia || '').toUpperCase();
-  if (freq.includes('MENSUAL')) return montoAnual / 12;
+  const freq = (c.frecuencia || '').toUpperCase();
+  if (freq.includes('BIMENSUAL') || freq.includes('BIMESTRAL')) return montoAnual / 6; 
+  if (freq.includes('MENSUAL') && !freq.includes('BIMENSUAL')) return montoAnual / 12; 
+  if (freq.includes('CUATRIMESTRAL')) return montoAnual / 3;
   if (freq.includes('TRIMESTRAL')) return montoAnual / 4;
   if (freq.includes('SEMESTRAL')) return montoAnual / 2;
-  if (freq.includes('ANUAL')) return montoAnual;
-  return 0; // Por defecto si no coincide no fracciona
+  if (freq.includes('ANUAL') && !freq.includes('SEMESTRAL')) return montoAnual; 
+  if (c.tipo_facturacion && c.tipo_facturacion.includes('manual')) {
+      let count = (c.meses_custom && c.meses_custom.length > 0) ? c.meses_custom.length : 0;
+      return count > 0 ? montoAnual / count : 0;
+  }
+  return 0; 
 }
 
 function procesarLogicaInteligente() {
   DATA.renew_contracts = DATA.all_contracts.filter(c => c.dias >= 0 && c.dias <= 90);
-  DATA.current_month_billing = [];
-  
-  DATA.projection_usd = Array(12).fill(0);
-  DATA.projection_crc = Array(12).fill(0);
-
+  DATA.projection_usd = Array(12).fill(0); DATA.projection_crc = Array(12).fill(0); DATA.billing_by_month = Array.from({length: 12}, () => []);
   DATA.all_contracts.forEach(c => {
-    // 1. Evaluar mes actual
-    let facturaEsteMes = determinaFacturacion(c.inicio_obj, MES_ACTUAL, ANIO_ACTUAL, c.frecuencia);
-    
-    // Solo cobrar si no ha vencido severamente o si la lógica de negocio lo permite (acá permitimos si dias > -30 por margen)
-    if (facturaEsteMes && c.dias > -30) {
-      c.cuota_usd_mes = fraccionarMonto(c.anual_usd, c.frecuencia);
-      c.cuota_crc_mes = fraccionarMonto(c.anual_crc, c.frecuencia);
-      DATA.current_month_billing.push(c);
-    }
-
-    // 2. Generar Proyección para todo el año actual (Mes 0 al 11)
+    c.cuota_usd_mes = fraccionarMonto(c, c.anual_usd); c.cuota_crc_mes = fraccionarMonto(c, c.anual_crc);
     for (let m = 0; m < 12; m++) {
-      let facturaEnMesM = determinaFacturacion(c.inicio_obj, m, ANIO_ACTUAL, c.frecuencia);
-      // Validar si para ese mes el contrato seguirá activo (aproximación rápida)
+      let facturaEnMesM = determinaFacturacion(c, m, ANIO_ACTUAL);
       let activoEnMes = true;
       if (c.expiracion_obj) {
-        let fechaEval = new Date(ANIO_ACTUAL, m, 1);
-        if (fechaEval > c.expiracion_obj) activoEnMes = false;
+        let fechaEval = new Date(ANIO_ACTUAL, m + 1, 0); 
+        if (Math.ceil((c.expiracion_obj - fechaEval) / (1000 * 60 * 60 * 24)) < -30) activoEnMes = false;
       }
-      
-      if (facturaEnMesM && activoEnMes) {
-        DATA.projection_usd[m] += fraccionarMonto(c.anual_usd, c.frecuencia);
-        DATA.projection_crc[m] += fraccionarMonto(c.anual_crc, c.frecuencia);
+      if (facturaEnMesM && activoEnMes && c.cuota_usd_mes + c.cuota_crc_mes >= 0) {
+        DATA.projection_usd[m] += c.cuota_usd_mes; DATA.projection_crc[m] += c.cuota_crc_mes; DATA.billing_by_month[m].push(c);
       }
     }
   });
-
+  DATA.current_month_billing = DATA.billing_by_month[MES_ACTUAL] || [];
   actualizarUI();
 }
+function recalcularFinanzas() { tasaCambio = parseFloat(document.getElementById('inputTC').value) || 515; if (DATA.all_contracts.length > 0) procesarLogicaInteligente(); }
 
-function recalcularFinanzas() {
-  tasaCambio = parseFloat(document.getElementById('inputTC').value) || 515;
-  if (DATA.all_contracts.length > 0) {
-    procesarLogicaInteligente();
+// ──────────────────────────────────────────────────────────────
+// MODAL DE DETALLE Y GUARDADO DE CONFIGURACIÓN
+// ──────────────────────────────────────────────────────────────
+function mostrarDetalleContrato(c) {
+  contratoEnEdicion = c; toggleEditMode(false); document.getElementById('chkEditMode').checked = false;
+  document.getElementById('mdlNombre').innerText = c.nombre;
+  document.getElementById('mdlBadges').innerHTML = `${freqBadge(c.frecuencia)} <span class="badge badge-gray">${c.modalidad}</span>`;
+  document.getElementById('mdlAnualUsd').innerText = c.anual_usd > 0 ? fmtUSD(c.anual_usd) : '—'; document.getElementById('mdlAnualCrc').innerText = c.anual_crc > 0 ? fmtCRC(c.anual_crc) : '—';
+  document.getElementById('mdlFrecuencia_view').innerText = c.frecuencia || 'No Definido';
+  
+  if (c.tipo_facturacion === 'mes') document.getElementById('mdlTipoFact_view').innerText = 'Automático - Mes General';
+  else if (c.tipo_facturacion === 'dia') document.getElementById('mdlTipoFact_view').innerText = 'Automático - Día Específico';
+  else if (c.tipo_facturacion === 'manual_mes') document.getElementById('mdlTipoFact_view').innerText = 'Personalizado - Elegir Meses';
+  else if (c.tipo_facturacion === 'manual_dia') document.getElementById('mdlTipoFact_view').innerText = 'Personalizado - Meses y Día';
+
+  if (c.tipo_facturacion.includes('dia') && c.dia_facturacion) document.getElementById('mdlDiaFact_view').innerText = `Día ${c.dia_facturacion} del mes`;
+  
+  if (c.tipo_facturacion.includes('manual')) {
+      document.getElementById('boxMesesCustom').style.display = 'block';
+      document.getElementById('mdlMesesCustom_view').innerText = (c.meses_custom && c.meses_custom.length > 0) ? c.meses_custom.map(idx => MESES[idx].substring(0,3).toUpperCase()).join(', ') : 'Ningún mes seleccionado';
+  } else { document.getElementById('boxMesesCustom').style.display = 'none'; }
+
+  document.getElementById('mdlCuotaUsd').innerText = c.cuota_usd_mes > 0 ? fmtUSD(c.cuota_usd_mes) : '—'; document.getElementById('mdlCuotaCrc').innerText = c.cuota_crc_mes > 0 ? fmtCRC(c.cuota_crc_mes) : '—';
+  const freqLabel = c.frecuencia ? `(Cálculo Base: ${c.frecuencia})` : ''; document.getElementById('mdlFrecuenciaLabelUsd').innerText = freqLabel; document.getElementById('mdlFrecuenciaLabelCrc').innerText = freqLabel;
+  document.getElementById('mdlInicio').innerText = c.inicio; document.getElementById('mdlFin').innerText = c.expiracion; document.getElementById('mdlDias').innerHTML = daysBadge(c.dias); document.getElementById('mdlIva').innerHTML = ivaBadge(c.iva);
+
+  // Mapeo del Cliente
+  document.getElementById('mdlMapeo_view').innerText = c.mapeo_cliente || 'No hay notas o mapeo registrado.';
+  document.getElementById('mdlMapeo_edit').value = c.mapeo_cliente || '';
+
+  // EDIT MODE
+  document.getElementById('mdlAnualUsd_edit').value = c.anual_usd || 0; document.getElementById('mdlAnualCrc_edit').value = c.anual_crc || 0;
+  let matchFreq = Array.from(document.getElementById('mdlFrecuencia_edit').options).some(o => o.value === (c.frecuencia||'').toUpperCase());
+  document.getElementById('mdlFrecuencia_edit').value = matchFreq ? (c.frecuencia||'').toUpperCase() : 'PERSONALIZADA';
+  document.getElementById('mdlTipoFact_edit').value = c.tipo_facturacion || 'mes'; document.getElementById('mdlDiaFact_edit').value = c.dia_facturacion || '';
+  document.querySelectorAll('.chk-mes').forEach(chk => { chk.checked = c.meses_custom ? c.meses_custom.includes(parseInt(chk.value)) : false; });
+  document.getElementById('mdlInicio_edit').value = dateToInputStr(c.inicio_obj); document.getElementById('mdlFin_edit').value = dateToInputStr(c.expiracion_obj);
+  document.getElementById('modalDetalleContrato').classList.add('active');
+}
+function cerrarDetalleContrato() { document.getElementById('modalDetalleContrato').classList.remove('active'); contratoEnEdicion = null; }
+function toggleFormatoFact() { const val = document.getElementById('mdlTipoFact_edit').value; document.getElementById('boxDiaFacturacion').style.display = val.includes('dia') ? 'block' : 'none'; document.getElementById('boxMesesCustom').style.display = val.includes('manual') ? 'block' : 'none'; }
+function toggleEditMode(isEdit) {
+  const modalBox = document.getElementById('modalContentBox');
+  if (isEdit) { modalBox.classList.add('is-editing'); toggleFormatoFact(); document.getElementById('boxCuotaUsd').style.display = 'none'; document.getElementById('boxCuotaCrc').style.display = 'none'; } 
+  else { modalBox.classList.remove('is-editing'); document.getElementById('boxCuotaUsd').style.display = 'block'; document.getElementById('boxCuotaCrc').style.display = 'block'; if (contratoEnEdicion) { document.getElementById('boxDiaFacturacion').style.display = contratoEnEdicion.tipo_facturacion.includes('dia') ? 'block' : 'none'; document.getElementById('boxMesesCustom').style.display = contratoEnEdicion.tipo_facturacion.includes('manual') ? 'block' : 'none'; } }
+}
+
+async function guardarCambiosContrato() {
+  if(!contratoEnEdicion) return;
+  contratoEnEdicion.anual_usd = parseFloat(document.getElementById('mdlAnualUsd_edit').value) || 0; contratoEnEdicion.anual_crc = parseFloat(document.getElementById('mdlAnualCrc_edit').value) || 0;
+  contratoEnEdicion.frecuencia = document.getElementById('mdlFrecuencia_edit').value; contratoEnEdicion.tipo_facturacion = document.getElementById('mdlTipoFact_edit').value;
+  contratoEnEdicion.mapeo_cliente = document.getElementById('mdlMapeo_edit').value;
+  
+  if (contratoEnEdicion.tipo_facturacion.includes('manual')) {
+      let seleccionados = []; document.querySelectorAll('.chk-mes:checked').forEach(chk => seleccionados.push(parseInt(chk.value))); contratoEnEdicion.meses_custom = seleccionados;
   }
+  let diaInput = parseInt(document.getElementById('mdlDiaFact_edit').value);
+  if (contratoEnEdicion.tipo_facturacion.includes('dia') && diaInput >= 1 && diaInput <= 31) contratoEnEdicion.dia_facturacion = diaInput;
+  else { contratoEnEdicion.dia_facturacion = null; if (contratoEnEdicion.tipo_facturacion === 'dia') contratoEnEdicion.tipo_facturacion = 'mes'; if (contratoEnEdicion.tipo_facturacion === 'manual_dia') contratoEnEdicion.tipo_facturacion = 'manual_mes'; }
+
+  const valInicio = document.getElementById('mdlInicio_edit').value; if (valInicio) { let [y,m,d] = valInicio.split('-'); contratoEnEdicion.inicio_obj = new Date(y, m-1, d); contratoEnEdicion.inicio = parseDateString(contratoEnEdicion.inicio_obj); }
+  const valFin = document.getElementById('mdlFin_edit').value; if (valFin) { let [y,m,d] = valFin.split('-'); contratoEnEdicion.expiracion_obj = new Date(y, m-1, d); contratoEnEdicion.expiracion = parseDateString(contratoEnEdicion.expiracion_obj); contratoEnEdicion.dias = calcularDias(contratoEnEdicion.expiracion_obj); }
+
+  configGuardada[contratoEnEdicion.nombre] = {
+      anual_usd: contratoEnEdicion.anual_usd, anual_crc: contratoEnEdicion.anual_crc, frecuencia: contratoEnEdicion.frecuencia,
+      tipo_facturacion: contratoEnEdicion.tipo_facturacion, dia_facturacion: contratoEnEdicion.dia_facturacion, meses_custom: contratoEnEdicion.meses_custom,
+      mapeo_cliente: contratoEnEdicion.mapeo_cliente,
+      inicio_obj: contratoEnEdicion.inicio_obj ? contratoEnEdicion.inicio_obj.getTime() : null, expiracion_obj: contratoEnEdicion.expiracion_obj ? contratoEnEdicion.expiracion_obj.getTime() : null
+  };
+  
+  await idbKeyval.set('contractEdits', configGuardada);
+  await escribirJSONEnDisco();
+
+  procesarLogicaInteligente(); mostrarDetalleContrato(contratoEnEdicion); 
 }
 
 // ──────────────────────────────────────────────────────────────
 // RENDERIZADO DE INTERFAZ Y GRÁFICOS
 // ──────────────────────────────────────────────────────────────
 function actualizarUI() {
-  let totalUsd = 0, totalCrc = 0, expirados = 0;
-  let mesUsd = 0, mesCrc = 0;
-
-  DATA.all_contracts.forEach(c => {
-    totalUsd += c.anual_usd; totalCrc += c.anual_crc;
-    if (c.dias < 0) expirados++;
-  });
-
-  DATA.current_month_billing.forEach(c => {
-    mesUsd += c.cuota_usd_mes; mesCrc += c.cuota_crc_mes;
-  });
-
+  let totalUsd = 0, totalCrc = 0, expirados = 0, mesActualUsd = 0, mesActualCrc = 0;
+  DATA.all_contracts.forEach(c => { totalUsd += c.anual_usd; totalCrc += c.anual_crc; if (c.dias < 0) expirados++; });
+  DATA.current_month_billing.forEach(c => { mesActualUsd += c.cuota_usd_mes; mesActualCrc += c.cuota_crc_mes; });
   let consolidadoUsd = totalUsd + (totalCrc / tasaCambio);
 
-  // General KPIs
-  document.getElementById('kpiTotalUsd').innerText = fmtUSD(totalUsd);
-  document.getElementById('kpiTotalCrc').innerText = fmtCRC(totalCrc);
-  document.getElementById('kpiConsolidadoUsd').innerText = `Consolidado: ${fmtUSD(consolidadoUsd)} (TC: ₡${tasaCambio})`;
-  document.getElementById('kpiTotalContratos').innerText = `${DATA.all_contracts.length} contratos activos`;
-  document.getElementById('kpiActivos').innerText = DATA.all_contracts.length;
-  document.getElementById('kpiRenovar').innerText = DATA.renew_contracts.length;
-  document.getElementById('kpiExpirados').innerText = expirados;
-  
-  // Current Month KPIs
-  document.getElementById('kpiMesUsd').innerText = fmtUSD(mesUsd);
-  document.getElementById('kpiMesCrc').innerText = fmtCRC(mesCrc);
+  document.getElementById('kpiTotalUsd').innerText = fmtUSD(totalUsd); document.getElementById('kpiTotalCrc').innerText = fmtCRC(totalCrc); document.getElementById('kpiConsolidadoUsd').innerText = `Consolidado: ${fmtUSD(consolidadoUsd)} (TC: ₡${tasaCambio})`;
+  document.getElementById('kpiTotalContratos').innerText = `${DATA.all_contracts.length} contratos activos`; document.getElementById('kpiActivos').innerText = DATA.all_contracts.length; document.getElementById('kpiRenovar').innerText = DATA.renew_contracts.length; document.getElementById('kpiExpirados').innerText = expirados;
+  document.getElementById('kpiMesUsd').innerText = fmtUSD(mesActualUsd); document.getElementById('kpiMesCrc').innerText = fmtCRC(mesActualCrc);
 
-  limpiarDashboard();
-  initCharts();
-  buildMes();
-  buildAll();
-  buildRenew();
+  document.getElementById('tbodyAll').innerHTML = ''; document.getElementById('tbodyRenovar').innerHTML = ''; document.getElementById('tbodyMes').innerHTML = ''; for (let id in Chart.instances) Chart.instances[id].destroy();
+  initCharts(); updateMesTable(); buildAll(); buildRenew();
 }
 
 function fmtUSD(v) { if(v>=1e6) return '$'+(v/1e6).toFixed(2)+'M'; if(v>=1e3) return '$'+v.toLocaleString('es-CR',{maximumFractionDigits:0}); return '$'+v.toFixed(2); }
 function fmtCRC(v) { if(v>=1e6) return '₡'+(v/1e6).toFixed(2)+'M'; if(v>=1e3) return '₡'+v.toLocaleString('es-CR',{maximumFractionDigits:0}); return '₡'+v.toFixed(0); }
 function ivaBadge(iva) { if(!iva) return `<span class="badge badge-gray">—</span>`; if(iva.toUpperCase().includes('INCLUIR')) return `<span class="badge badge-amber">IVA 13%</span>`; if(iva.toUpperCase().includes('EXONERADO')) return `<span class="badge badge-green">Exonerado</span>`; return `<span class="badge badge-gray">${iva}</span>`; }
-function freqBadge(f) { if(!f) return `<span class="badge badge-gray">—</span>`; const t=f.toUpperCase(); if(t.includes('MENSUAL')) return `<span class="badge badge-cyan">${f}</span>`; if(t.includes('TRIMESTRAL')) return `<span class="badge badge-purple">${f}</span>`; if(t.includes('SEMESTRAL')) return `<span class="badge badge-amber">${f}</span>`; return `<span class="badge badge-red">${f}</span>`; }
+function freqBadge(f) { if(!f) return `<span class="badge badge-gray">—</span>`; const t=f.toUpperCase(); if(t.includes('BIMENSUAL') || t.includes('BIMESTRAL')) return `<span class="badge badge-green">${f}</span>`; if(t.includes('MENSUAL')) return `<span class="badge badge-cyan">${f}</span>`; if(t.includes('CUATRIMESTRAL')) return `<span class="badge badge-amber">${f}</span>`; if(t.includes('TRIMESTRAL')) return `<span class="badge badge-purple">${f}</span>`; if(t.includes('SEMESTRAL')) return `<span class="badge badge-amber">${f}</span>`; return `<span class="badge badge-red">${f}</span>`; }
 function daysBadge(d) { if(d<0) return `<span class="badge badge-red">VENCIDO</span>`; if(d<30) return `<span style="color:var(--danger);font-weight:700">${d}</span>`; if(d<90) return `<span style="color:var(--accent3);font-weight:700">${d}</span>`; return `<span style="color:var(--accent4)">${d}</span>`; }
 
-function switchTab(id) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  event.target.classList.add('active');
-}
-
+function switchTab(id) { document.querySelectorAll('.panel').forEach(p => p.classList.remove('active')); document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-' + id).classList.add('active'); event.target.classList.add('active'); }
 function filterTable(tableId, query) { const q = query.toLowerCase(); document.querySelectorAll(`#${tableId} tbody tr`).forEach(tr => { tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none'; }); }
-function limpiarDashboard() { document.getElementById('tbodyAll').innerHTML = ''; document.getElementById('tbodyRenovar').innerHTML = ''; document.getElementById('tbodyMes').innerHTML = ''; for (let id in Chart.instances) Chart.instances[id].destroy(); }
 
 function initCharts() {
   if (DATA.all_contracts.length === 0) return;
-  
-  // Gráficos Generales
   let freqCounts = {}, modCounts = { '24x7': 0, '8x5 / Otras': 0 };
-  DATA.all_contracts.forEach(c => {
-    freqCounts[c.frecuencia] = (freqCounts[c.frecuencia] || 0) + 1;
-    if (c.modalidad && c.modalidad.includes('24x7')) modCounts['24x7']++; else modCounts['8x5 / Otras']++;
-  });
-
+  DATA.all_contracts.forEach(c => { freqCounts[c.frecuencia] = (freqCounts[c.frecuencia] || 0) + 1; if (c.modalidad && c.modalidad.includes('24x7')) modCounts['24x7']++; else modCounts['8x5 / Otras']++; });
   new Chart(document.getElementById('chartFreq'), { type: 'doughnut', data: { labels: Object.keys(freqCounts), datasets: [{ data: Object.values(freqCounts), backgroundColor: COLORS, borderWidth: 0 }] }, options: { cutout: '68%', plugins: { legend: { position: 'right' } } } });
-  
   const top = [...DATA.all_contracts].sort((a,b) => b.anual_usd - a.anual_usd).slice(0, 8);
   new Chart(document.getElementById('chartTop'), { type: 'bar', data: { labels: top.map(c => c.nombre.substring(0,20)), datasets: [{ data: top.map(c => c.anual_usd), backgroundColor: 'rgba(0,229,255,0.25)', borderColor: '#00e5ff', borderWidth: 1.5, borderRadius: 6 }] }, options: { indexAxis: 'y', plugins: { legend: { display: false } } } });
-
   new Chart(document.getElementById('chartModalidad'), { type: 'pie', data: { labels: Object.keys(modCounts), datasets: [{ data: Object.values(modCounts), backgroundColor: ['#00e5ff', '#7c3aed'], borderWidth: 0 }] } });
-  
-  // Gráficos de Proyección y Flujo
-  new Chart(document.getElementById('chartProyeccionMensual'), { 
-    type: 'bar', 
-    data: { 
-      labels: MESES.map(m=>m.substring(0,3)), 
-      datasets: [
-        { label: 'Facturación USD', data: DATA.projection_usd, backgroundColor: '#00e5ff', borderRadius: 4, yAxisID: 'y' },
-        { label: 'Facturación CRC', data: DATA.projection_crc, backgroundColor: '#7c3aed', borderRadius: 4, yAxisID: 'y1' }
-      ] 
-    }, 
-    options: { 
-      responsive: true, maintainAspectRatio: false,
-      scales: { 
-        y: { type: 'linear', position: 'left', grid: { color: 'rgba(255,255,255,0.05)' } },
-        y1: { type: 'linear', position: 'right', grid: { drawOnChartArea: false } }
-      } 
-    } 
-  });
-
-  // Calcular flujo acumulado convertido a USD
-  let acumuladoData = [];
-  let sum = 0;
-  for(let i=0; i<12; i++) {
-    sum += DATA.projection_usd[i] + (DATA.projection_crc[i] / tasaCambio);
-    acumuladoData.push(sum);
-  }
-
-  new Chart(document.getElementById('chartFlujoAcumulado'), { 
-    type: 'line', 
-    data: { 
-      labels: MESES.map(m=>m.substring(0,3)), 
-      datasets: [{ label: 'Ingreso Acumulado (Eq. USD)', data: acumuladoData, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#10b981' }] 
-    }, 
-    options: { responsive: true, maintainAspectRatio: false, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } } } } 
-  });
+  new Chart(document.getElementById('chartProyeccionMensual'), { type: 'bar', data: { labels: MESES.map(m=>m.substring(0,3)), datasets: [{ label: 'Facturación USD', data: DATA.projection_usd, backgroundColor: '#00e5ff', borderRadius: 4, yAxisID: 'y' }, { label: 'Facturación CRC', data: DATA.projection_crc, backgroundColor: '#7c3aed', borderRadius: 4, yAxisID: 'y1' }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { type: 'linear', position: 'left', grid: { color: 'rgba(255,255,255,0.05)' } }, y1: { type: 'linear', position: 'right', grid: { drawOnChartArea: false } } } } });
+  let acumuladoData = [], sum = 0; for(let i=0; i<12; i++) { sum += DATA.projection_usd[i] + (DATA.projection_crc[i] / tasaCambio); acumuladoData.push(sum); }
+  new Chart(document.getElementById('chartFlujoAcumulado'), { type: 'line', data: { labels: MESES.map(m=>m.substring(0,3)), datasets: [{ label: 'Ingreso Acumulado (Eq. USD)', data: acumuladoData, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#10b981' }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } } } } });
 }
 
-function buildMes() {
-  const tbody = document.getElementById('tbodyMes');
-  DATA.current_month_billing.forEach(c => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td class="name-cell" title="${c.nombre}">${c.nombre}</td><td>${freqBadge(c.frecuencia)}</td><td><span class="badge badge-outline">Aplicable</span></td><td><span class="badge badge-gray">${c.modalidad}</span></td><td class="num" style="color:var(--accent); font-weight:700">${c.cuota_usd_mes>0?fmtUSD(c.cuota_usd_mes):'—'}</td><td class="num" style="color:#a78bfa; font-weight:700">${c.cuota_crc_mes>0?fmtCRC(c.cuota_crc_mes):'—'}</td><td>${c.expiracion}</td>`;
-    tbody.appendChild(tr);
+function updateMesTable() {
+  const mIdx = parseInt(document.getElementById('monthSelector').value); const tbody = document.getElementById('tbodyMes'); tbody.innerHTML = ''; const dataDelMes = DATA.billing_by_month[mIdx] || []; let sumaMesUsd = 0, sumaMesCrc = 0;
+  dataDelMes.forEach(c => {
+    sumaMesUsd += c.cuota_usd_mes; sumaMesCrc += c.cuota_crc_mes; const tr = document.createElement('tr'); tr.className = "clickable"; tr.onclick = () => mostrarDetalleContrato(c); 
+    let estadoBadge = `<span class="badge badge-outline">Factura en ${MESES[mIdx].substring(0,3)}</span>`; if (c.tipo_facturacion.includes('dia') && c.dia_facturacion) estadoBadge = `<span class="badge badge-cyan">Día ${c.dia_facturacion} (${MESES[mIdx].substring(0,3)})</span>`;
+    tr.innerHTML = `<td class="name-cell" title="${c.nombre}">${c.nombre}</td><td>${freqBadge(c.frecuencia)}</td><td>${estadoBadge}</td><td><span class="badge badge-gray">${c.modalidad}</span></td><td class="num" style="color:var(--accent); font-weight:700">${c.cuota_usd_mes>0?fmtUSD(c.cuota_usd_mes):'—'}</td><td class="num" style="color:#a78bfa; font-weight:700">${c.cuota_crc_mes>0?fmtCRC(c.cuota_crc_mes):'—'}</td><td>${c.expiracion}</td>`; tbody.appendChild(tr);
   });
+  if(dataDelMes.length > 0) { document.getElementById('resumenMesSeleccionado').style.display = 'flex'; document.getElementById('resumenMesUsd').innerText = `Total USD: ${fmtUSD(sumaMesUsd)}`; document.getElementById('resumenMesCrc').innerText = `Total ₡: ${fmtCRC(sumaMesCrc)}`; } else { document.getElementById('resumenMesSeleccionado').style.display = 'none'; }
 }
 
-function buildAll() {
-  const tbody = document.getElementById('tbodyAll');
-  DATA.all_contracts.forEach(c => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td class="name-cell" title="${c.nombre}">${c.nombre}</td><td><span class="badge badge-gray">${c.modalidad}</span></td><td>${freqBadge(c.frecuencia)}</td><td>${ivaBadge(c.iva)}</td><td class="num">${c.anual_usd>0?fmtUSD(c.anual_usd):'—'}</td><td class="num">${c.anual_crc>0?fmtCRC(c.anual_crc):'—'}</td><td>${c.inicio}</td><td>${c.expiracion}</td><td class="num">${daysBadge(c.dias)}</td>`;
-    tbody.appendChild(tr);
-  });
-}
-
+function buildAll() { const tbody = document.getElementById('tbodyAll'); DATA.all_contracts.forEach(c => { const tr = document.createElement('tr'); tr.className = "clickable"; tr.onclick = () => mostrarDetalleContrato(c); tr.innerHTML = `<td class="name-cell" title="${c.nombre}">${c.nombre}</td><td><span class="badge badge-gray">${c.modalidad}</span></td><td>${freqBadge(c.frecuencia)}</td><td>${ivaBadge(c.iva)}</td><td class="num">${c.anual_usd>0?fmtUSD(c.anual_usd):'—'}</td><td class="num">${c.anual_crc>0?fmtCRC(c.anual_crc):'—'}</td><td>${c.inicio}</td><td>${c.expiracion}</td><td class="num">${daysBadge(c.dias)}</td>`; tbody.appendChild(tr); }); }
 function buildRenew() {
-  const tbody = document.getElementById('tbodyRenovar');
-  let urgent = 0, validDays = DATA.renew_contracts.filter(c => c.dias >= 0);
-  const avg = validDays.length ? Math.round(validDays.reduce((s,c)=>s+c.dias,0)/validDays.length) : 0;
+  const tbody = document.getElementById('tbodyRenovar'); let urgent = 0, validDays = DATA.renew_contracts.filter(c => c.dias >= 0); const avg = validDays.length ? Math.round(validDays.reduce((s,c)=>s+c.dias,0)/validDays.length) : 0;
   DATA.renew_contracts.forEach(c => {
-    if (c.dias < 30) urgent++;
-    const pct = Math.min(100, Math.max(0, (90 - c.dias) / 90 * 100));
-    const barColor = c.dias < 0 ? '#ef4444' : c.dias < 30 ? '#ef4444' : c.dias < 60 ? '#f59e0b' : '#10b981';
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td class="name-cell" title="${c.nombre}">${c.nombre}</td><td>${freqBadge(c.frecuencia)}</td><td class="num">${c.anual_usd>0?fmtUSD(c.anual_usd):'—'}</td><td class="num">${c.anual_crc>0?fmtCRC(c.anual_crc):'—'}</td><td>${c.expiracion}</td><td><div class="urgency-bar"><div class="urgency-track"><div class="urgency-fill" style="width:${pct}%;background:${barColor}"></div></div></div></td><td class="num">${daysBadge(c.dias)}</td>`;
-    tbody.appendChild(tr);
+    if (c.dias < 30) urgent++; const pct = Math.min(100, Math.max(0, (90 - c.dias) / 90 * 100)); const barColor = c.dias < 0 ? '#ef4444' : c.dias < 30 ? '#ef4444' : c.dias < 60 ? '#f59e0b' : '#10b981';
+    const tr = document.createElement('tr'); tr.className = "clickable"; tr.onclick = () => mostrarDetalleContrato(c); tr.innerHTML = `<td class="name-cell" title="${c.nombre}">${c.nombre}</td><td>${freqBadge(c.frecuencia)}</td><td class="num">${c.anual_usd>0?fmtUSD(c.anual_usd):'—'}</td><td class="num">${c.anual_crc>0?fmtCRC(c.anual_crc):'—'}</td><td>${c.expiracion}</td><td><div class="urgency-bar"><div class="urgency-track"><div class="urgency-fill" style="width:${pct}%;background:${barColor}"></div></div></div></td><td class="num">${daysBadge(c.dias)}</td>`; tbody.appendChild(tr);
   });
-  document.getElementById('urgentCount').textContent = urgent;
-  document.getElementById('avgDays').textContent = avg + 'd';
-  document.getElementById('renovarTotal').textContent = DATA.renew_contracts.length;
+  document.getElementById('urgentCount').textContent = urgent; document.getElementById('avgDays').textContent = avg + 'd'; document.getElementById('renovarTotal').textContent = DATA.renew_contracts.length;
 }
 
-window.addEventListener('load', verificarArchivoGuardado);
 </script>
-
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(registration => console.log('PWA Lista y registrada'))
-        .catch(error => console.log('Error en PWA:', error));
-    });
-  }
-</script>
-
 </body>
-
 </html>
