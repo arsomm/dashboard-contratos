@@ -191,6 +191,15 @@
   .equipos-table th { padding: 8px; text-align: left; font-size: 10px; color: var(--muted); border-bottom: 1px solid var(--border); font-family: var(--mono); }
   .equipos-table td { padding: 8px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text); }
   .equipos-table input.modal-input { padding: 6px 8px; font-size: 12px; }
+
+  /* ======= NUEVOS ESTILOS PARA LA TABLA DESPLEGABLE DE ESPECIFICACIONES ======= */
+  .specs-wrapper { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-top: 12px; display: none; overflow-x: auto; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+  .specs-wrapper.active { display: block; }
+  .specs-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+  .specs-table th { background: var(--border); color: var(--text); padding: 8px 10px; font-size: 10px; font-weight: 700; text-transform: uppercase; text-align: left; font-family: var(--mono); letter-spacing: 0.5px; }
+  .specs-table td { padding: 8px 10px; font-size: 11.5px; font-family: var(--mono); color: var(--muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+  .btn-toggle-specs { width: 100%; margin-top: 8px; background: var(--surface2); border: 1px dashed var(--accent); color: var(--accent); padding: 10px; border-radius: 8px; font-weight: 700; font-family: var(--mono); font-size: 12px; cursor: pointer; transition: 0.2s; }
+  .btn-toggle-specs:hover { background: rgba(2,132,199,0.05); }
 </style>
 </head>
 <body>
@@ -494,7 +503,17 @@
                 </tr>
             </tbody>
         </table>
-      </div>
+
+        <button id="btnToggleSpecs" class="btn-toggle-specs view-mode" style="display:none;" onclick="toggleSpecsBox()">
+          📋 Ver Especificaciones Detalladas (Hoja EQUIPOS)
+        </button>
+        <div id="boxSpecs" class="specs-wrapper view-mode">
+            <table class="specs-table">
+                <thead id="specsHead"></thead>
+                <tbody id="specsBody"></tbody>
+            </table>
+        </div>
+        </div>
       <div class="modal-section-title">Datos Financieros (Anual Base)</div>
       <div class="modal-field highlight"><div class="modal-field-label">Monto Anual USD</div><div class="modal-field-value view-mode" id="mdlAnualUsd">$0.00</div><input type="number" class="modal-input edit-mode" id="mdlAnualUsd_edit" step="0.01"></div>
       <div class="modal-field highlight-crc"><div class="modal-field-label">Monto Anual CRC</div><div class="modal-field-value view-mode" id="mdlAnualCrc">₡0.00</div><input type="number" class="modal-input edit-mode" id="mdlAnualCrc_edit" step="0.01"></div>
@@ -587,9 +606,9 @@ let configGuardada = {};
 
 /**
  * DATA: Objeto global reactivo (store) central.
- * === NUEVO: EN PROCESO - Se agregó 'en_proceso_contracts' a la matriz ===
+ * === NUEVO: Se agregó 'equipos_bd' para guardar los datos de la hoja EQUIPOS ===
  */
-const DATA = { all_contracts: [], renew_contracts: [], lost_contracts: [], en_proceso_contracts: [], billing_by_month: Array.from({length: 12}, () => []), current_month_billing: [], projection_usd: [], projection_crc: [] };
+const DATA = { all_contracts: [], renew_contracts: [], lost_contracts: [], en_proceso_contracts: [], equipos_bd: [], billing_by_month: Array.from({length: 12}, () => []), current_month_billing: [], projection_usd: [], projection_crc: [] };
 const COLORS = ['#00e5ff','#7c3aed','#f59e0b','#10b981','#ef4444','#f472b6','#a78bfa','#34d399'];
 Chart.defaults.color = '#6b7280'; Chart.defaults.font.family = "'JetBrains Mono', monospace"; Chart.defaults.font.size = 11;
 
@@ -727,7 +746,17 @@ async function cargarDatosDelExcel() {
     const file = await fileHandle.getFile();
     const arrayBuffer = await file.arrayBuffer();
     const workbook = XLSX.read(arrayBuffer, { type: 'array', cellDates: true });
+    
+    // ==== LECTURA PRINCIPAL DE CONTRATOS ====
     const jsonDatos = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { raw: false, range: 1, defval: "" });
+
+    // ==== LECTURA DE LA HOJA "EQUIPOS" (SI EXISTE) ====
+    const sheetNameEquipos = workbook.SheetNames.find(n => n.toUpperCase() === 'EQUIPOS');
+    if (sheetNameEquipos) {
+        DATA.equipos_bd = XLSX.utils.sheet_to_json(workbook.Sheets[sheetNameEquipos], { raw: false, defval: "" });
+    } else {
+        DATA.equipos_bd = [];
+    }
 
     DATA.all_contracts = jsonDatos.map(fila => {
       const getExact = (key) => { if (fila[key] !== undefined) return fila[key]; const clean = key.replace(/^\//, '').trim().toLowerCase(); for (let k of Object.keys(fila)) { if (k.replace(/^\//, '').trim().toLowerCase() === clean) return fila[k]; } return null; };
@@ -833,7 +862,6 @@ function exportarExcel() {
 }
 
 function determinaFacturacion(c, mesObjetivo, anioObjetivo) {
-  // === NUEVO: EN PROCESO - Los contratos perdidos o en proceso no se facturan ===
   if (c.estado && (c.estado.toUpperCase().includes('PERDIDO') || c.estado.toUpperCase().includes('PROCESO'))) return false;
   
   if (c.tipo_facturacion && c.tipo_facturacion.includes('manual')) return c.meses_custom && c.meses_custom.includes(mesObjetivo);
@@ -867,7 +895,6 @@ function fraccionarMonto(c, montoAnual) {
 }
 
 function procesarLogicaInteligente() {
-  // === NUEVO: EN PROCESO - Lógica de separación ===
   const contratosActivos = DATA.all_contracts.filter(c => !(c.estado || '').toUpperCase().includes('PERDIDO') && !(c.estado || '').toUpperCase().includes('PROCESO'));
   DATA.lost_contracts = DATA.all_contracts.filter(c => (c.estado || '').toUpperCase().includes('PERDIDO'));
   DATA.en_proceso_contracts = DATA.all_contracts.filter(c => (c.estado || '').toUpperCase().includes('PROCESO'));
@@ -904,11 +931,16 @@ function procesarLogicaInteligente() {
 }
 function recalcularFinanzas() { tasaCambio = parseFloat(document.getElementById('inputTC').value) || 515; if (DATA.all_contracts.length > 0) procesarLogicaInteligente(); }
 
+// FUNCIÓN PARA EL BOTÓN DESPLEGABLE
+function toggleSpecsBox() {
+    const box = document.getElementById('boxSpecs');
+    box.classList.toggle('active');
+}
+
 function mostrarDetalleContrato(c) {
   contratoEnEdicion = c; toggleEditMode(false); document.getElementById('chkEditMode').checked = false;
   document.getElementById('mdlNombre').innerText = c.nombre;
   
-  // === NUEVO: EN PROCESO - Badge especial en el modal ===
   let statusBadge = '';
   if (c.estado && c.estado.toUpperCase().includes('PERDIDO')) statusBadge = `<span class="badge badge-red">PERDIDO</span>`;
   else if (c.estado && c.estado.toUpperCase().includes('PROCESO')) statusBadge = `<span class="badge badge-amber">EN PROCESO</span>`;
@@ -952,10 +984,44 @@ function mostrarDetalleContrato(c) {
   if(c.equipo2) eqHtml += `<tr><td>${c.equipo2}</td><td style="text-align: right;">${c.cant2 || 1}</td></tr>`;
   if(c.equipo3) eqHtml += `<tr><td>${c.equipo3}</td><td style="text-align: right;">${c.cant3 || 1}</td></tr>`;
   if(c.equipo4) eqHtml += `<tr><td>${c.equipo4}</td><td style="text-align: right;">${c.cant4 || 1}</td></tr>`;
-  if(!eqHtml) eqHtml = `<tr><td colspan="2" style="text-align: center; color: var(--muted); border: none;">No hay equipos registrados</td></tr>`;
+  if(!eqHtml) eqHtml = `<tr><td colspan="2" style="text-align: center; color: var(--muted); border: none;">No hay equipos principales registrados</td></tr>`;
   document.getElementById('mdlEquipos_view').innerHTML = eqHtml;
   
-  // === NUEVO: EN PROCESO - Color de Estado ===
+  // === LÓGICA PARA LLENAR LA TABLA DETALLADA DESDE LA HOJA EQUIPOS ===
+  const btnToggleSpecs = document.getElementById('btnToggleSpecs');
+  const boxSpecs = document.getElementById('boxSpecs');
+  boxSpecs.classList.remove('active'); // Ocultar por defecto al abrir otro contrato
+
+  // Filtramos la data de la hoja EQUIPOS donde el nombre del contrato coincida
+  const equiposDetallados = DATA.equipos_bd.filter(eq => {
+      // Se asume que la hoja tiene una columna 'Nombre de contrato' o 'Contrato'
+      const nombreEnHoja = eq['Nombre de contrato'] || eq['Contrato'] || eq['Cliente'] || '';
+      return nombreEnHoja.trim().toLowerCase() === c.nombre.trim().toLowerCase();
+  });
+
+  if (equiposDetallados.length > 0) {
+      btnToggleSpecs.style.display = 'block';
+      btnToggleSpecs.innerHTML = `📋 Ver Especificaciones Detalladas (${equiposDetallados.length} equipos)`;
+
+      // Columnas que nos interesan basadas en tu imagen. 
+      const columnasBase = ['TIPO DE EQUIPO', 'MARCA', 'MODELO', 'MODELO 2', 'CAPACIDAD', 'POTENCIA', 'VOLTAJE', 'FASE', 'NÚMERO DE SERIE', 'UBICACIÓN', 'NOTAS'];
+      
+      // Chequear cuáles de estas columnas realmente existen en los datos para no ponerlas vacías
+      const columnasAMostrar = columnasBase.filter(col => equiposDetallados.some(e => e[col] !== undefined && e[col] !== ""));
+      
+      // Si no hace match ninguna por algún tema de mayúsculas/minúsculas, tomamos todas menos la del nombre del contrato
+      let columnasFinales = columnasAMostrar.length > 0 ? columnasAMostrar : Object.keys(equiposDetallados[0]).filter(k => !['Nombre de contrato', 'Contrato', 'Cliente'].includes(k));
+
+      document.getElementById('specsHead').innerHTML = `<tr>${columnasFinales.map(col => `<th>${col}</th>`).join('')}</tr>`;
+      document.getElementById('specsBody').innerHTML = equiposDetallados.map(eq => `
+          <tr>${columnasFinales.map(col => `<td>${eq[col] || '-'}</td>`).join('')}</tr>
+      `).join('');
+  } else {
+      btnToggleSpecs.style.display = 'none';
+      document.getElementById('specsBody').innerHTML = '';
+  }
+  // === FIN LÓGICA TABLA DETALLADA ===
+
   let colorEstado = 'var(--accent4)';
   if (c.estado && c.estado.toUpperCase() === 'PERDIDO') colorEstado = 'var(--danger)';
   else if (c.estado && c.estado.toUpperCase() === 'EN PROCESO') colorEstado = 'var(--accent3)';
@@ -1063,10 +1129,10 @@ function actualizarUI() {
 
   document.getElementById('tbodyAll').innerHTML = ''; document.getElementById('tbodyRenovar').innerHTML = ''; document.getElementById('tbodyMes').innerHTML = ''; 
   document.getElementById('tbodyPerdidos').innerHTML = ''; 
-  document.getElementById('tbodyEnProceso').innerHTML = ''; // === NUEVO: Limpiar tabla de En Proceso ===
+  document.getElementById('tbodyEnProceso').innerHTML = '';
   
   for (let id in Chart.instances) Chart.instances[id].destroy();
-  initCharts(); updateMesTable(); buildAll(); buildRenew(); buildLost(); buildEnProceso(); // === NUEVO: Llamado a la función de renderizado ===
+  initCharts(); updateMesTable(); buildAll(); buildRenew(); buildLost(); buildEnProceso();
 }
 
 function ivaBadge(iva) { if(!iva) return `<span class="badge badge-gray">—</span>`; if(iva.toUpperCase().includes('GRAVADO')) return `<span class="badge badge-amber">IVA 13%</span>`; if(iva.toUpperCase().includes('EXONERADO')) return `<span class="badge badge-green">Exonerado</span>`; return `<span class="badge badge-gray">${iva}</span>`; }
@@ -1160,7 +1226,6 @@ function updateMesTable() {
 
 function buildAll() { 
     const tbody = document.getElementById('tbodyAll');
-    // === NUEVO: Oculta los perdidos y en proceso de la lista maestra general para no ensuciar visualmente ===
     const activos = DATA.all_contracts.filter(c => !(c.estado || '').toUpperCase().includes('PERDIDO') && !(c.estado || '').toUpperCase().includes('PROCESO'));
     activos.forEach(c => { 
         const tr = document.createElement('tr'); 
@@ -1191,7 +1256,6 @@ function buildRenew() {
   document.getElementById('urgentCount').textContent = urgent; document.getElementById('avgDays').textContent = avg + 'd'; document.getElementById('renovarTotal').textContent = DATA.renew_contracts.length;
 }
 
-// === NUEVO: EN PROCESO - Función para generar la tabla de contratos en proceso ===
 function buildEnProceso() {
   const tbody = document.getElementById('tbodyEnProceso');
   let totalUsdEnProceso = 0;
@@ -1220,7 +1284,6 @@ function buildEnProceso() {
   document.getElementById('kpiEnProcesoTotal').textContent = DATA.en_proceso_contracts.length;
   document.getElementById('kpiEnProcesoUsd').textContent = fmtUSD(totalUsdEnProceso);
 }
-// === FIN NUEVO ===
 
 function buildLost() {
   const tbody = document.getElementById('tbodyPerdidos');
@@ -1250,9 +1313,6 @@ function buildLost() {
   document.getElementById('kpiPerdidosTotal').textContent = DATA.lost_contracts.length;
   document.getElementById('kpiPerdidosUsd').textContent = fmtUSD(totalUsdPerdido);
 }
-
 </script>
 </body>
 </html>
-
-
