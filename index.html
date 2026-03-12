@@ -209,7 +209,7 @@
       </div>
       <div class="header-buttons">
         <button id="btnSync" onclick="accionPrincipal()" class="btn-primary">
-          Vincular Excel Base
+          ▶ Cargar Datos Guardados
         </button>
         <button id="btnElegirNuevo" onclick="seleccionarNuevoExcel()" class="btn-icon" style="display: none;" title="Cambiar a otro archivo Excel">
           🔄 Cambiar Excel
@@ -1199,7 +1199,7 @@ function buildEnProceso() {
   let totalUsdEnProceso = 0;
   
   DATA.en_proceso_contracts.forEach(c => {
-      totalUsdEnProceso += c.anual_usd;
+      totalUsdEnProceso += c.anual_usd + (c.anual_crc / tasaCambio);
       const tr = document.createElement('tr');
       tr.className = "clickable";
       tr.onclick = () => mostrarDetalleContrato(c);
