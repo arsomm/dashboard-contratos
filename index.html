@@ -200,7 +200,6 @@
     <div class="header-left">
       <div class="header-tag">◈ Control de Contratos</div>
       <h1 class="header-title">DASHBOARD<br>CONTRATOS 2026</h1>
-      <div class="header-subtitle">// Conexión directa a Excel local & Cálculo Inteligente</div>
     </div>
     <div class="header-actions">
       <div class="fx-rate-box">
@@ -282,21 +281,21 @@
     </div>
 
     <div class="chart-grid">
-      <div class="chart-card wide"><div class="chart-title">// Monto Anual USD — Top Contratos</div><div class="chart-wrap tall"><canvas id="chartTop"></canvas></div></div>
-      <div class="chart-card wide"><div class="chart-title">// Monto Anual CRC — Top Contratos</div><div class="chart-wrap tall"><canvas id="chartTopCrc"></canvas></div></div>
+      <div class="chart-card wide"><div class="chart-title">Monto Anual USD — Top Contratos</div><div class="chart-wrap tall"><canvas id="chartTop"></canvas></div></div>
+      <div class="chart-card wide"><div class="chart-title">Monto Anual CRC — Top Contratos</div><div class="chart-wrap tall"><canvas id="chartTopCrc"></canvas></div></div>
       
-      <div class="chart-card"><div class="chart-title">// Distribución por Frecuencia</div><div class="chart-wrap"><canvas id="chartFreq"></canvas></div></div>
-      <div class="chart-card"><div class="chart-title">// Modalidad de Cobertura</div><div class="chart-wrap"><canvas id="chartModalidad"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Distribución por Frecuencia</div><div class="chart-wrap"><canvas id="chartFreq"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Modalidad de Cobertura</div><div class="chart-wrap"><canvas id="chartModalidad"></canvas></div></div>
       
-      <div class="chart-card"><div class="chart-title">// Desglose por Condición de IVA</div><div class="chart-wrap"><canvas id="chartIva"></canvas></div></div>
-      <div class="chart-card"><div class="chart-title">// Estado de Renovación</div><div class="chart-wrap"><canvas id="chartEstado"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Desglose por Condición de IVA</div><div class="chart-wrap"><canvas id="chartIva"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Estado de Renovación</div><div class="chart-wrap"><canvas id="chartEstado"></canvas></div></div>
     </div>
   </div>
 
   <div class="panel" id="tab-flujo">
     <div class="chart-grid">
-      <div class="chart-card wide"><div class="chart-title"><span>// Proyección de Facturación Mensual (Subtotal)</span><span class="badge badge-gray" id="lblYearProy">2026</span></div><div class="chart-wrap tall"><canvas id="chartProyeccionMensual"></canvas></div></div>
-      <div class="chart-card wide"><div class="chart-title">// Flujo Acumulado Consolidado (Convertido a USD)</div><div class="chart-wrap tall"><canvas id="chartFlujoAcumulado"></canvas></div></div>
+      <div class="chart-card wide"><div class="chart-title"><span>Proyección de Facturación Mensual (Subtotal)</span><span class="badge badge-gray" id="lblYearProy">2026</span></div><div class="chart-wrap tall"><canvas id="chartProyeccionMensual"></canvas></div></div>
+      <div class="chart-card wide"><div class="chart-title">Flujo Acumulado Consolidado (Convertido a USD)</div><div class="chart-wrap tall"><canvas id="chartFlujoAcumulado"></canvas></div></div>
     </div>
   </div>
 
@@ -304,7 +303,7 @@
     <div class="table-card">
       <div class="table-header">
         <div class="table-title">
-          // Contratos a Facturar en 
+          Contratos a Facturar en 
           <select id="monthSelector" class="search-input" style="width: auto;" onchange="updateMesTable()">
             </select>
         </div>
@@ -337,7 +336,7 @@
 
   <div class="panel" id="tab-contratos">
     <div class="table-card">
-      <div class="table-header"><div class="table-title">// Todos los Contratos Activos</div><input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblAll', this.value)"></div>
+      <div class="table-header"><div class="table-title">Todos los Contratos Activos</div><input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblAll', this.value)"></div>
       <div class="table-wrap">
         <table id="tblAll">
           <thead><tr><th>Contrato</th><th>Sector</th><th>Responsable</th><th>Modalidad</th><th>Facturación</th><th>IVA</th><th class="num">Anual $</th><th class="num">Anual ₡</th><th>Inicio</th><th>Vencimiento</th><th class="num">Días Restantes</th></tr></thead>
@@ -354,7 +353,7 @@
       <div class="kpi green" style="grid-column: span 2;"><div class="kpi-icon">◷</div><div class="kpi-label">Tiempo Promedio</div><div class="kpi-value" id="avgDays">0d</div><div class="kpi-sub">días promedio</div></div>
     </div>
     <div class="table-card">
-      <div class="table-header"><div class="table-title">// Contratos Por Renovar</div><input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblRenovar', this.value)"></div>
+      <div class="table-header"><div class="table-title">Contratos Por Renovar</div><input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblRenovar', this.value)"></div>
       <div class="table-wrap">
         <table id="tblRenovar">
           <thead><tr><th>Contrato</th><th>Facturación</th><th class="num">Anual $</th><th class="num">Anual ₡</th><th>Vencimiento</th><th>Urgencia</th><th class="num">Días</th></tr></thead>
@@ -381,7 +380,7 @@
     </div>
     <div class="table-card">
       <div class="table-header">
-        <div class="table-title" style="color: var(--accent3);">// Contratos en Proceso de Renovación</div>
+        <div class="table-title" style="color: var(--accent3);">Contratos en Proceso de Renovación</div>
         <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblEnProceso', this.value)">
       </div>
       <div class="table-wrap">
@@ -419,7 +418,7 @@
     </div>
     <div class="table-card">
       <div class="table-header">
-        <div class="table-title" style="color: var(--danger);">// Historial de Contratos Perdidos</div>
+        <div class="table-title" style="color: var(--danger);">Historial de Contratos Perdidos</div>
         <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblPerdidos', this.value)">
       </div>
       <div class="table-wrap">
@@ -1255,4 +1254,5 @@ function buildLost() {
 </script>
 </body>
 </html>
+
 
