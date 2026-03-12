@@ -1004,7 +1004,7 @@ function mostrarDetalleContrato(c) {
       btnToggleSpecs.innerHTML = `📋 Ver Especificaciones Detalladas (${equiposDetallados.length} equipos)`;
 
       // Columnas que nos interesan basadas en tu imagen. 
-      const columnasBase = ['TIPO DE EQUIPO', 'MARCA', 'MODELO', 'MODELO 2', 'CAPACIDAD', 'POTENCIA', 'VOLTAJE', 'FASE', 'NÚMERO DE SERIE', 'UBICACIÓN', 'NOTAS'];
+      const columnasBase = ['TIPO DE EQUIPO', 'MARCA', 'MODELO', 'MODELO2', 'CAPACIDAD', 'POTENCIA', 'VOLTAJE', 'FASE', 'NÚMERO DE SERIE', 'UBICACIÓN', 'NOTAS'];
       
       // Chequear cuáles de estas columnas realmente existen en los datos para no ponerlas vacías
       const columnasAMostrar = columnasBase.filter(col => equiposDetallados.some(e => e[col] !== undefined && e[col] !== ""));
@@ -1316,3 +1316,4 @@ function buildLost() {
 </script>
 </body>
 </html>
+
