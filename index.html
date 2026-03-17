@@ -1059,49 +1059,108 @@ function toggleEditMode(isEdit) {
 
 async function guardarCambiosContrato() {
   if(!contratoEnEdicion) return;
-  contratoEnEdicion.anual_usd = parseFloat(document.getElementById('mdlAnualUsd_edit').value) || 0; contratoEnEdicion.anual_crc = parseFloat(document.getElementById('mdlAnualCrc_edit').value) || 0;
-  contratoEnEdicion.frecuencia = document.getElementById('mdlFrecuencia_edit').value; contratoEnEdicion.tipo_facturacion = document.getElementById('mdlTipoFact_edit').value;
-  contratoEnEdicion.mapeo_cliente = document.getElementById('mdlMapeo_edit').value;
 
-  contratoEnEdicion.sector = document.getElementById('mdlSector_edit').value;
-  contratoEnEdicion.responsable = document.getElementById('mdlResponsable_edit').value;
-  contratoEnEdicion.repuestos = document.getElementById('mdlRepuestos_edit').value;
-  contratoEnEdicion.equipo1 = document.getElementById('mdlEq1_edit').value;
-  contratoEnEdicion.cant1 = document.getElementById('mdlCant1_edit').value;
-  contratoEnEdicion.equipo2 = document.getElementById('mdlEq2_edit').value;
-  contratoEnEdicion.cant2 = document.getElementById('mdlCant2_edit').value;
-  contratoEnEdicion.equipo3 = document.getElementById('mdlEq3_edit').value;
-  contratoEnEdicion.cant3 = document.getElementById('mdlCant3_edit').value;
-  contratoEnEdicion.equipo4 = document.getElementById('mdlEq4_edit').value;
-  contratoEnEdicion.cant4 = document.getElementById('mdlCant4_edit').value;
-  
-  contratoEnEdicion.estado = document.getElementById('mdlEstado_edit').value;
-  
-  if (contratoEnEdicion.tipo_facturacion.includes('manual')) {
-      let seleccionados = []; document.querySelectorAll('.chk-mes:checked').forEach(chk => seleccionados.push(parseInt(chk.value))); contratoEnEdicion.meses_custom = seleccionados;
+  // 1. Inicializamos si no existe el override en JSON para no perder contexto
+  if (!configGuardada[contratoEnEdicion.nombre]) {
+      configGuardada[contratoEnEdicion.nombre] = {};
   }
+  let savedOverride = configGuardada[contratoEnEdicion.nombre];
+
+  // 2. Campos exclusivos del Dashboard (Siempre pertenecen al JSON y no bloquean el Excel)
+  contratoEnEdicion.mapeo_cliente = document.getElementById('mdlMapeo_edit').value;
+  savedOverride.mapeo_cliente = contratoEnEdicion.mapeo_cliente;
+
+  contratoEnEdicion.estado = document.getElementById('mdlEstado_edit').value;
+  savedOverride.estado = contratoEnEdicion.estado;
+
+  contratoEnEdicion.tipo_facturacion = document.getElementById('mdlTipoFact_edit').value;
+  savedOverride.tipo_facturacion = contratoEnEdicion.tipo_facturacion;
+
+  if (contratoEnEdicion.tipo_facturacion.includes('manual')) {
+      let seleccionados = [];
+      document.querySelectorAll('.chk-mes:checked').forEach(chk => seleccionados.push(parseInt(chk.value)));
+      contratoEnEdicion.meses_custom = seleccionados;
+  }
+  savedOverride.meses_custom = contratoEnEdicion.meses_custom;
+
   let diaInput = parseInt(document.getElementById('mdlDiaFact_edit').value);
-  if (contratoEnEdicion.tipo_facturacion.includes('dia') && diaInput >= 1 && diaInput <= 31) contratoEnEdicion.dia_facturacion = diaInput;
-  else { contratoEnEdicion.dia_facturacion = null; if (contratoEnEdicion.tipo_facturacion === 'dia') contratoEnEdicion.tipo_facturacion = 'mes'; if (contratoEnEdicion.tipo_facturacion === 'manual_dia') contratoEnEdicion.tipo_facturacion = 'manual_mes'; }
+  if (contratoEnEdicion.tipo_facturacion.includes('dia') && diaInput >= 1 && diaInput <= 31) {
+      contratoEnEdicion.dia_facturacion = diaInput;
+  } else {
+      contratoEnEdicion.dia_facturacion = null;
+      if (contratoEnEdicion.tipo_facturacion === 'dia') contratoEnEdicion.tipo_facturacion = 'mes';
+      if (contratoEnEdicion.tipo_facturacion === 'manual_dia') contratoEnEdicion.tipo_facturacion = 'manual_mes';
+  }
+  savedOverride.tipo_facturacion = contratoEnEdicion.tipo_facturacion;
+  savedOverride.dia_facturacion = contratoEnEdicion.dia_facturacion;
 
-  const valInicio = document.getElementById('mdlInicio_edit').value; if (valInicio) { let [y,m,d] = valInicio.split('-'); contratoEnEdicion.inicio_obj = new Date(y, m-1, d); contratoEnEdicion.inicio = parseDateString(contratoEnEdicion.inicio_obj); }
-  const valFin = document.getElementById('mdlFin_edit').value; if (valFin) { let [y,m,d] = valFin.split('-'); contratoEnEdicion.expiracion_obj = new Date(y, m-1, d); contratoEnEdicion.expiracion = parseDateString(contratoEnEdicion.expiracion_obj); contratoEnEdicion.dias = calcularDias(contratoEnEdicion.expiracion_obj); }
+  // === 3. LA SOLUCIÓN: LÓGICA DE GUARDADO DELTA ===
+  // Solo guardamos en el JSON si el usuario modificó el valor respecto a lo que venía del Excel,
+  // o si ya existía una sobreescritura previa que estamos actualizando.
+  const guardarSiCambio = (key, nuevoValor) => {
+      let valActual = contratoEnEdicion[key];
+      if (valActual === undefined || valActual === null) valActual = "";
+      let valNuevo = nuevoValor;
+      if (valNuevo === undefined || valNuevo === null) valNuevo = "";
 
-  configGuardada[contratoEnEdicion.nombre] = {
-      anual_usd: contratoEnEdicion.anual_usd, anual_crc: contratoEnEdicion.anual_crc, frecuencia: contratoEnEdicion.frecuencia,
-      tipo_facturacion: contratoEnEdicion.tipo_facturacion, dia_facturacion: contratoEnEdicion.dia_facturacion, meses_custom: contratoEnEdicion.meses_custom,
-      mapeo_cliente: contratoEnEdicion.mapeo_cliente,
-      sector: contratoEnEdicion.sector, responsable: contratoEnEdicion.responsable, repuestos: contratoEnEdicion.repuestos,
-      equipo1: contratoEnEdicion.equipo1, cant1: contratoEnEdicion.cant1, equipo2: contratoEnEdicion.equipo2, cant2: contratoEnEdicion.cant2,
-      equipo3: contratoEnEdicion.equipo3, cant3: contratoEnEdicion.cant3, equipo4: contratoEnEdicion.equipo4, cant4: contratoEnEdicion.cant4,
-      inicio_obj: contratoEnEdicion.inicio_obj ? contratoEnEdicion.inicio_obj.getTime() : null, expiracion_obj: contratoEnEdicion.expiracion_obj ? contratoEnEdicion.expiracion_obj.getTime() : null,
-      estado: contratoEnEdicion.estado
+      // Usamos != para evitar falsos positivos de tipos de datos (ej. "1" != 1)
+      if (valActual != valNuevo || savedOverride[key] !== undefined) {
+          savedOverride[key] = valNuevo;
+          contratoEnEdicion[key] = valNuevo;
+      }
   };
-  
+
+  // 4. Aplicar lógica Delta a los campos que se alimentan del Excel
+  guardarSiCambio('anual_usd', parseFloat(document.getElementById('mdlAnualUsd_edit').value) || 0);
+  guardarSiCambio('anual_crc', parseFloat(document.getElementById('mdlAnualCrc_edit').value) || 0);
+  guardarSiCambio('frecuencia', document.getElementById('mdlFrecuencia_edit').value);
+  guardarSiCambio('sector', document.getElementById('mdlSector_edit').value);
+  guardarSiCambio('responsable', document.getElementById('mdlResponsable_edit').value);
+  guardarSiCambio('repuestos', document.getElementById('mdlRepuestos_edit').value);
+
+  guardarSiCambio('equipo1', document.getElementById('mdlEq1_edit').value);
+  guardarSiCambio('cant1', document.getElementById('mdlCant1_edit').value);
+  guardarSiCambio('equipo2', document.getElementById('mdlEq2_edit').value);
+  guardarSiCambio('cant2', document.getElementById('mdlCant2_edit').value);
+  guardarSiCambio('equipo3', document.getElementById('mdlEq3_edit').value);
+  guardarSiCambio('cant3', document.getElementById('mdlCant3_edit').value);
+  guardarSiCambio('equipo4', document.getElementById('mdlEq4_edit').value);
+  guardarSiCambio('cant4', document.getElementById('mdlCant4_edit').value);
+
+  // 5. Manejo especial Delta para fechas (comparamos timestamps para ser exactos)
+  const valInicio = document.getElementById('mdlInicio_edit').value;
+  if (valInicio) {
+      let [y,m,d] = valInicio.split('-');
+      let nuevaInicioObj = new Date(y, m-1, d);
+      if (!contratoEnEdicion.inicio_obj || contratoEnEdicion.inicio_obj.getTime() !== nuevaInicioObj.getTime() || savedOverride.inicio_obj !== undefined) {
+          savedOverride.inicio_obj = nuevaInicioObj.getTime();
+          contratoEnEdicion.inicio_obj = nuevaInicioObj;
+          contratoEnEdicion.inicio = parseDateString(nuevaInicioObj);
+      }
+  }
+
+  const valFin = document.getElementById('mdlFin_edit').value;
+  if (valFin) {
+      let [y,m,d] = valFin.split('-');
+      let nuevaFinObj = new Date(y, m-1, d);
+      if (!contratoEnEdicion.expiracion_obj || contratoEnEdicion.expiracion_obj.getTime() !== nuevaFinObj.getTime() || savedOverride.expiracion_obj !== undefined) {
+          savedOverride.expiracion_obj = nuevaFinObj.getTime();
+          contratoEnEdicion.expiracion_obj = nuevaFinObj;
+          contratoEnEdicion.expiracion = parseDateString(nuevaFinObj);
+          contratoEnEdicion.dias = calcularDias(nuevaFinObj);
+      }
+  }
+
+  // 6. Guardar el objeto definitivo en memoria
+  configGuardada[contratoEnEdicion.nombre] = savedOverride;
+
+  // Persistir los cambios en la BD local y en el archivo de texto
   await idbKeyval.set('contractEdits', configGuardada);
   await escribirJSONEnDisco();
 
-  procesarLogicaInteligente(); mostrarDetalleContrato(contratoEnEdicion); 
+  // Actualizar gráficos y la vista del modal
+  procesarLogicaInteligente();
+  mostrarDetalleContrato(contratoEnEdicion);
 }
 
 function actualizarUI() {
@@ -1316,4 +1375,3 @@ function buildLost() {
 </script>
 </body>
 </html>
-
