@@ -12,9 +12,7 @@
 <script src="https://cdn.jsdelivr.net/npm/idb-keyval@6/dist/umd.js"></script>
 
 <style>
-  /* ====== VARIABLES GLOBALES DE CSS ======  
-     Centralizan la paleta de colores y tipografías para facilitar futuros cambios de tema (ej. Modo Oscuro).
-  */
+  /* ====== VARIABLES GLOBALES DE CSS ======  */
   :root {
     --bg: #f3f4f6;
     --surface: #ffffff;
@@ -36,7 +34,6 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; overflow-x: hidden; }
   
-  /* Patrón de fondo cuadriculado estilo "blueprint" para darle una estética más técnica/dashboard */
   body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
   .container { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
   
@@ -49,7 +46,6 @@
   .header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
   .header-buttons { display: flex; gap: 8px; width: 100%; justify-content: flex-end; flex-wrap: wrap; }
   
-  /* Input para Tipo de Cambio (T.C.) */
   .fx-rate-box { background: var(--surface2); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; display: flex; align-items: center; gap: 10px; width: 100%; justify-content: space-between; }
   .fx-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; }
   .fx-input { background: var(--bg); border: 1px solid var(--border); color: var(--accent); font-family: var(--mono); font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 4px; width: 80px; text-align: right; outline: none; }
@@ -62,9 +58,7 @@
   .tab.active { background: var(--accent2); color: #ffffff; }
   .panel { display: none; } .panel.active { display: block; }
 
-  /* ====== KPI GRID (Key Performance Indicators) ======  
-     Diseño en grilla responsivo para mostrar métricas clave en la parte superior.
-  */
+  /* ====== KPI GRID ====== */
   .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
   @media (max-width: 1024px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } .kpi:nth-child(5), .kpi:nth-child(6) { grid-column: span 1 !important; } }
   @media (max-width: 600px) { .kpi-grid { grid-template-columns: 1fr; } }
@@ -72,7 +66,6 @@
   .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px 24px; position: relative; overflow: hidden; transition: border-color 0.2s, transform 0.2s; display: flex; flex-direction: column;}
   .kpi:nth-child(5), .kpi:nth-child(6) { grid-column: span 2; }
   
-  /* Estilos dinámicos por color de KPI usando pseudoelementos para el borde superior */
   .kpi:hover { border-color: var(--accent); transform: translateY(-2px); }
   .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
   .kpi.cyan::before { background: var(--accent); } .kpi.purple::before { background: var(--accent2); }
@@ -101,7 +94,6 @@
   .table-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; font-family: var(--mono); display: flex; align-items: center; gap: 12px; }
   .search-input { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; color: var(--text); font-size: 12px; font-family: var(--mono); outline: none; width: 220px; }
   .search-input:focus { border-color: var(--accent); }
-  /* Personalización del dropdown select de la tabla */
   select.search-input { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px; padding-right: 32px; }
 
   .table-wrap { overflow-x: auto; }
@@ -109,14 +101,13 @@
   thead tr { background: var(--surface2); }
   thead th { padding: 12px 16px; text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-family: var(--mono); white-space: nowrap; }
   tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
-  /* Hover visual para indicar que la fila abre el modal de edición */
   tbody tr.clickable { cursor: pointer; transition: all 0.2s ease; }
   tbody tr.clickable:hover { background: var(--surface2); box-shadow: inset 4px 0 0 var(--accent); }
   tbody td { padding: 11px 16px; color: var(--text); white-space: nowrap; font-family: var(--mono); font-size: 11.5px; }
   tbody td.name-cell { font-family: var(--font); font-size: 12px; font-weight: 600; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .num { text-align: right; }
 
-  /* ====== BADGES (Etiquetas visuales de estado) ====== */
+  /* ====== BADGES ====== */
   .badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; font-family: var(--mono); }
   .badge-cyan { background: rgba(2,132,199,0.12); color: var(--accent); border: 1px solid rgba(2,132,199,0.2); }
   .badge-green { background: rgba(16,185,129,0.12); color: var(--accent4); border: 1px solid rgba(16,185,129,0.2); }
@@ -126,17 +117,16 @@
   .badge-gray { background: rgba(107,114,128,0.12); color: var(--muted); border: 1px solid rgba(107,114,128,0.2); }
   .badge-outline { border: 1px solid var(--muted); color: var(--text); background: transparent; }
 
-  /* ====== BARRA DE URGENCIA (Renovaciones) ====== */
+  /* ====== BARRA DE URGENCIA ====== */
   .urgency-bar { display: flex; align-items: center; gap: 8px; }
   .urgency-track { width: 80px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
   .urgency-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
   
-  /* Animación de entrada para los KPIs */
   @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   .kpi { animation: fadeUp 0.4s ease both; } .kpi:nth-child(1) { animation-delay: 0.05s; } .kpi:nth-child(2) { animation-delay: 0.1s; } .kpi:nth-child(3) { animation-delay: 0.15s; } .kpi:nth-child(4) { animation-delay: 0.2s; } .kpi:nth-child(5) { animation-delay: 0.25s; } .kpi:nth-child(6) { animation-delay: 0.3s; }
   .glowing { box-shadow: 0 0 30px rgba(2,132,199,0.15); }
 
-  /* ====== ESTILOS DEL MODAL (Detalle y Edición de Contrato) ====== */
+  /* ====== ESTILOS DEL MODAL ====== */
   .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(243, 244, 246, 0.85); backdrop-filter: blur(8px); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; padding: 20px; }
   .modal-overlay.active { display: flex; opacity: 1; }
   .modal-content { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid var(--accent); border-radius: 16px; width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; padding: 32px; position: relative; transform: translateY(20px); transition: transform 0.3s ease; box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 0 40px rgba(2,132,199,0.1); }
@@ -158,7 +148,6 @@
   .modal-section-title { grid-column: 1 / -1; font-family: var(--mono); font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; margin-top: 16px; margin-bottom: -4px; display: flex; align-items: center; gap: 8px;}
   .modal-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
   
-  /* Switch Toggle UI (Botón para alternar modo Vista/Edición) */
   .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
   .switch input { opacity: 0; width: 0; height: 0; }
   .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); border: 1px solid var(--border); transition: .3s; border-radius: 20px; }
@@ -166,19 +155,16 @@
   input:checked + .slider { background-color: var(--accent); border-color: var(--accent); }
   input:checked + .slider:before { transform: translateX(20px); background-color: #ffffff; }
 
-  /* Lógica CSS para ocultar/mostrar campos dependiento del modo de edición activo */
   .edit-mode { display: none; } .is-editing .view-mode { display: none; } .is-editing .edit-mode { display: block; }
   .modal-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 6px; font-family: var(--mono); font-size: 13px; outline: none; transition: border-color 0.2s; }
   .modal-input:focus { border-color: var(--accent); }
   .btn-save { background: var(--accent); color: #ffffff; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 800; cursor: pointer; font-family: var(--mono); font-size: 13px; width: 100%; margin-top: 24px; transition: opacity 0.2s; grid-column: 1 / -1; }
   .btn-save:hover { opacity: 0.9; }
 
-  /* Checkboxes personalizados para seleccionar meses específicos */
   .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(65px, 1fr)); gap: 10px; margin-top: 8px; }
   .chk-label { display: flex; align-items: center; gap: 6px; font-size: 11px; font-family: var(--mono); color: var(--text); cursor: pointer; background: var(--surface2); padding: 6px; border-radius: 6px; border: 1px solid var(--border); transition: 0.2s; }
   .chk-label:hover { border-color: rgba(2,132,199,0.4); }
 
-  /* Botones generales */
   .btn-icon { background: var(--surface2); color: var(--text); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: var(--mono); font-size: 11px; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
   .btn-icon:hover { background: var(--border); }
   
@@ -186,13 +172,11 @@
   .btn-secondary { background: rgba(16, 185, 129, 0.1); color: var(--accent4); border: 1px solid rgba(16, 185, 129, 0.4); padding: 10px 16px; border-radius: 8px; font-weight: 800; cursor: pointer; font-family: var(--mono); font-size: 13px; transition: 0.2s; flex: 1; }
   .btn-secondary:hover { background: rgba(16, 185, 129, 0.2); }
 
-  /* Estilos específicos para la tabla de equipos dentro del modal */
   .equipos-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
   .equipos-table th { padding: 8px; text-align: left; font-size: 10px; color: var(--muted); border-bottom: 1px solid var(--border); font-family: var(--mono); }
   .equipos-table td { padding: 8px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text); }
   .equipos-table input.modal-input { padding: 6px 8px; font-size: 12px; }
 
-  /* ======= NUEVOS ESTILOS PARA LA TABLA DESPLEGABLE DE ESPECIFICACIONES ======= */
   .specs-wrapper { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-top: 12px; display: none; overflow-x: auto; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
   .specs-wrapper.active { display: block; }
   .specs-table { width: 100%; border-collapse: collapse; min-width: 600px; }
@@ -469,9 +453,9 @@
     <div class="modal-grid">
 
       <div class="modal-section-title">Datos Generales del Servicio</div>
-      <div class="modal-field"><div class="modal-field-label">Sector</div><div class="modal-field-value view-mode" id="mdlSector_view" style="font-size: 15px;">-</div><input type="text" class="modal-input edit-mode" id="mdlSector_edit" placeholder="Ej: Financiero"></div>
-      <div class="modal-field"><div class="modal-field-label">Responsable</div><div class="modal-field-value view-mode" id="mdlResponsable_view" style="font-size: 15px;">-</div><input type="text" class="modal-input edit-mode" id="mdlResponsable_edit" placeholder="Nombre del responsable"></div>
-      <div class="modal-field" style="grid-column: 1 / -1;"><div class="modal-field-label">Cobertura de Repuestos</div><div class="modal-field-value view-mode" id="mdlRepuestos_view" style="font-size: 15px;">-</div><input type="text" class="modal-input edit-mode" id="mdlRepuestos_edit" placeholder="Ej: Incluye piezas A y B"></div>
+      <div class="modal-field"><div class="modal-field-label">Sector</div><div class="modal-field-value" id="mdlSector_view" style="font-size: 15px;">-</div></div>
+      <div class="modal-field"><div class="modal-field-label">Responsable</div><div class="modal-field-value" id="mdlResponsable_view" style="font-size: 15px;">-</div></div>
+      <div class="modal-field" style="grid-column: 1 / -1;"><div class="modal-field-label">Cobertura de Repuestos</div><div class="modal-field-value" id="mdlRepuestos_view" style="font-size: 15px;">-</div></div>
 
       <div class="modal-section-title">Equipos Cubiertos</div>
       <div class="modal-field" style="grid-column: 1 / -1; padding: 0; background: transparent; border: none;">
@@ -482,32 +466,14 @@
                     <th style="text-align: right; width: 100px;">CANTIDAD</th>
                 </tr>
             </thead>
-            <tbody id="mdlEquipos_view" class="view-mode">
+            <tbody id="mdlEquipos_view">
                 </tbody>
-            <tbody id="mdlEquipos_edit" class="edit-mode">
-                <tr>
-                    <td style="padding: 4px 0;"><input type="text" class="modal-input" id="mdlEq1_edit" placeholder="Equipo 1"></td>
-                    <td style="padding: 4px 0 4px 8px;"><input type="number" class="modal-input" id="mdlCant1_edit" placeholder="0" style="text-align: right;"></td>
-                </tr>
-                <tr>
-                    <td style="padding: 4px 0;"><input type="text" class="modal-input" id="mdlEq2_edit" placeholder="Equipo 2"></td>
-                    <td style="padding: 4px 0 4px 8px;"><input type="number" class="modal-input" id="mdlCant2_edit" placeholder="0" style="text-align: right;"></td>
-                </tr>
-                <tr>
-                    <td style="padding: 4px 0;"><input type="text" class="modal-input" id="mdlEq3_edit" placeholder="Equipo 3"></td>
-                    <td style="padding: 4px 0 4px 8px;"><input type="number" class="modal-input" id="mdlCant3_edit" placeholder="0" style="text-align: right;"></td>
-                </tr>
-                <tr>
-                    <td style="padding: 4px 0;"><input type="text" class="modal-input" id="mdlEq4_edit" placeholder="Equipo 4"></td>
-                    <td style="padding: 4px 0 4px 8px;"><input type="number" class="modal-input" id="mdlCant4_edit" placeholder="0" style="text-align: right;"></td>
-                </tr>
-            </tbody>
         </table>
 
-        <button id="btnToggleSpecs" class="btn-toggle-specs view-mode" style="display:none;" onclick="toggleSpecsBox()">
+        <button id="btnToggleSpecs" class="btn-toggle-specs" style="display:none;" onclick="toggleSpecsBox()">
           📋 Ver Especificaciones Detalladas (Hoja EQUIPOS)
         </button>
-        <div id="boxSpecs" class="specs-wrapper view-mode">
+        <div id="boxSpecs" class="specs-wrapper">
             <table class="specs-table">
                 <thead id="specsHead"></thead>
                 <tbody id="specsBody"></tbody>
@@ -515,9 +481,13 @@
         </div>
         </div>
       <div class="modal-section-title">Datos Financieros (Anual Base)</div>
-      <div class="modal-field highlight"><div class="modal-field-label">Monto Anual USD</div><div class="modal-field-value view-mode" id="mdlAnualUsd">$0.00</div><input type="number" class="modal-input edit-mode" id="mdlAnualUsd_edit" step="0.01"></div>
-      <div class="modal-field highlight-crc"><div class="modal-field-label">Monto Anual CRC</div><div class="modal-field-value view-mode" id="mdlAnualCrc">₡0.00</div><input type="number" class="modal-input edit-mode" id="mdlAnualCrc_edit" step="0.01"></div>
-      
+      <div class="modal-field highlight"><div class="modal-field-label">Monto Anual USD</div><div class="modal-field-value" id="mdlAnualUsd">$0.00</div></div>
+      <div class="modal-field highlight-crc"><div class="modal-field-label">Monto Anual CRC</div><div class="modal-field-value" id="mdlAnualCrc">₡0.00</div></div>
+
+      <div class="modal-section-title">Vigencia y Tiempos</div>
+      <div class="modal-field"><div class="modal-field-label">Fecha de Inicio</div><div class="modal-field-value" id="mdlInicio">-</div></div>
+      <div class="modal-field"><div class="modal-field-label">Fecha de Expiración</div><div class="modal-field-value" id="mdlFin">-</div></div>
+
       <div class="modal-section-title">Preferencia de Facturación</div>
       <div class="modal-field">
         <div class="modal-field-label">Frecuencia Principal</div>
@@ -565,10 +535,6 @@
         <div class="modal-input edit-mode" style="color:var(--muted); background:var(--bg); cursor:not-allowed;">Auto-calculable</div>
       </div>
       
-      <div class="modal-section-title">Vigencia y Tiempos</div>
-      <div class="modal-field"><div class="modal-field-label">Fecha de Inicio</div><div class="modal-field-value view-mode" id="mdlInicio">-</div><input type="date" class="modal-input edit-mode" id="mdlInicio_edit"></div>
-      <div class="modal-field"><div class="modal-field-label">Fecha de Expiración</div><div class="modal-field-value view-mode" id="mdlFin">-</div><input type="date" class="modal-input edit-mode" id="mdlFin_edit"></div>
-      
       <div class="modal-section-title">Mapeo y Notas</div>
       <div class="modal-field" style="grid-column: 1 / -1;">
         <div class="modal-field-label">Mapeo del Cliente / Información Adicional</div>
@@ -580,14 +546,9 @@
       <div class="modal-field view-mode"><div class="modal-field-label">Días Restantes</div><div class="modal-field-value" id="mdlDias">-</div></div>
       <div class="modal-field view-mode"><div class="modal-field-label">Condición del IVA</div><div class="modal-field-value" id="mdlIva">-</div></div>
       
-      <div class="modal-field">
+      <div class="modal-field view-mode">
         <div class="modal-field-label">Estado del Contrato</div>
-        <div class="modal-field-value view-mode" id="mdlEstado_view" style="font-weight: 800;">-</div>
-        <select class="modal-input edit-mode" id="mdlEstado_edit">
-          <option value="ACTIVO">ACTIVO</option>
-          <option value="EN PROCESO">EN PROCESO</option>
-          <option value="PERDIDO">PERDIDO</option>
-        </select>
+        <div class="modal-field-value" id="mdlEstado_view" style="font-weight: 800;">-</div>
       </div>
       <button class="btn-save edit-mode" onclick="guardarCambiosContrato()">Guardar Cambios Localmente</button>
     </div>
@@ -604,10 +565,6 @@ let tasaCambio = 515;
 let contratoEnEdicion = null; 
 let configGuardada = {}; 
 
-/**
- * DATA: Objeto global reactivo (store) central.
- * === NUEVO: Se agregó 'equipos_bd' para guardar los datos de la hoja EQUIPOS ===
- */
 const DATA = { all_contracts: [], renew_contracts: [], lost_contracts: [], en_proceso_contracts: [], equipos_bd: [], billing_by_month: Array.from({length: 12}, () => []), current_month_billing: [], projection_usd: [], projection_crc: [] };
 const COLORS = ['#00e5ff','#7c3aed','#f59e0b','#10b981','#ef4444','#f472b6','#a78bfa','#34d399'];
 Chart.defaults.color = '#6b7280'; Chart.defaults.font.family = "'JetBrains Mono', monospace"; Chart.defaults.font.size = 11;
@@ -720,7 +677,6 @@ async function escribirJSONEnDisco() {
 const parseNum = (v) => { if (!v) return 0; if (typeof v === 'number') return v; const c = parseFloat(v.toString().replace(/[^\d.-]/g, '')); return isNaN(c) ? 0 : c; };
 function parseDateObject(v) { if (!v) return null; if (v instanceof Date) return v; if (typeof v === 'number') return new Date(Math.round((v - 25569) * 86400 * 1000)); let p = new Date(v); return isNaN(p) ? null : p; }
 const parseDateString = (d) => { if (!d) return '—'; return d.toLocaleDateString('es-CR'); };
-const dateToInputStr = (d) => { if(!d) return ''; const y = d.getFullYear(), m = String(d.getMonth() + 1).padStart(2, '0'), dd = String(d.getDate()).padStart(2, '0'); return `${y}-${m}-${dd}`; }
 function calcularDias(fObj) { if (!fObj) return 0; let f = new Date(fObj); f.setHours(0,0,0,0); let h = new Date(HOY); h.setHours(0,0,0,0); return Math.ceil((f - h) / (1000 * 60 * 60 * 24)); }
 
 async function cargarDatosDelExcel() {
@@ -783,32 +739,17 @@ async function cargarDatosDelExcel() {
       let equipo4 = getExact('Tipo de equipo4') || '';
       let cant4 = getExact('Cantidad4') || '';
       
+      // El estado SIEMPRE se lee únicamente del Excel
       let estado = getExact('Estado') || 'ACTIVO'; 
 
       const editado = configGuardada[nombre];
       if (editado) {
-          if (editado.anual_usd !== undefined) anual_usd = editado.anual_usd;
-          if (editado.anual_crc !== undefined) anual_crc = editado.anual_crc;
+          // SOLO permitimos que el JSON sobrescriba estas variables de facturación y notas
           if (editado.frecuencia !== undefined) frecuencia = editado.frecuencia;
           if (editado.tipo_facturacion !== undefined) tipo_facturacion = editado.tipo_facturacion;
           if (editado.dia_facturacion !== undefined) dia_facturacion = editado.dia_facturacion;
           if (editado.meses_custom !== undefined) meses_custom = editado.meses_custom;
           if (editado.mapeo_cliente !== undefined) mapeo_cliente = editado.mapeo_cliente;
-          if (editado.inicio_obj) rawIni = new Date(editado.inicio_obj);
-          if (editado.expiracion_obj) rawExp = new Date(editado.expiracion_obj);
-
-          if (editado.sector !== undefined) sector = editado.sector;
-          if (editado.repuestos !== undefined) repuestos = editado.repuestos;
-          if (editado.responsable !== undefined) responsable = editado.responsable;
-          if (editado.equipo1 !== undefined) equipo1 = editado.equipo1;
-          if (editado.cant1 !== undefined) cant1 = editado.cant1;
-          if (editado.equipo2 !== undefined) equipo2 = editado.equipo2;
-          if (editado.cant2 !== undefined) cant2 = editado.cant2;
-          if (editado.equipo3 !== undefined) equipo3 = editado.equipo3;
-          if (editado.cant3 !== undefined) cant3 = editado.cant3;
-          if (editado.equipo4 !== undefined) equipo4 = editado.equipo4;
-          if (editado.cant4 !== undefined) cant4 = editado.cant4;
-          if (editado.estado !== undefined) estado = editado.estado; 
       }
 
       return {
@@ -948,7 +889,15 @@ function mostrarDetalleContrato(c) {
 
   document.getElementById('mdlBadges').innerHTML = `${freqBadge(c.frecuencia)} <span class="badge badge-gray">${c.modalidad}</span> ${statusBadge}`;
   
-  document.getElementById('mdlAnualUsd').innerText = c.anual_usd > 0 ? fmtUSD(c.anual_usd) : '—'; document.getElementById('mdlAnualCrc').innerText = c.anual_crc > 0 ? fmtCRC(c.anual_crc) : '—';
+  // Estos datos solo se leen desde el Excel
+  document.getElementById('mdlAnualUsd').innerText = c.anual_usd > 0 ? fmtUSD(c.anual_usd) : '—'; 
+  document.getElementById('mdlAnualCrc').innerText = c.anual_crc > 0 ? fmtCRC(c.anual_crc) : '—';
+  document.getElementById('mdlSector_view').innerText = c.sector || '—';
+  document.getElementById('mdlResponsable_view').innerText = c.responsable || '—';
+  document.getElementById('mdlRepuestos_view').innerText = c.repuestos || '—';
+  document.getElementById('mdlInicio').innerText = c.inicio; 
+  document.getElementById('mdlFin').innerText = c.expiracion; 
+
   document.getElementById('mdlFrecuencia_view').innerText = c.frecuencia || 'No Definido';
   
   if (c.tipo_facturacion === 'mes') document.getElementById('mdlTipoFact_view').innerText = 'Automático - Mes General';
@@ -970,14 +919,10 @@ function mostrarDetalleContrato(c) {
   document.getElementById('mdlCuotaCrcTot').innerText = c.cuota_crc_mes > 0 ? `Total con IVA: ${fmtCRC(c.cuota_crc_mes_total)}` : '';
 
   const freqLabel = c.frecuencia ? `(Base Subtotal: ${c.frecuencia})` : ''; document.getElementById('mdlFrecuenciaLabelUsd').innerText = freqLabel; document.getElementById('mdlFrecuenciaLabelCrc').innerText = freqLabel;
-  document.getElementById('mdlInicio').innerText = c.inicio; document.getElementById('mdlFin').innerText = c.expiracion; document.getElementById('mdlDias').innerHTML = daysBadge(c.dias); document.getElementById('mdlIva').innerHTML = ivaBadge(c.iva);
+  document.getElementById('mdlDias').innerHTML = daysBadge(c.dias); document.getElementById('mdlIva').innerHTML = ivaBadge(c.iva);
 
   document.getElementById('mdlMapeo_view').innerText = c.mapeo_cliente || 'No hay notas o mapeo registrado.';
   document.getElementById('mdlMapeo_edit').value = c.mapeo_cliente || '';
-
-  document.getElementById('mdlSector_view').innerText = c.sector || '—';
-  document.getElementById('mdlResponsable_view').innerText = c.responsable || '—';
-  document.getElementById('mdlRepuestos_view').innerText = c.repuestos || '—';
 
   let eqHtml = '';
   if(c.equipo1) eqHtml += `<tr><td>${c.equipo1}</td><td style="text-align: right;">${c.cant1 || 1}</td></tr>`;
@@ -990,11 +935,9 @@ function mostrarDetalleContrato(c) {
   // === LÓGICA PARA LLENAR LA TABLA DETALLADA DESDE LA HOJA EQUIPOS ===
   const btnToggleSpecs = document.getElementById('btnToggleSpecs');
   const boxSpecs = document.getElementById('boxSpecs');
-  boxSpecs.classList.remove('active'); // Ocultar por defecto al abrir otro contrato
+  boxSpecs.classList.remove('active');
 
-  // Filtramos la data de la hoja EQUIPOS donde el nombre del contrato coincida
   const equiposDetallados = DATA.equipos_bd.filter(eq => {
-      // Se asume que la hoja tiene una columna 'Nombre de contrato' o 'Contrato'
       const nombreEnHoja = eq['Nombre de contrato'] || eq['Contrato'] || eq['Cliente'] || '';
       return nombreEnHoja.trim().toLowerCase() === c.nombre.trim().toLowerCase();
   });
@@ -1003,13 +946,8 @@ function mostrarDetalleContrato(c) {
       btnToggleSpecs.style.display = 'block';
       btnToggleSpecs.innerHTML = `📋 Ver Especificaciones Detalladas (${equiposDetallados.length} equipos)`;
 
-      // Columnas que nos interesan basadas en tu imagen. 
       const columnasBase = ['TIPO DE EQUIPO', 'MARCA', 'MODELO', 'MODELO2', 'CAPACIDAD', 'POTENCIA', 'VOLTAJE', 'FASE', 'NÚMERO DE SERIE', 'UBICACIÓN', 'NOTAS'];
-      
-      // Chequear cuáles de estas columnas realmente existen en los datos para no ponerlas vacías
       const columnasAMostrar = columnasBase.filter(col => equiposDetallados.some(e => e[col] !== undefined && e[col] !== ""));
-      
-      // Si no hace match ninguna por algún tema de mayúsculas/minúsculas, tomamos todas menos la del nombre del contrato
       let columnasFinales = columnasAMostrar.length > 0 ? columnasAMostrar : Object.keys(equiposDetallados[0]).filter(k => !['Nombre de contrato', 'Contrato', 'Cliente'].includes(k));
 
       document.getElementById('specsHead').innerHTML = `<tr>${columnasFinales.map(col => `<th>${col}</th>`).join('')}</tr>`;
@@ -1020,7 +958,6 @@ function mostrarDetalleContrato(c) {
       btnToggleSpecs.style.display = 'none';
       document.getElementById('specsBody').innerHTML = '';
   }
-  // === FIN LÓGICA TABLA DETALLADA ===
 
   let colorEstado = 'var(--accent4)';
   if (c.estado && c.estado.toUpperCase() === 'PERDIDO') colorEstado = 'var(--danger)';
@@ -1028,23 +965,12 @@ function mostrarDetalleContrato(c) {
 
   document.getElementById('mdlEstado_view').innerText = c.estado || 'ACTIVO';
   document.getElementById('mdlEstado_view').style.color = colorEstado;
-  document.getElementById('mdlEstado_edit').value = (c.estado || 'ACTIVO').toUpperCase();
 
-  // EDIT MODE
-  document.getElementById('mdlAnualUsd_edit').value = c.anual_usd || 0; document.getElementById('mdlAnualCrc_edit').value = c.anual_crc || 0;
+  // EDIT MODE (Solo se configuran los datos de Facturación y Mapeo)
   let matchFreq = Array.from(document.getElementById('mdlFrecuencia_edit').options).some(o => o.value === (c.frecuencia||'').toUpperCase());
   document.getElementById('mdlFrecuencia_edit').value = matchFreq ? (c.frecuencia||'').toUpperCase() : 'PERSONALIZADA';
   document.getElementById('mdlTipoFact_edit').value = c.tipo_facturacion || 'mes'; document.getElementById('mdlDiaFact_edit').value = c.dia_facturacion || '';
   document.querySelectorAll('.chk-mes').forEach(chk => { chk.checked = c.meses_custom ? c.meses_custom.includes(parseInt(chk.value)) : false; });
-  document.getElementById('mdlInicio_edit').value = dateToInputStr(c.inicio_obj); document.getElementById('mdlFin_edit').value = dateToInputStr(c.expiracion_obj);
-  
-  document.getElementById('mdlSector_edit').value = c.sector || '';
-  document.getElementById('mdlResponsable_edit').value = c.responsable || '';
-  document.getElementById('mdlRepuestos_edit').value = c.repuestos || '';
-  document.getElementById('mdlEq1_edit').value = c.equipo1 || ''; document.getElementById('mdlCant1_edit').value = c.cant1 || '';
-  document.getElementById('mdlEq2_edit').value = c.equipo2 || ''; document.getElementById('mdlCant2_edit').value = c.cant2 || '';
-  document.getElementById('mdlEq3_edit').value = c.equipo3 || ''; document.getElementById('mdlCant3_edit').value = c.cant3 || '';
-  document.getElementById('mdlEq4_edit').value = c.equipo4 || ''; document.getElementById('mdlCant4_edit').value = c.cant4 || '';
 
   document.getElementById('modalDetalleContrato').classList.add('active');
 }
@@ -1060,112 +986,35 @@ function toggleEditMode(isEdit) {
 async function guardarCambiosContrato() {
   if(!contratoEnEdicion) return;
 
-  // 1. Inicializamos si no existe el override en JSON para no perder contexto
-  if (!configGuardada[contratoEnEdicion.nombre]) {
-      configGuardada[contratoEnEdicion.nombre] = {};
-  }
-  let savedOverride = configGuardada[contratoEnEdicion.nombre];
-
-  // 2. Campos exclusivos del Dashboard (Siempre pertenecen al JSON y no bloquean el Excel)
-  contratoEnEdicion.mapeo_cliente = document.getElementById('mdlMapeo_edit').value;
-  savedOverride.mapeo_cliente = contratoEnEdicion.mapeo_cliente;
-
-  contratoEnEdicion.estado = document.getElementById('mdlEstado_edit').value;
-  savedOverride.estado = contratoEnEdicion.estado;
-
+  // Extraemos del formulario los únicos datos que queremos guardar en el JSON
+  contratoEnEdicion.frecuencia = document.getElementById('mdlFrecuencia_edit').value;
   contratoEnEdicion.tipo_facturacion = document.getElementById('mdlTipoFact_edit').value;
-  savedOverride.tipo_facturacion = contratoEnEdicion.tipo_facturacion;
+  contratoEnEdicion.mapeo_cliente = document.getElementById('mdlMapeo_edit').value;
 
   if (contratoEnEdicion.tipo_facturacion.includes('manual')) {
-      let seleccionados = [];
-      document.querySelectorAll('.chk-mes:checked').forEach(chk => seleccionados.push(parseInt(chk.value)));
-      contratoEnEdicion.meses_custom = seleccionados;
+      let seleccionados = []; document.querySelectorAll('.chk-mes:checked').forEach(chk => seleccionados.push(parseInt(chk.value))); contratoEnEdicion.meses_custom = seleccionados;
   }
-  savedOverride.meses_custom = contratoEnEdicion.meses_custom;
-
   let diaInput = parseInt(document.getElementById('mdlDiaFact_edit').value);
-  if (contratoEnEdicion.tipo_facturacion.includes('dia') && diaInput >= 1 && diaInput <= 31) {
-      contratoEnEdicion.dia_facturacion = diaInput;
-  } else {
-      contratoEnEdicion.dia_facturacion = null;
-      if (contratoEnEdicion.tipo_facturacion === 'dia') contratoEnEdicion.tipo_facturacion = 'mes';
-      if (contratoEnEdicion.tipo_facturacion === 'manual_dia') contratoEnEdicion.tipo_facturacion = 'manual_mes';
-  }
-  savedOverride.tipo_facturacion = contratoEnEdicion.tipo_facturacion;
-  savedOverride.dia_facturacion = contratoEnEdicion.dia_facturacion;
+  if (contratoEnEdicion.tipo_facturacion.includes('dia') && diaInput >= 1 && diaInput <= 31) contratoEnEdicion.dia_facturacion = diaInput;
+  else { contratoEnEdicion.dia_facturacion = null; if (contratoEnEdicion.tipo_facturacion === 'dia') contratoEnEdicion.tipo_facturacion = 'mes'; if (contratoEnEdicion.tipo_facturacion === 'manual_dia') contratoEnEdicion.tipo_facturacion = 'manual_mes'; }
 
-  // === 3. LA SOLUCIÓN: LÓGICA DE GUARDADO DELTA ===
-  // Solo guardamos en el JSON si el usuario modificó el valor respecto a lo que venía del Excel,
-  // o si ya existía una sobreescritura previa que estamos actualizando.
-  const guardarSiCambio = (key, nuevoValor) => {
-      let valActual = contratoEnEdicion[key];
-      if (valActual === undefined || valActual === null) valActual = "";
-      let valNuevo = nuevoValor;
-      if (valNuevo === undefined || valNuevo === null) valNuevo = "";
-
-      // Usamos != para evitar falsos positivos de tipos de datos (ej. "1" != 1)
-      if (valActual != valNuevo || savedOverride[key] !== undefined) {
-          savedOverride[key] = valNuevo;
-          contratoEnEdicion[key] = valNuevo;
-      }
+  // Solo inyectamos los datos de control en el configGuardada (sin ESTADO ni MONTOS)
+  configGuardada[contratoEnEdicion.nombre] = {
+      frecuencia: contratoEnEdicion.frecuencia,
+      tipo_facturacion: contratoEnEdicion.tipo_facturacion,
+      dia_facturacion: contratoEnEdicion.dia_facturacion,
+      meses_custom: contratoEnEdicion.meses_custom,
+      mapeo_cliente: contratoEnEdicion.mapeo_cliente
   };
 
-  // 4. Aplicar lógica Delta a los campos que se alimentan del Excel
-  guardarSiCambio('anual_usd', parseFloat(document.getElementById('mdlAnualUsd_edit').value) || 0);
-  guardarSiCambio('anual_crc', parseFloat(document.getElementById('mdlAnualCrc_edit').value) || 0);
-  guardarSiCambio('frecuencia', document.getElementById('mdlFrecuencia_edit').value);
-  guardarSiCambio('sector', document.getElementById('mdlSector_edit').value);
-  guardarSiCambio('responsable', document.getElementById('mdlResponsable_edit').value);
-  guardarSiCambio('repuestos', document.getElementById('mdlRepuestos_edit').value);
-
-  guardarSiCambio('equipo1', document.getElementById('mdlEq1_edit').value);
-  guardarSiCambio('cant1', document.getElementById('mdlCant1_edit').value);
-  guardarSiCambio('equipo2', document.getElementById('mdlEq2_edit').value);
-  guardarSiCambio('cant2', document.getElementById('mdlCant2_edit').value);
-  guardarSiCambio('equipo3', document.getElementById('mdlEq3_edit').value);
-  guardarSiCambio('cant3', document.getElementById('mdlCant3_edit').value);
-  guardarSiCambio('equipo4', document.getElementById('mdlEq4_edit').value);
-  guardarSiCambio('cant4', document.getElementById('mdlCant4_edit').value);
-
-  // 5. Manejo especial Delta para fechas (comparamos timestamps para ser exactos)
-  const valInicio = document.getElementById('mdlInicio_edit').value;
-  if (valInicio) {
-      let [y,m,d] = valInicio.split('-');
-      let nuevaInicioObj = new Date(y, m-1, d);
-      if (!contratoEnEdicion.inicio_obj || contratoEnEdicion.inicio_obj.getTime() !== nuevaInicioObj.getTime() || savedOverride.inicio_obj !== undefined) {
-          savedOverride.inicio_obj = nuevaInicioObj.getTime();
-          contratoEnEdicion.inicio_obj = nuevaInicioObj;
-          contratoEnEdicion.inicio = parseDateString(nuevaInicioObj);
-      }
-  }
-
-  const valFin = document.getElementById('mdlFin_edit').value;
-  if (valFin) {
-      let [y,m,d] = valFin.split('-');
-      let nuevaFinObj = new Date(y, m-1, d);
-      if (!contratoEnEdicion.expiracion_obj || contratoEnEdicion.expiracion_obj.getTime() !== nuevaFinObj.getTime() || savedOverride.expiracion_obj !== undefined) {
-          savedOverride.expiracion_obj = nuevaFinObj.getTime();
-          contratoEnEdicion.expiracion_obj = nuevaFinObj;
-          contratoEnEdicion.expiracion = parseDateString(nuevaFinObj);
-          contratoEnEdicion.dias = calcularDias(nuevaFinObj);
-      }
-  }
-
-  // 6. Guardar el objeto definitivo en memoria
-  configGuardada[contratoEnEdicion.nombre] = savedOverride;
-
-  // Persistir los cambios en la BD local y en el archivo de texto
   await idbKeyval.set('contractEdits', configGuardada);
   await escribirJSONEnDisco();
 
-  // Actualizar gráficos y la vista del modal
-  procesarLogicaInteligente();
-  mostrarDetalleContrato(contratoEnEdicion);
+  procesarLogicaInteligente(); mostrarDetalleContrato(contratoEnEdicion);
 }
 
 function actualizarUI() {
   let totalUsd = 0, totalCrc = 0, expirados = 0, mesActualUsd = 0, mesActualCrc = 0;
-  // Solo suma a los KPIs globales los contratos que NO están perdidos ni en proceso
   const contratosActivos = DATA.all_contracts.filter(c => !(c.estado || '').toUpperCase().includes('PERDIDO') && !(c.estado || '').toUpperCase().includes('PROCESO'));
   
   contratosActivos.forEach(c => { totalUsd += c.anual_usd; totalCrc += c.anual_crc; if (c.dias < 0) expirados++; });
