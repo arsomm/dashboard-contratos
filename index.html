@@ -306,6 +306,7 @@
                 <span id="resumenMesCrc" style="color:#a78bfa; font-weight:700; font-family:var(--mono); font-size:11px;">₡0.00</span>
             </div>
             <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblMes', this.value)">
+            <button onclick="exportarTablaVista('tblMes', 'Facturacion_Mes')" class="btn-icon">⬇ Exportar</button>
         </div>
       </div>
       <div class="table-wrap">
@@ -329,7 +330,13 @@
 
   <div class="panel" id="tab-contratos">
     <div class="table-card">
-      <div class="table-header"><div class="table-title">Todos los Contratos Activos</div><input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblAll', this.value)"></div>
+      <div class="table-header">
+        <div class="table-title">Todos los Contratos Activos</div>
+        <div style="display: flex; gap: 8px;">
+          <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblAll', this.value)">
+          <button onclick="exportarTablaVista('tblAll', 'Todos_Los_Contratos')" class="btn-icon">⬇ Exportar</button>
+        </div>
+      </div>
       <div class="table-wrap">
         <table id="tblAll">
           <thead><tr><th>Contrato</th><th>Sector</th><th>Responsable</th><th>Modalidad</th><th>Facturación</th><th>IVA</th><th class="num">Anual $</th><th class="num">Anual ₡</th><th>Inicio</th><th>Vencimiento</th><th class="num">Días Restantes</th></tr></thead>
@@ -346,7 +353,13 @@
       <div class="kpi green" style="grid-column: span 2;"><div class="kpi-icon">◷</div><div class="kpi-label">Tiempo Promedio</div><div class="kpi-value" id="avgDays">0d</div><div class="kpi-sub">días promedio</div></div>
     </div>
     <div class="table-card">
-      <div class="table-header"><div class="table-title">Contratos Por Renovar</div><input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblRenovar', this.value)"></div>
+      <div class="table-header">
+        <div class="table-title">Contratos Por Renovar</div>
+        <div style="display: flex; gap: 8px;">
+          <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblRenovar', this.value)">
+          <button onclick="exportarTablaVista('tblRenovar', 'Contratos_Renovar')" class="btn-icon">⬇ Exportar</button>
+        </div>
+      </div>
       <div class="table-wrap">
         <table id="tblRenovar">
           <thead><tr><th>Contrato</th><th>Facturación</th><th class="num">Anual $</th><th class="num">Anual ₡</th><th>Vencimiento</th><th>Urgencia</th><th class="num">Días</th></tr></thead>
@@ -374,7 +387,10 @@
     <div class="table-card">
       <div class="table-header">
         <div class="table-title" style="color: var(--accent3);">Contratos en Proceso de Renovación</div>
-        <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblEnProceso', this.value)">
+        <div style="display: flex; gap: 8px;">
+          <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblEnProceso', this.value)">
+          <button onclick="exportarTablaVista('tblEnProceso', 'Contratos_En_Proceso')" class="btn-icon">⬇ Exportar</button>
+        </div>
       </div>
       <div class="table-wrap">
         <table id="tblEnProceso">
@@ -412,7 +428,10 @@
     <div class="table-card">
       <div class="table-header">
         <div class="table-title" style="color: var(--danger);">Historial de Contratos Perdidos</div>
-        <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblPerdidos', this.value)">
+        <div style="display: flex; gap: 8px;">
+          <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblPerdidos', this.value)">
+          <button onclick="exportarTablaVista('tblPerdidos', 'Contratos_Perdidos')" class="btn-icon">⬇ Exportar</button>
+        </div>
       </div>
       <div class="table-wrap">
         <table id="tblPerdidos">
@@ -1221,6 +1240,41 @@ function buildLost() {
   document.getElementById('kpiPerdidosTotal').textContent = DATA.lost_contracts.length;
   document.getElementById('kpiPerdidosUsd').textContent = fmtUSD(totalUsdPerdido);
 }
+
+// ====== EXPORTAR TABLA ESPECÍFICA (RESPETANDO FILTROS) ======
+function exportarTablaVista(tableId, nombreArchivo) {
+  const tabla = document.getElementById(tableId);
+  if (!tabla) return;
+
+  const datosExportar = [];
+  
+  // 1. Obtener las cabeceras
+  const cabeceras = [];
+  tabla.querySelectorAll('thead th').forEach(th => {
+      cabeceras.push(th.innerText.trim());
+  });
+  datosExportar.push(cabeceras);
+
+  // 2. Obtener las filas del cuerpo (solo las VISIBLES)
+  tabla.querySelectorAll('tbody tr').forEach(tr => {
+      if (tr.style.display !== 'none') {
+          const fila = [];
+          tr.querySelectorAll('td').forEach(td => {
+              fila.push(td.innerText.trim());
+          });
+          datosExportar.push(fila);
+      }
+  });
+
+  // 3. Crear el libro de Excel y descargar
+  const ws = XLSX.utils.aoa_to_sheet(datosExportar);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Datos");
+  
+  const fecha = new Date().toISOString().slice(0, 10);
+  XLSX.writeFile(wb, `${nombreArchivo}_${fecha}.xlsx`);
+}
+
 </script>
 </body>
 </html>
