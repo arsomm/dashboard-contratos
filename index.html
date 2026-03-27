@@ -1195,11 +1195,14 @@ function buildEnProceso() {
       
       let mapeoPrevio = (c.mapeo_cliente || 'Sin registro').substring(0, 40);
       if(c.mapeo_cliente && c.mapeo_cliente.length > 40) mapeoPrevio += '...';
+      
+      // Guardamos el texto completo intacto, escapando comillas para no romper el HTML
+      let mapeoCompleto = (c.mapeo_cliente || 'Sin registro').replace(/"/g, '&quot;');
 
       tr.innerHTML = `
         <td class="name-cell" title="${c.nombre}">${c.nombre}</td>
         <td style="font-weight: 500;">${c.responsable || '—'}</td>
-        <td style="font-size: 11px; color: var(--muted);">${mapeoPrevio}</td>
+        <td style="font-size: 11px; color: var(--muted);" data-full="${mapeoCompleto}">${mapeoPrevio}</td>
         <td class="num" style="color:var(--accent3);">${c.anual_usd>0 ? fmtUSD(c.anual_usd) : '—'}</td>
         <td class="num" style="color:var(--accent3);">${c.anual_crc>0 ? fmtCRC(c.anual_crc) : '—'}</td>
         <td>${c.expiracion}</td>
@@ -1224,11 +1227,14 @@ function buildLost() {
       
       let mapeoPrevio = (c.mapeo_cliente || 'Sin registro').substring(0, 40);
       if(c.mapeo_cliente && c.mapeo_cliente.length > 40) mapeoPrevio += '...';
+      
+      // Guardamos el texto completo intacto, escapando comillas para no romper el HTML
+      let mapeoCompleto = (c.mapeo_cliente || 'Sin registro').replace(/"/g, '&quot;');
 
       tr.innerHTML = `
         <td class="name-cell" title="${c.nombre}">${c.nombre}</td>
         <td style="font-weight: 500;">${c.responsable || '—'}</td>
-        <td style="font-size: 11px; color: var(--muted);">${mapeoPrevio}</td>
+        <td style="font-size: 11px; color: var(--muted);" data-full="${mapeoCompleto}">${mapeoPrevio}</td>
         <td class="num" style="color:var(--danger);">${c.anual_usd>0 ? fmtUSD(c.anual_usd) : '—'}</td>
         <td class="num" style="color:var(--danger);">${c.anual_crc>0 ? fmtCRC(c.anual_crc) : '—'}</td>
         <td>${c.expiracion}</td>
@@ -1251,7 +1257,7 @@ function exportarTablaVista(tableId, nombreArchivo) {
   // 1. Obtener las cabeceras
   const cabeceras = [];
   tabla.querySelectorAll('thead th').forEach(th => {
-      cabeceras.push(th.innerText.trim());
+      cabeceras.push(th.textContent.trim()); // Usar textContent evita cortes visuales
   });
   datosExportar.push(cabeceras);
 
@@ -1260,7 +1266,12 @@ function exportarTablaVista(tableId, nombreArchivo) {
       if (tr.style.display !== 'none') {
           const fila = [];
           tr.querySelectorAll('td').forEach(td => {
-              fila.push(td.innerText.trim());
+              // Si existe el texto original en "data-full", úsalo. Si no, usa el contenido limpio.
+              let valor = td.getAttribute('data-full');
+              if (valor === null) {
+                  valor = td.textContent.trim();
+              }
+              fila.push(valor);
           });
           datosExportar.push(fila);
       }
