@@ -827,14 +827,18 @@ function determinaFacturacion(c, mesObjetivo, anioObjetivo) {
   if (c.tipo_facturacion && c.tipo_facturacion.includes('manual')) return c.meses_custom && c.meses_custom.includes(mesObjetivo);
   const freq = (c.frecuencia || '').toUpperCase();
   if (!c.inicio_obj || isNaN(c.inicio_obj)) return freq.includes('MENSUAL') && !freq.includes('BIMENSUAL');
+  
   const mesesDiferencia = (anioObjetivo - c.inicio_obj.getFullYear()) * 12 + (mesObjetivo - c.inicio_obj.getMonth());
   if (mesesDiferencia < 0) return false; 
-  if (freq.includes('MENSUAL')) return true;
+  
+  // SOLUCIÓN: El orden fue invertido aquí
   if (freq.includes('BIMENSUAL')) return mesesDiferencia % 2 === 0;
+  if (freq.includes('MENSUAL')) return true; 
   if (freq.includes('TRIMESTRAL')) return mesesDiferencia % 3 === 0;
   if (freq.includes('CUATRIMESTRAL')) return mesesDiferencia % 4 === 0;
   if (freq.includes('SEMESTRAL')) return mesesDiferencia % 6 === 0;
   if (freq.includes('ANUAL')) return mesesDiferencia % 12 === 0;
+  
   return false;
 }
 
