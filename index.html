@@ -306,7 +306,7 @@
                 <span id="resumenMesCrc" style="color:#a78bfa; font-weight:700; font-family:var(--mono); font-size:11px;">₡0.00</span>
             </div>
             <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblMes', this.value)">
-            <button onclick="exportarTablaVista('tblMes', 'Facturacion_Mes')" class="btn-icon">⬇ Exportar</button>
+            <button onclick="exportarFacturacionMes()" class="btn-icon">⬇ Exportar</button>
         </div>
       </div>
       <div class="table-wrap">
@@ -1252,7 +1252,7 @@ function buildLost() {
 }
 
 // ====== EXPORTAR TABLA ESPECÍFICA (RESPETANDO FILTROS) ======
-function exportarTablaVista(tableId, nombreArchivo) {
+function exportarTablaVista(tableId, nombreArchivo, filasExtra = []) {
   const tabla = document.getElementById(tableId);
   if (!tabla) return;
 
@@ -1281,13 +1281,41 @@ function exportarTablaVista(tableId, nombreArchivo) {
       }
   });
 
-  // 3. Crear el libro de Excel y descargar
+  // 3. Agregar filas extra al final si existen
+  if (filasExtra.length > 0) {
+      datosExportar.push([]); // Fila vacía para separar
+      filasExtra.forEach(fila => datosExportar.push(fila));
+  }
+
+  // 4. Crear el libro de Excel y descargar
   const ws = XLSX.utils.aoa_to_sheet(datosExportar);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Datos");
   
   const fecha = new Date().toISOString().slice(0, 10);
   XLSX.writeFile(wb, `${nombreArchivo}_${fecha}.xlsx`);
+}
+
+function exportarFacturacionMes() {
+    // 1. Obtenemos los totales (máximos a facturar) directamente de la interfaz
+    let resumenUsdText = document.getElementById('resumenMesUsd').innerText;
+    let resumenCrcText = document.getElementById('resumenMesCrc').innerText;
+    
+    let maxUsd = resumenUsdText.includes(':') ? resumenUsdText.split(': ')[1] : '$0.00';
+    let maxCrc = resumenCrcText.includes(':') ? resumenCrcText.split(': ')[1] : '₡0.00';
+
+    // 2. Obtenemos el nombre del mes seleccionado para el nombre del archivo
+    const mesSelector = document.getElementById('monthSelector');
+    const mesNombre = mesSelector.options[mesSelector.selectedIndex].text.replace(/ /g, '_');
+
+    // 3. Preparamos las filas extra que irán al final de la tabla
+    const filasExtra = [
+        ["MÁXIMO A FACTURAR USD:", maxUsd],
+        ["MÁXIMO A FACTURAR CRC:", maxCrc]
+    ];
+
+    // 4. Llamamos a la función de exportación
+    exportarTablaVista('tblMes', `Facturacion_${mesNombre}`, filasExtra);
 }
 
 </script>
