@@ -18,34 +18,34 @@
     --surface: #ffffff;
     --surface2: #f9fafb;
     --border: #e5e7eb;
-
+    
     --accent: #0284c7; 
     --accent2: #7c3aed; 
     --accent3: #ea580c; 
     --accent4: #10b981; 
     --danger: #ef4444; 
-
+    
     --text: #1f2937;
     --muted: #6b7280;
     --font: 'Syne', sans-serif; --mono: 'JetBrains Mono', monospace;
   }
-
+  
   /* ====== RESET Y ESTILOS BASE ====== */
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; overflow-x: hidden; }
-
+  
   body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
   .container { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
-
+  
   /* ====== ENCABEZADO Y CONTROLES ====== */
   .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 40px; flex-wrap: wrap; gap: 16px; }
   .header-tag { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; opacity: 0.8; }
-
+  
   .header-title { font-size: clamp(28px, 5vw, 48px); font-weight: 800; letter-spacing: -1px; line-height: 1; background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .header-subtitle { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 8px; }
   .header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
   .header-buttons { display: flex; gap: 8px; width: 100%; justify-content: flex-end; flex-wrap: wrap; }
-
+  
   .fx-rate-box { background: var(--surface2); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; display: flex; align-items: center; gap: 10px; width: 100%; justify-content: space-between; }
   .fx-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; }
   .fx-input { background: var(--bg); border: 1px solid var(--border); color: var(--accent); font-family: var(--mono); font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 4px; width: 80px; text-align: right; outline: none; }
@@ -62,17 +62,17 @@
   .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
   @media (max-width: 1024px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } .kpi:nth-child(5), .kpi:nth-child(6) { grid-column: span 1 !important; } }
   @media (max-width: 600px) { .kpi-grid { grid-template-columns: 1fr; } }
-
+  
   .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px 24px; position: relative; overflow: hidden; transition: border-color 0.2s, transform 0.2s; display: flex; flex-direction: column;}
   .kpi:nth-child(5), .kpi:nth-child(6) { grid-column: span 2; }
-
+  
   .kpi:hover { border-color: var(--accent); transform: translateY(-2px); }
   .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
   .kpi.cyan::before { background: var(--accent); } .kpi.purple::before { background: var(--accent2); }
   .kpi.amber::before { background: var(--accent3); } .kpi.green::before { background: var(--accent4); }
   .kpi.red::before { background: var(--danger); } .kpi.emerald::before { background: #059669; }
   .kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; font-family: var(--mono); margin-bottom: 10px; display: flex; justify-content: space-between;}
-
+  
   .kpi-value { font-size: clamp(16px, 1.8vw, 22px); font-weight: 800; line-height: 1; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .kpi.cyan .kpi-value { color: var(--accent); } .kpi.purple .kpi-value { color: var(--accent2); }
   .kpi.amber .kpi-value { color: var(--accent3); } .kpi.green .kpi-value { color: var(--accent4); }
@@ -121,7 +121,7 @@
   .urgency-bar { display: flex; align-items: center; gap: 8px; }
   .urgency-track { width: 80px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
   .urgency-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
-
+  
   @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   .kpi { animation: fadeUp 0.4s ease both; } .kpi:nth-child(1) { animation-delay: 0.05s; } .kpi:nth-child(2) { animation-delay: 0.1s; } .kpi:nth-child(3) { animation-delay: 0.15s; } .kpi:nth-child(4) { animation-delay: 0.2s; } .kpi:nth-child(5) { animation-delay: 0.25s; } .kpi:nth-child(6) { animation-delay: 0.3s; }
   .glowing { box-shadow: 0 0 30px rgba(2,132,199,0.15); }
@@ -147,7 +147,7 @@
   .modal-field.highlight-crc .modal-field-value { color: var(--accent2); font-family: var(--mono); font-size: 22px; }
   .modal-section-title { grid-column: 1 / -1; font-family: var(--mono); font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; margin-top: 16px; margin-bottom: -4px; display: flex; align-items: center; gap: 8px;}
   .modal-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
+  
   .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
   .switch input { opacity: 0; width: 0; height: 0; }
   .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); border: 1px solid var(--border); transition: .3s; border-radius: 20px; }
@@ -167,7 +167,7 @@
 
   .btn-icon { background: var(--surface2); color: var(--text); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: var(--mono); font-size: 11px; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
   .btn-icon:hover { background: var(--border); }
-
+  
   .btn-primary { background: var(--accent); color: #ffffff; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 800; cursor: pointer; font-family: var(--mono); font-size: 13px; transition: 0.2s; flex: 1; }
   .btn-secondary { background: rgba(16, 185, 129, 0.1); color: var(--accent4); border: 1px solid rgba(16, 185, 129, 0.4); padding: 10px 16px; border-radius: 8px; font-weight: 800; cursor: pointer; font-family: var(--mono); font-size: 13px; transition: 0.2s; flex: 1; }
   .btn-secondary:hover { background: rgba(16, 185, 129, 0.2); }
@@ -244,7 +244,7 @@
             <span id="kpiMesUsd" style="font-size: clamp(16px, 1.6vw, 20px); font-weight: 800; color:var(--accent); line-height:1; margin:0;">$0.00</span>
         </div>
       </div>
-
+      
       <div class="kpi cyan">
         <div class="kpi-label">Subtotal Anual</div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; flex: 1;">
@@ -268,7 +268,7 @@
         <div class="kpi-label">Contratos Activos</div>
         <div class="kpi-value" id="kpiActivos">0</div>
       </div>
-
+      
       <div class="kpi amber"><div class="kpi-icon">↻</div><div class="kpi-label">Por Renovar</div><div class="kpi-value" id="kpiRenovar">0</div><div class="kpi-sub">requieren atención temprana</div></div>
       <div class="kpi red"><div class="kpi-icon">!</div><div class="kpi-label">Expirados</div><div class="kpi-value" id="kpiExpirados">0</div><div class="kpi-sub">contratos vencidos</div></div>
     </div>
@@ -276,10 +276,10 @@
     <div class="chart-grid">
       <div class="chart-card wide"><div class="chart-title">Monto Anual USD — Top Contratos</div><div class="chart-wrap tall"><canvas id="chartTop"></canvas></div></div>
       <div class="chart-card wide"><div class="chart-title">Monto Anual CRC — Top Contratos</div><div class="chart-wrap tall"><canvas id="chartTopCrc"></canvas></div></div>
-
+      
       <div class="chart-card"><div class="chart-title">Distribución por Frecuencia</div><div class="chart-wrap"><canvas id="chartFreq"></canvas></div></div>
       <div class="chart-card"><div class="chart-title">Modalidad de Cobertura</div><div class="chart-wrap"><canvas id="chartModalidad"></canvas></div></div>
-
+      
       <div class="chart-card"><div class="chart-title">Desglose por Condición de IVA</div><div class="chart-wrap"><canvas id="chartIva"></canvas></div></div>
       <div class="chart-card"><div class="chart-title">Estado de Renovación</div><div class="chart-wrap"><canvas id="chartEstado"></canvas></div></div>
     </div>
@@ -306,7 +306,6 @@
                 <span id="resumenMesCrc" style="color:#a78bfa; font-weight:700; font-family:var(--mono); font-size:11px;">₡0.00</span>
             </div>
             <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblMes', this.value)">
-            <button onclick="exportarTablaVista('tblMes', 'Facturacion_Mes')" class="btn-icon">⬇ Exportar</button>
             <button onclick="exportarFacturacionMes()" class="btn-icon">⬇ Exportar</button>
         </div>
       </div>
@@ -554,7 +553,7 @@
         <div class="modal-field-label view-mode" style="margin-top:4px;" id="mdlCuotaCrcTot">Total con IVA: ₡0.00</div>
         <div class="modal-input edit-mode" style="color:var(--muted); background:var(--bg); cursor:not-allowed;">Auto-calculable</div>
       </div>
-
+      
       <div class="modal-section-title">Mapeo y Notas</div>
       <div class="modal-field" style="grid-column: 1 / -1;">
         <div class="modal-field-label">Mapeo del Cliente / Información Adicional</div>
@@ -565,7 +564,7 @@
       <div class="modal-section-title">Estado e Información Extra</div>
       <div class="modal-field view-mode"><div class="modal-field-label">Días Restantes</div><div class="modal-field-value" id="mdlDias">-</div></div>
       <div class="modal-field view-mode"><div class="modal-field-label">Condición del IVA</div><div class="modal-field-value" id="mdlIva">-</div></div>
-
+      
       <div class="modal-field view-mode">
         <div class="modal-field-label">Estado del Contrato</div>
         <div class="modal-field-value" id="mdlEstado_view" style="font-weight: 800;">-</div>
@@ -595,7 +594,7 @@ const HOY = new Date(); const MES_ACTUAL = HOY.getMonth(); const ANIO_ACTUAL = H
 document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('lblMesKPI').innerText = MESES[MES_ACTUAL];
   document.getElementById('lblYearProy').innerText = ANIO_ACTUAL;
-
+  
   const monthSelector = document.getElementById('monthSelector');
   MESES.forEach((m, idx) => {
       let opt = document.createElement('option'); opt.value = idx; opt.text = m.toUpperCase() + ' ' + ANIO_ACTUAL;
@@ -703,7 +702,7 @@ async function cargarDatosDelExcel() {
   if (!fileHandle) return;
   document.getElementById('statusText').innerText = "Solicitando permisos de seguridad...";
   tasaCambio = parseFloat(document.getElementById('inputTC').value) || 515;
-
+  
   try {
     const pExcel = await verificarPermiso(fileHandle); 
     if (!pExcel) {
@@ -712,7 +711,7 @@ async function cargarDatosDelExcel() {
     }
 
     await cargarJSONGuardado();
-
+    
     if (Object.keys(configGuardada).length === 0) {
         const saved = await idbKeyval.get('contractEdits');
         if (saved) configGuardada = saved;
@@ -722,7 +721,7 @@ async function cargarDatosDelExcel() {
     const file = await fileHandle.getFile();
     const arrayBuffer = await file.arrayBuffer();
     const workbook = XLSX.read(arrayBuffer, { type: 'array', cellDates: true });
-
+    
     // ==== LECTURA PRINCIPAL DE CONTRATOS ====
     const jsonDatos = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { raw: false, range: 1, defval: "" });
 
@@ -758,7 +757,7 @@ async function cargarDatosDelExcel() {
       let cant3 = getExact('Cantidad3') || '';
       let equipo4 = getExact('Tipo de equipo4') || '';
       let cant4 = getExact('Cantidad4') || '';
-
+      
       // El estado SIEMPRE se lee únicamente del Excel
       let estado = getExact('Estado') || 'ACTIVO'; 
 
@@ -824,14 +823,14 @@ function exportarExcel() {
 
 function determinaFacturacion(c, mesObjetivo, anioObjetivo) {
   if (c.estado && (c.estado.toUpperCase().includes('PERDIDO') || c.estado.toUpperCase().includes('PROCESO'))) return false;
-
+  
   if (c.tipo_facturacion && c.tipo_facturacion.includes('manual')) return c.meses_custom && c.meses_custom.includes(mesObjetivo);
   const freq = (c.frecuencia || '').toUpperCase();
   if (!c.inicio_obj || isNaN(c.inicio_obj)) return freq.includes('MENSUAL') && !freq.includes('BIMENSUAL');
-
+  
   const mesesDiferencia = (anioObjetivo - c.inicio_obj.getFullYear()) * 12 + (mesObjetivo - c.inicio_obj.getMonth());
   if (mesesDiferencia < 0) return false; 
-
+  
   // SOLUCIÓN: El orden fue invertido aquí
   if (freq.includes('BIMENSUAL')) return mesesDiferencia % 2 === 0;
   if (freq.includes('MENSUAL')) return true; 
@@ -839,7 +838,7 @@ function determinaFacturacion(c, mesObjetivo, anioObjetivo) {
   if (freq.includes('CUATRIMESTRAL')) return mesesDiferencia % 4 === 0;
   if (freq.includes('SEMESTRAL')) return mesesDiferencia % 6 === 0;
   if (freq.includes('ANUAL')) return mesesDiferencia % 12 === 0;
-
+  
   return false;
 }
 
@@ -863,17 +862,17 @@ function procesarLogicaInteligente() {
   const contratosActivos = DATA.all_contracts.filter(c => !(c.estado || '').toUpperCase().includes('PERDIDO') && !(c.estado || '').toUpperCase().includes('PROCESO'));
   DATA.lost_contracts = DATA.all_contracts.filter(c => (c.estado || '').toUpperCase().includes('PERDIDO'));
   DATA.en_proceso_contracts = DATA.all_contracts.filter(c => (c.estado || '').toUpperCase().includes('PROCESO'));
-
+  
   DATA.renew_contracts = contratosActivos.filter(c => c.dias >= 0 && c.dias <= 90);
   DATA.projection_usd = Array(12).fill(0); DATA.projection_crc = Array(12).fill(0); DATA.billing_by_month = Array.from({length: 12}, () => []);
-
+  
   contratosActivos.forEach(c => {
     c.cuota_usd_mes = fraccionarMonto(c, c.anual_usd); 
     c.cuota_crc_mes = fraccionarMonto(c, c.anual_crc);
-
+    
     c.tiene_iva = (c.iva || '').toUpperCase().includes('GRAVADO');
     c.factor_iva = c.tiene_iva ? 1.13 : 1;
-
+    
     c.cuota_usd_mes_total = c.cuota_usd_mes * c.factor_iva;
     c.cuota_crc_mes_total = c.cuota_crc_mes * c.factor_iva;
 
@@ -905,14 +904,14 @@ function toggleSpecsBox() {
 function mostrarDetalleContrato(c) {
   contratoEnEdicion = c; toggleEditMode(false); document.getElementById('chkEditMode').checked = false;
   document.getElementById('mdlNombre').innerText = c.nombre;
-
+  
   let statusBadge = '';
   if (c.estado && c.estado.toUpperCase().includes('PERDIDO')) statusBadge = `<span class="badge badge-red">PERDIDO</span>`;
   else if (c.estado && c.estado.toUpperCase().includes('PROCESO')) statusBadge = `<span class="badge badge-amber">EN PROCESO</span>`;
   else statusBadge = `<span class="badge badge-green">ACTIVO</span>`;
 
   document.getElementById('mdlBadges').innerHTML = `${freqBadge(c.frecuencia)} <span class="badge badge-gray">${c.modalidad}</span> ${statusBadge}`;
-
+  
   // Estos datos solo se leen desde el Excel
   document.getElementById('mdlAnualUsd').innerText = c.anual_usd > 0 ? fmtUSD(c.anual_usd) : '—'; 
   document.getElementById('mdlAnualCrc').innerText = c.anual_crc > 0 ? fmtCRC(c.anual_crc) : '—';
@@ -923,14 +922,14 @@ function mostrarDetalleContrato(c) {
   document.getElementById('mdlFin').innerText = c.expiracion; 
 
   document.getElementById('mdlFrecuencia_view').innerText = c.frecuencia || 'No Definido';
-
+  
   if (c.tipo_facturacion === 'mes') document.getElementById('mdlTipoFact_view').innerText = 'Automático - Mes General';
   else if (c.tipo_facturacion === 'dia') document.getElementById('mdlTipoFact_view').innerText = 'Automático - Día Específico';
   else if (c.tipo_facturacion === 'manual_mes') document.getElementById('mdlTipoFact_view').innerText = 'Personalizado - Elegir Meses';
   else if (c.tipo_facturacion === 'manual_dia') document.getElementById('mdlTipoFact_view').innerText = 'Personalizado - Meses y Día';
 
   if (c.tipo_facturacion.includes('dia') && c.dia_facturacion) document.getElementById('mdlDiaFact_view').innerText = `Día ${c.dia_facturacion} del mes`;
-
+  
   if (c.tipo_facturacion.includes('manual')) {
       document.getElementById('boxMesesCustom').style.display = 'block';
       document.getElementById('mdlMesesCustom_view').innerText = (c.meses_custom && c.meses_custom.length > 0) ? c.meses_custom.map(idx => MESES[idx].substring(0,3).toUpperCase()).join(', ') : 'Ningún mes seleccionado';
@@ -938,7 +937,7 @@ function mostrarDetalleContrato(c) {
 
   document.getElementById('mdlCuotaUsd').innerText = c.cuota_usd_mes > 0 ? fmtUSD(c.cuota_usd_mes) : '—'; 
   document.getElementById('mdlCuotaCrc').innerText = c.cuota_crc_mes > 0 ? fmtCRC(c.cuota_crc_mes) : '—';
-
+  
   document.getElementById('mdlCuotaUsdTot').innerText = c.cuota_usd_mes > 0 ? `Total con IVA: ${fmtUSD(c.cuota_usd_mes_total)}` : '';
   document.getElementById('mdlCuotaCrcTot').innerText = c.cuota_crc_mes > 0 ? `Total con IVA: ${fmtCRC(c.cuota_crc_mes_total)}` : '';
 
@@ -955,7 +954,7 @@ function mostrarDetalleContrato(c) {
   if(c.equipo4) eqHtml += `<tr><td>${c.equipo4}</td><td style="text-align: right;">${c.cant4 || 1}</td></tr>`;
   if(!eqHtml) eqHtml = `<tr><td colspan="2" style="text-align: center; color: var(--muted); border: none;">No hay equipos principales registrados</td></tr>`;
   document.getElementById('mdlEquipos_view').innerHTML = eqHtml;
-
+  
   // === LÓGICA PARA LLENAR LA TABLA DETALLADA DESDE LA HOJA EQUIPOS ===
   const btnToggleSpecs = document.getElementById('btnToggleSpecs');
   const boxSpecs = document.getElementById('boxSpecs');
@@ -1040,7 +1039,7 @@ async function guardarCambiosContrato() {
 function actualizarUI() {
   let totalUsd = 0, totalCrc = 0, expirados = 0, mesActualUsd = 0, mesActualCrc = 0;
   const contratosActivos = DATA.all_contracts.filter(c => !(c.estado || '').toUpperCase().includes('PERDIDO') && !(c.estado || '').toUpperCase().includes('PROCESO'));
-
+  
   contratosActivos.forEach(c => { totalUsd += c.anual_usd; totalCrc += c.anual_crc; if (c.dias < 0) expirados++; });
   DATA.current_month_billing.forEach(c => { mesActualUsd += c.cuota_usd_mes; mesActualCrc += c.cuota_crc_mes; });
   let consolidadoUsd = totalUsd + (totalCrc / tasaCambio);
@@ -1049,20 +1048,20 @@ function actualizarUI() {
   document.getElementById('kpiTotalCrc').innerText = fmtCRC(totalCrc); 
   document.getElementById('kpiConsolidadoUsd').innerText = fmtUSD(consolidadoUsd); 
   if(document.getElementById('lblTasaCambio')) { document.getElementById('lblTasaCambio').innerText = `TC: ₡${tasaCambio}`; }
-
+  
   document.getElementById('kpiActivos').innerText = contratosActivos.length; 
   if(document.getElementById('kpiTotalContratos')) { document.getElementById('kpiTotalContratos').innerText = `${contratosActivos.length} contratos en vigencia`; }
-
+  
   document.getElementById('kpiRenovar').innerText = DATA.renew_contracts.length; 
   document.getElementById('kpiExpirados').innerText = expirados;
-
+  
   document.getElementById('kpiMesUsd').innerText = fmtUSD(mesActualUsd); 
   document.getElementById('kpiMesCrc').innerText = fmtCRC(mesActualCrc);
 
   document.getElementById('tbodyAll').innerHTML = ''; document.getElementById('tbodyRenovar').innerHTML = ''; document.getElementById('tbodyMes').innerHTML = ''; 
   document.getElementById('tbodyPerdidos').innerHTML = ''; 
   document.getElementById('tbodyEnProceso').innerHTML = '';
-
+  
   for (let id in Chart.instances) Chart.instances[id].destroy();
   initCharts(); updateMesTable(); buildAll(); buildRenew(); buildLost(); buildEnProceso();
 }
@@ -1077,7 +1076,7 @@ function filterTable(tableId, query) { const q = query.toLowerCase(); document.q
 function initCharts() {
   const contratosActivos = DATA.all_contracts.filter(c => !(c.estado || '').toUpperCase().includes('PERDIDO') && !(c.estado || '').toUpperCase().includes('PROCESO'));
   if (contratosActivos.length === 0) return;
-
+  
   let freqCounts = {}, modCounts = { '24x7': 0, '8x5 / Otras': 0 };
   let ivaCounts = {};
   let estadoCounts = { 'Vigentes (Seguros)': 0, 'Por Renovar (<90d)': 0, 'Expirados': 0 };
@@ -1085,7 +1084,7 @@ function initCharts() {
   contratosActivos.forEach(c => { 
       freqCounts[c.frecuencia] = (freqCounts[c.frecuencia] || 0) + 1; 
       if (c.modalidad && c.modalidad.includes('24x7')) modCounts['24x7']++; else modCounts['8x5 / Otras']++; 
-
+      
       let ivaClean = (c.iva || 'No definido').toUpperCase();
       if(ivaClean.includes('GRAVADO')) ivaClean = 'Aplica IVA (13%)';
       else if(ivaClean.includes('EXONERADO')) ivaClean = 'Exonerados';
@@ -1099,7 +1098,7 @@ function initCharts() {
 
   const topUsd = [...contratosActivos].sort((a,b) => b.anual_usd - a.anual_usd).slice(0, 8);
   new Chart(document.getElementById('chartTop'), { type: 'bar', data: { labels: topUsd.map(c => c.nombre.substring(0,20)), datasets: [{ data: topUsd.map(c => c.anual_usd), backgroundColor: 'rgba(0,229,255,0.25)', borderColor: '#00e5ff', borderWidth: 1.5, borderRadius: 6 }] }, options: { indexAxis: 'y', plugins: { legend: { display: false } } } });
-
+  
   const topCrc = [...contratosActivos].sort((a,b) => b.anual_crc - a.anual_crc).slice(0, 8);
   new Chart(document.getElementById('chartTopCrc'), { type: 'bar', data: { labels: topCrc.map(c => c.nombre.substring(0,20)), datasets: [{ data: topCrc.map(c => c.anual_crc), backgroundColor: 'rgba(124,58,237,0.25)', borderColor: '#7c3aed', borderWidth: 1.5, borderRadius: 6 }] }, options: { indexAxis: 'y', plugins: { legend: { display: false } } } });
 
@@ -1118,22 +1117,22 @@ function updateMesTable() {
   const tbody = document.getElementById('tbodyMes'); 
   tbody.innerHTML = ''; 
   const dataDelMes = DATA.billing_by_month[mIdx] || []; 
-
+  
   let sumaMesUsdTot = 0, sumaMesCrcTot = 0;
-
+  
   dataDelMes.forEach(c => {
      sumaMesUsdTot += c.cuota_usd_mes; 
       sumaMesCrcTot += c.cuota_crc_mes;
-
+    
     const tr = document.createElement('tr'); 
     tr.className = "clickable"; 
     tr.onclick = () => mostrarDetalleContrato(c); 
-
+    
     let estadoBadge = `<span class="badge badge-outline">Factura en ${MESES[mIdx].substring(0,3)}</span>`; 
     if (c.tipo_facturacion.includes('dia') && c.dia_facturacion) estadoBadge = `<span class="badge badge-cyan">Día ${c.dia_facturacion} (${MESES[mIdx].substring(0,3)})</span>`;
-
+    
     let ivaBadgeCol = c.tiene_iva ? `<span class="badge badge-amber">13%</span>` : `<span class="badge badge-gray">0%</span>`;
-
+    
     tr.innerHTML = `
       <td class="name-cell" title="${c.nombre}">${c.nombre}</td>
       <td>${estadoBadge}</td>
@@ -1146,7 +1145,7 @@ function updateMesTable() {
     `; 
     tbody.appendChild(tr);
   });
-
+  
   if(dataDelMes.length > 0) { 
         document.getElementById('resumenMesSeleccionado').style.display = 'flex'; 
         document.getElementById('resumenMesUsd').innerText = `Subtotal a Facturar (s/IVA): ${fmtUSD(sumaMesUsdTot)}`;
@@ -1191,16 +1190,16 @@ function buildRenew() {
 function buildEnProceso() {
   const tbody = document.getElementById('tbodyEnProceso');
   let totalUsdEnProceso = 0;
-
+  
   DATA.en_proceso_contracts.forEach(c => {
       totalUsdEnProceso += c.anual_usd + (c.anual_crc / tasaCambio);
       const tr = document.createElement('tr');
       tr.className = "clickable";
       tr.onclick = () => mostrarDetalleContrato(c);
-
+      
       let mapeoPrevio = (c.mapeo_cliente || 'Sin registro').substring(0, 40);
       if(c.mapeo_cliente && c.mapeo_cliente.length > 40) mapeoPrevio += '...';
-
+      
       // Guardamos el texto completo intacto, escapando comillas para no romper el HTML
       let mapeoCompleto = (c.mapeo_cliente || 'Sin registro').replace(/"/g, '&quot;');
 
@@ -1215,7 +1214,7 @@ function buildEnProceso() {
       `;
       tbody.appendChild(tr);
   });
-
+  
   document.getElementById('kpiEnProcesoTotal').textContent = DATA.en_proceso_contracts.length;
   document.getElementById('kpiEnProcesoUsd').textContent = fmtUSD(totalUsdEnProceso);
 }
@@ -1223,16 +1222,16 @@ function buildEnProceso() {
 function buildLost() {
   const tbody = document.getElementById('tbodyPerdidos');
   let totalUsdPerdido = 0;
-
+  
   DATA.lost_contracts.forEach(c => {
       totalUsdPerdido += c.anual_usd;
       const tr = document.createElement('tr');
       tr.className = "clickable";
       tr.onclick = () => mostrarDetalleContrato(c);
-
+      
       let mapeoPrevio = (c.mapeo_cliente || 'Sin registro').substring(0, 40);
       if(c.mapeo_cliente && c.mapeo_cliente.length > 40) mapeoPrevio += '...';
-
+      
       // Guardamos el texto completo intacto, escapando comillas para no romper el HTML
       let mapeoCompleto = (c.mapeo_cliente || 'Sin registro').replace(/"/g, '&quot;');
 
@@ -1247,19 +1246,18 @@ function buildLost() {
       `;
       tbody.appendChild(tr);
   });
-
+  
   document.getElementById('kpiPerdidosTotal').textContent = DATA.lost_contracts.length;
   document.getElementById('kpiPerdidosUsd').textContent = fmtUSD(totalUsdPerdido);
 }
 
 // ====== EXPORTAR TABLA ESPECÍFICA (RESPETANDO FILTROS) ======
-function exportarTablaVista(tableId, nombreArchivo) {
 function exportarTablaVista(tableId, nombreArchivo, filasExtra = []) {
   const tabla = document.getElementById(tableId);
   if (!tabla) return;
 
   const datosExportar = [];
-
+  
   // 1. Obtener las cabeceras
   const cabeceras = [];
   tabla.querySelectorAll('thead th').forEach(th => {
@@ -1283,7 +1281,6 @@ function exportarTablaVista(tableId, nombreArchivo, filasExtra = []) {
       }
   });
 
-  // 3. Crear el libro de Excel y descargar
   // 3. Agregar filas extra al final si existen
   if (filasExtra.length > 0) {
       datosExportar.push([]); // Fila vacía para separar
@@ -1294,7 +1291,7 @@ function exportarTablaVista(tableId, nombreArchivo, filasExtra = []) {
   const ws = XLSX.utils.aoa_to_sheet(datosExportar);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Datos");
-
+  
   const fecha = new Date().toISOString().slice(0, 10);
   XLSX.writeFile(wb, `${nombreArchivo}_${fecha}.xlsx`);
 }
