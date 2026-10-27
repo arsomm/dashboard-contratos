@@ -4,8 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Contratos 2026</title>
+<link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#0a0c10">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/idb-keyval@6/dist/umd.js"></script>
@@ -17,37 +18,37 @@
     --surface: #ffffff;
     --surface2: #f9fafb;
     --border: #e5e7eb;
-    
+
     --accent: #0284c7; 
     --accent2: #7c3aed; 
     --accent3: #ea580c; 
     --accent4: #10b981; 
     --danger: #ef4444; 
-    
+
     --text: #1f2937;
     --muted: #6b7280;
-    --font: 'Syne', sans-serif; 
-    --mono: 'JetBrains Mono', monospace;
+    --font: 'Syne', sans-serif; --mono: 'JetBrains Mono', monospace;
   }
-  
+
   /* ====== RESET Y ESTILOS BASE ====== */
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; overflow-x: hidden; }
-  
+
   body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
   .container { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
-  
+
   /* ====== ENCABEZADO Y CONTROLES ====== */
   .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 40px; flex-wrap: wrap; gap: 16px; }
-  .header-tag { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; opacity: 0.8; font-weight: 700;}
-  
+  .header-tag { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; opacity: 0.8; }
+
   .header-title { font-size: clamp(28px, 5vw, 48px); font-weight: 800; letter-spacing: -1px; line-height: 1; background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .header-subtitle { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 8px; }
   .header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
   .header-buttons { display: flex; gap: 8px; width: 100%; justify-content: flex-end; flex-wrap: wrap; }
-  
+
   .fx-rate-box { background: var(--surface2); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; display: flex; align-items: center; gap: 10px; width: 100%; justify-content: space-between; }
-  .fx-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; font-weight: 700;}
-  .fx-input { background: var(--bg); border: 1px solid var(--border); color: var(--accent); font-family: var(--mono); font-size: 13px; font-weight: 700; padding: 4px 8px; border-radius: 4px; width: 80px; text-align: right; outline: none; }
+  .fx-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; }
+  .fx-input { background: var(--bg); border: 1px solid var(--border); color: var(--accent); font-family: var(--mono); font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 4px; width: 80px; text-align: right; outline: none; }
   .fx-input:focus { border-color: var(--accent); }
 
   /* ====== SISTEMA DE PESTAÑAS (TABS) ====== */
@@ -61,17 +62,17 @@
   .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
   @media (max-width: 1024px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } .kpi:nth-child(5), .kpi:nth-child(6) { grid-column: span 1 !important; } }
   @media (max-width: 600px) { .kpi-grid { grid-template-columns: 1fr; } }
-  
+
   .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px 24px; position: relative; overflow: hidden; transition: border-color 0.2s, transform 0.2s; display: flex; flex-direction: column;}
   .kpi:nth-child(5), .kpi:nth-child(6) { grid-column: span 2; }
-  
+
   .kpi:hover { border-color: var(--accent); transform: translateY(-2px); }
   .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
   .kpi.cyan::before { background: var(--accent); } .kpi.purple::before { background: var(--accent2); }
   .kpi.amber::before { background: var(--accent3); } .kpi.green::before { background: var(--accent4); }
   .kpi.red::before { background: var(--danger); } .kpi.emerald::before { background: #059669; }
-  .kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-family: var(--mono); font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between;}
-  
+  .kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; font-family: var(--mono); margin-bottom: 10px; display: flex; justify-content: space-between;}
+
   .kpi-value { font-size: clamp(16px, 1.8vw, 22px); font-weight: 800; line-height: 1; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .kpi.cyan .kpi-value { color: var(--accent); } .kpi.purple .kpi-value { color: var(--accent2); }
   .kpi.amber .kpi-value { color: var(--accent3); } .kpi.green .kpi-value { color: var(--accent4); }
@@ -79,24 +80,26 @@
   .kpi-sub { font-size: 11px; color: var(--muted); font-family: var(--mono); }
   .kpi-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 32px; opacity: 0.08; color: var(--text); }
 
-  /* ====== GRÁFICOS Y TABLAS ====== */
+  /* ====== GRÁFICOS ====== */
   .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
   @media (max-width: 768px) { .chart-grid { grid-template-columns: 1fr; } .chart-card.wide { grid-column: span 1; } }
   .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
   .chart-card.wide { grid-column: span 2; }
-  .chart-title { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; font-family: var(--mono); display: flex; justify-content: space-between; align-items: center; }
+  .chart-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; font-family: var(--mono); display: flex; justify-content: space-between; align-items: center; }
   .chart-wrap { position: relative; height: 260px; } .chart-wrap.tall { height: 320px; }
 
+  /* ====== TABLAS DE DATOS ====== */
   .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 24px; }
   .table-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-  .table-title { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-family: var(--mono); display: flex; align-items: center; gap: 12px; }
+  .table-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; font-family: var(--mono); display: flex; align-items: center; gap: 12px; }
   .search-input { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; color: var(--text); font-size: 12px; font-family: var(--mono); outline: none; width: 220px; }
   .search-input:focus { border-color: var(--accent); }
-  
+  select.search-input { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px; padding-right: 32px; }
+
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 12px; }
   thead tr { background: var(--surface2); }
-  thead th { padding: 12px 16px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-family: var(--mono); white-space: nowrap; }
+  thead th { padding: 12px 16px; text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-family: var(--mono); white-space: nowrap; }
   tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
   tbody tr.clickable { cursor: pointer; transition: all 0.2s ease; }
   tbody tr.clickable:hover { background: var(--surface2); box-shadow: inset 4px 0 0 var(--accent); }
@@ -104,8 +107,8 @@
   tbody td.name-cell { font-family: var(--font); font-size: 12px; font-weight: 600; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .num { text-align: right; }
 
-  /* ====== BADGES & UTILS ====== */
-  .badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; font-family: var(--mono); }
+  /* ====== BADGES ====== */
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; font-family: var(--mono); }
   .badge-cyan { background: rgba(2,132,199,0.12); color: var(--accent); border: 1px solid rgba(2,132,199,0.2); }
   .badge-green { background: rgba(16,185,129,0.12); color: var(--accent4); border: 1px solid rgba(16,185,129,0.2); }
   .badge-amber { background: rgba(234,88,12,0.12); color: var(--accent3); border: 1px solid rgba(234,88,12,0.2); }
@@ -114,52 +117,37 @@
   .badge-gray { background: rgba(107,114,128,0.12); color: var(--muted); border: 1px solid rgba(107,114,128,0.2); }
   .badge-outline { border: 1px solid var(--muted); color: var(--text); background: transparent; }
 
+  /* ====== BARRA DE URGENCIA ====== */
   .urgency-bar { display: flex; align-items: center; gap: 8px; }
   .urgency-track { width: 80px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
   .urgency-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
-  
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .kpi { animation: fadeUp 0.4s ease both; } .kpi:nth-child(1) { animation-delay: 0.05s; } .kpi:nth-child(2) { animation-delay: 0.1s; } .kpi:nth-child(3) { animation-delay: 0.15s; } .kpi:nth-child(4) { animation-delay: 0.2s; } .kpi:nth-child(5) { animation-delay: 0.25s; } .kpi:nth-child(6) { animation-delay: 0.3s; }
   .glowing { box-shadow: 0 0 30px rgba(2,132,199,0.15); }
 
-  /* ====== BOTONES ====== */
-  .btn-icon { background: var(--surface2); color: var(--text); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: var(--mono); font-size: 11px; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
-  .btn-icon:hover { background: var(--border); }
-  .btn-primary { background: var(--accent); color: #ffffff; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: var(--mono); font-size: 13px; transition: 0.2s; flex: 1; text-align: center;}
-  .btn-primary:hover { opacity: 0.9; }
-  .btn-secondary { background: rgba(16, 185, 129, 0.1); color: var(--accent4); border: 1px solid rgba(16, 185, 129, 0.4); padding: 10px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: var(--mono); font-size: 13px; transition: 0.2s; flex: 1; text-align: center;}
-  .btn-secondary:hover { background: rgba(16, 185, 129, 0.2); }
-  .btn-add { background: var(--accent4); color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; font-family: var(--mono); font-size: 11px; transition: 0.2s;}
-  .btn-add:hover { opacity: 0.8; box-shadow: 0 0 10px rgba(16,185,129,0.3); }
-  .btn-toggle-specs { width: 100%; margin-top: 8px; background: var(--surface2); border: 1px dashed var(--accent); color: var(--accent); padding: 10px; border-radius: 8px; font-weight: 700; font-family: var(--mono); font-size: 12px; cursor: pointer; transition: 0.2s; }
-  .btn-toggle-specs:hover { background: rgba(2,132,199,0.05); }
-
-  /* ====== MODAL INTERACTIVO ====== */
+  /* ====== ESTILOS DEL MODAL ====== */
   .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(243, 244, 246, 0.85); backdrop-filter: blur(8px); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; padding: 20px; }
   .modal-overlay.active { display: flex; opacity: 1; }
-  .modal-content { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid var(--accent); border-radius: 16px; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; padding: 32px; position: relative; transform: translateY(20px); transition: transform 0.3s ease; box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 0 40px rgba(2,132,199,0.1); }
+  .modal-content { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid var(--accent); border-radius: 16px; width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; padding: 32px; position: relative; transform: translateY(20px); transition: transform 0.3s ease; box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 0 40px rgba(2,132,199,0.1); }
   .modal-overlay.active .modal-content { transform: translateY(0); }
-  .modal-close { position: absolute; top: 24px; right: 24px; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; transition: all 0.2s; z-index: 2; font-weight: 700;}
+  .modal-close { position: absolute; top: 24px; right: 24px; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; transition: all 0.2s; z-index: 2; }
   .modal-close:hover { color: var(--danger); border-color: var(--danger); background: rgba(239,68,68,0.1); }
-  
   .modal-header { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; padding-right: 40px;}
   .modal-title { font-size: 24px; font-weight: 800; color: var(--text); margin-bottom: 12px; line-height: 1.2;}
   .modal-badges { display: flex; gap: 8px; flex-wrap: wrap; }
-  
   .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   @media (max-width: 500px) { .modal-grid { grid-template-columns: 1fr; } }
-  
   .modal-field { background: var(--bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border); transition: 0.2s; }
-  .modal-field-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; font-weight: 700;}
-  .modal-field-value { font-size: 15px; font-weight: 600; color: var(--text); }
-  
+  .modal-field-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;}
+  .modal-field-value { font-size: 18px; font-weight: 700; color: var(--text); }
   .modal-field.highlight { border-color: rgba(2,132,199,0.3); background: linear-gradient(145deg, var(--surface2), rgba(2,132,199,0.05)); }
-  .modal-field.highlight .modal-field-value { color: var(--accent); font-family: var(--mono); font-size: 22px; font-weight: 700;}
+  .modal-field.highlight .modal-field-value { color: var(--accent); font-family: var(--mono); font-size: 22px; }
   .modal-field.highlight-crc { border-color: rgba(124,58,237,0.3); background: linear-gradient(145deg, var(--surface2), rgba(124,58,237,0.05)); }
-  .modal-field.highlight-crc .modal-field-value { color: var(--accent2); font-family: var(--mono); font-size: 22px; font-weight: 700;}
-  
-  .modal-section-title { grid-column: 1 / -1; font-family: var(--mono); font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; margin-top: 16px; margin-bottom: -4px; display: flex; align-items: center; gap: 8px; font-weight: 700;}
+  .modal-field.highlight-crc .modal-field-value { color: var(--accent2); font-family: var(--mono); font-size: 22px; }
+  .modal-section-title { grid-column: 1 / -1; font-family: var(--mono); font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; margin-top: 16px; margin-bottom: -4px; display: flex; align-items: center; gap: 8px;}
   .modal-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  /* SWITCH TOGGLE */
   .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
   .switch input { opacity: 0; width: 0; height: 0; }
   .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); border: 1px solid var(--border); transition: .3s; border-radius: 20px; }
@@ -167,24 +155,35 @@
   input:checked + .slider { background-color: var(--accent); border-color: var(--accent); }
   input:checked + .slider:before { transform: translateX(20px); background-color: #ffffff; }
 
-  /* EDIT MODE */
   .edit-mode { display: none; } .is-editing .view-mode { display: none; } .is-editing .edit-mode { display: block; }
-  .modal-input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 6px; font-family: var(--mono); font-size: 12px; outline: none; transition: border-color 0.2s; font-weight: 500;}
+  .modal-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 6px; font-family: var(--mono); font-size: 13px; outline: none; transition: border-color 0.2s; }
   .modal-input:focus { border-color: var(--accent); }
-  
+  .btn-save { background: var(--accent); color: #ffffff; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 800; cursor: pointer; font-family: var(--mono); font-size: 13px; width: 100%; margin-top: 24px; transition: opacity 0.2s; grid-column: 1 / -1; }
+  .btn-save:hover { opacity: 0.9; }
+
   .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(65px, 1fr)); gap: 10px; margin-top: 8px; }
-  .chk-label { display: flex; align-items: center; gap: 6px; font-size: 11px; font-family: var(--mono); color: var(--text); cursor: pointer; background: var(--surface2); padding: 6px; border-radius: 6px; border: 1px solid var(--border); transition: 0.2s; font-weight: 600;}
-  
-  /* ACCORDIONS & INLINE FORMS */
-  .specs-wrapper { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-top: 12px; display: none; overflow-x: auto; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); grid-column: 1 / -1;}
+  .chk-label { display: flex; align-items: center; gap: 6px; font-size: 11px; font-family: var(--mono); color: var(--text); cursor: pointer; background: var(--surface2); padding: 6px; border-radius: 6px; border: 1px solid var(--border); transition: 0.2s; }
+  .chk-label:hover { border-color: rgba(2,132,199,0.4); }
+
+  .btn-icon { background: var(--surface2); color: var(--text); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: var(--mono); font-size: 11px; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
+  .btn-icon:hover { background: var(--border); }
+
+  .btn-primary { background: var(--accent); color: #ffffff; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 800; cursor: pointer; font-family: var(--mono); font-size: 13px; transition: 0.2s; flex: 1; }
+  .btn-secondary { background: rgba(16, 185, 129, 0.1); color: var(--accent4); border: 1px solid rgba(16, 185, 129, 0.4); padding: 10px 16px; border-radius: 8px; font-weight: 800; cursor: pointer; font-family: var(--mono); font-size: 13px; transition: 0.2s; flex: 1; }
+  .btn-secondary:hover { background: rgba(16, 185, 129, 0.2); }
+
+  .equipos-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .equipos-table th { padding: 8px; text-align: left; font-size: 10px; color: var(--muted); border-bottom: 1px solid var(--border); font-family: var(--mono); }
+  .equipos-table td { padding: 8px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text); }
+  .equipos-table input.modal-input { padding: 6px 8px; font-size: 12px; }
+
+  .specs-wrapper { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-top: 12px; display: none; overflow-x: auto; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
   .specs-wrapper.active { display: block; }
-  .specs-table { width: 100%; border-collapse: collapse; min-width: 500px; margin-bottom: 12px;}
+  .specs-table { width: 100%; border-collapse: collapse; min-width: 600px; }
   .specs-table th { background: var(--border); color: var(--text); padding: 8px 10px; font-size: 10px; font-weight: 700; text-transform: uppercase; text-align: left; font-family: var(--mono); letter-spacing: 0.5px; }
-  .specs-table td { padding: 8px 10px; font-size: 11.5px; font-family: var(--mono); color: var(--text); border-bottom: 1px solid var(--border); white-space: nowrap; font-weight: 500;}
-  
-  .form-row { display: flex; gap: 8px; flex-wrap: wrap; background: rgba(2,132,199,0.05); padding: 12px; border-radius: 8px; border: 1px dashed rgba(2,132,199,0.3); align-items: center;}
-  .form-row input, .form-row select { flex: 1; min-width: 110px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; font-family: var(--mono); font-size: 11px; background: var(--surface); color: var(--text); outline: none;}
-  .form-row input:focus, .form-row select:focus { border-color: var(--accent); }
+  .specs-table td { padding: 8px 10px; font-size: 11.5px; font-family: var(--mono); color: var(--muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+  .btn-toggle-specs { width: 100%; margin-top: 8px; background: var(--surface2); border: 1px dashed var(--accent); color: var(--accent); padding: 10px; border-radius: 8px; font-weight: 700; font-family: var(--mono); font-size: 12px; cursor: pointer; transition: 0.2s; }
+  .btn-toggle-specs:hover { background: rgba(2,132,199,0.05); }
 </style>
 </head>
 <body>
@@ -192,67 +191,74 @@
 
   <header class="header">
     <div class="header-left">
-      <div class="header-tag">◈ Base de Datos Local Activa</div>
+      <div class="header-tag">◈ Control de Contratos</div>
       <h1 class="header-title">DASHBOARD<br>CONTRATOS 2026</h1>
     </div>
     <div class="header-actions">
       <div class="fx-rate-box">
         <span class="fx-label">T.C. USD/CRC:</span>
-        <input type="number" id="inputTC" class="fx-input" value="515" onchange="actualizarFinanzasUI()">
+        <input type="number" id="inputTC" class="fx-input" value="515" onchange="recalcularFinanzas()">
       </div>
       <div class="header-buttons">
         <button id="btnSync" onclick="accionPrincipal()" class="btn-primary">
-          ▶ Conectar Archivo Excel
+          ▶ Cargar Datos Guardados
         </button>
-        <button id="btnJsonSync" onclick="vincularAutoGuardadoJSON()" class="btn-secondary" title="Guarda preferencias de interfaz localmente">
-          Vincular Preferencias (JSON)
+        <button id="btnElegirNuevo" onclick="seleccionarNuevoExcel()" class="btn-icon" style="display: none;" title="Cambiar a otro archivo Excel">
+          🔄 Cambiar Excel
+        </button>
+        <button id="btnJsonSync" onclick="vincularAutoGuardadoJSON()" class="btn-secondary" title="Crea un archivo local para guardar las configuraciones de facturación de forma silenciosa">
+          Vincular Auto-Guardado JSON
         </button>
       </div>
-      <div id="statusText" style="font-size: 10px; color: var(--muted); font-family: var(--mono); text-align: right; width: 100%; font-weight: 700;">
-        Esperando conexión de archivo maestro...
+      <div class="header-buttons" style="justify-content: flex-end;">
+        <button id="btnExport" onclick="exportarExcel()" class="btn-icon" style="display: none;" title="Exportar nueva tabla de Excel">
+          ↓ Generar Nuevo Excel Modificado
+        </button>
+      </div>
+      <div id="statusText" style="font-size: 10px; color: var(--muted); font-family: var(--mono); text-align: right; width: 100%;">
+        Esperando archivo Excel...
       </div>
     </div>
   </header>
 
   <div class="tabs">
     <button class="tab active" onclick="switchTab('general')">Resumen Ejecutivo</button>
-    <button class="tab" onclick="switchTab('flujo')">Proyecciones</button>
+    <button class="tab" onclick="switchTab('flujo')">Proyecciones y Flujo</button>
     <button class="tab" onclick="switchTab('mes')">Facturación por Mes</button>
     <button class="tab" onclick="switchTab('contratos')">Todos los Contratos</button>
     <button class="tab" onclick="switchTab('renovar')">Por Renovar</button>
     <button class="tab" onclick="switchTab('en-proceso')">En Proceso</button>
-    <button class="tab" onclick="switchTab('perdidos')">Perdidos</button>
+    <button class="tab" onclick="switchTab('perdidos')">Contratos Perdidos</button>
   </div>
 
-  <!-- PANEL: GENERAL -->
   <div class="panel active" id="tab-general">
     <div class="kpi-grid">
       <div class="kpi emerald glowing">
-        <div class="kpi-label">Proyectado <span class="badge badge-outline" id="lblMesKPI">Mes</span></div>
+        <div class="kpi-label">Facturar <span class="badge badge-outline" id="lblMesKPI">Mes</span></div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; flex: 1;">
-            <span style="font-size:12px; font-family:var(--mono); color:var(--muted); font-weight: 700;">CRC</span>
+            <span style="font-size:12px; font-family:var(--mono); color:var(--muted);">CRC</span>
             <span id="kpiMesCrc" style="font-size: clamp(16px, 1.6vw, 20px); font-weight: 800; color:#a78bfa; line-height:1; margin:0;">₡0.00</span>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; flex: 1;">
-            <span style="font-size:12px; font-family:var(--mono); color:var(--muted); font-weight: 700;">USD</span>
+            <span style="font-size:12px; font-family:var(--mono); color:var(--muted);">USD</span>
             <span id="kpiMesUsd" style="font-size: clamp(16px, 1.6vw, 20px); font-weight: 800; color:var(--accent); line-height:1; margin:0;">$0.00</span>
         </div>
       </div>
-      
+
       <div class="kpi cyan">
         <div class="kpi-label">Subtotal Anual</div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; flex: 1;">
-            <span style="font-size:12px; font-family:var(--mono); color:var(--muted); font-weight: 700;">CRC</span>
+            <span style="font-size:12px; font-family:var(--mono); color:var(--muted);">CRC</span>
             <span id="kpiTotalCrc" style="font-size: clamp(16px, 1.6vw, 20px); font-weight: 800; color:#a78bfa; line-height:1; margin:0;">₡0.00</span>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; flex: 1;">
-            <span style="font-size:12px; font-family:var(--mono); color:var(--muted); font-weight: 700;">USD</span>
+            <span style="font-size:12px; font-family:var(--mono); color:var(--muted);">USD</span>
             <span id="kpiTotalUsd" style="font-size: clamp(16px, 1.6vw, 20px); font-weight: 800; color:var(--accent); line-height:1; margin:0;">$0.00</span>
         </div>
       </div>
 
       <div class="kpi purple">
-        <div class="kpi-label">Valor Total USD (Eq.)</div>
+        <div class="kpi-label">Total Consolidado USD</div>
         <div class="kpi-value" id="kpiConsolidadoUsd" style="color:var(--accent2); margin-top: 10px;">$0.00</div>
         <div class="kpi-sub" id="lblTasaCambio">TC: ₡515</div>
       </div>
@@ -261,9 +267,8 @@
         <div class="kpi-icon">✓</div>
         <div class="kpi-label">Contratos Activos</div>
         <div class="kpi-value" id="kpiActivos">0</div>
-        <div class="kpi-sub">excluye procesos/perdidos</div>
       </div>
-      
+
       <div class="kpi amber"><div class="kpi-icon">↻</div><div class="kpi-label">Por Renovar</div><div class="kpi-value" id="kpiRenovar">0</div><div class="kpi-sub">requieren atención temprana</div></div>
       <div class="kpi red"><div class="kpi-icon">!</div><div class="kpi-label">Expirados</div><div class="kpi-value" id="kpiExpirados">0</div><div class="kpi-sub">contratos vencidos</div></div>
     </div>
@@ -271,26 +276,28 @@
     <div class="chart-grid">
       <div class="chart-card wide"><div class="chart-title">Monto Anual USD — Top Contratos</div><div class="chart-wrap tall"><canvas id="chartTop"></canvas></div></div>
       <div class="chart-card wide"><div class="chart-title">Monto Anual CRC — Top Contratos</div><div class="chart-wrap tall"><canvas id="chartTopCrc"></canvas></div></div>
-      <div class="chart-card"><div class="chart-title">Desglose Frecuencias</div><div class="chart-wrap"><canvas id="chartFreq"></canvas></div></div>
-      <div class="chart-card"><div class="chart-title">Condición de IVA</div><div class="chart-wrap"><canvas id="chartIva"></canvas></div></div>
+
+      <div class="chart-card"><div class="chart-title">Distribución por Frecuencia</div><div class="chart-wrap"><canvas id="chartFreq"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Modalidad de Cobertura</div><div class="chart-wrap"><canvas id="chartModalidad"></canvas></div></div>
+
+      <div class="chart-card"><div class="chart-title">Desglose por Condición de IVA</div><div class="chart-wrap"><canvas id="chartIva"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Estado de Renovación</div><div class="chart-wrap"><canvas id="chartEstado"></canvas></div></div>
     </div>
   </div>
 
-  <!-- PANEL: FLUJO -->
   <div class="panel" id="tab-flujo">
     <div class="chart-grid">
-      <div class="chart-card wide"><div class="chart-title"><span>Proyección de Facturación (Subtotal)</span><span class="badge badge-gray" id="lblYearProy">2026</span></div><div class="chart-wrap tall"><canvas id="chartProyeccionMensual"></canvas></div></div>
-      <div class="chart-card wide"><div class="chart-title">Flujo Acumulado Consolidado (En USD)</div><div class="chart-wrap tall"><canvas id="chartFlujoAcumulado"></canvas></div></div>
+      <div class="chart-card wide"><div class="chart-title"><span>Proyección de Facturación Mensual (Subtotal)</span><span class="badge badge-gray" id="lblYearProy">2026</span></div><div class="chart-wrap tall"><canvas id="chartProyeccionMensual"></canvas></div></div>
+      <div class="chart-card wide"><div class="chart-title">Flujo Acumulado Consolidado (Convertido a USD)</div><div class="chart-wrap tall"><canvas id="chartFlujoAcumulado"></canvas></div></div>
     </div>
   </div>
 
-  <!-- PANEL: MES -->
   <div class="panel" id="tab-mes">
     <div class="table-card">
       <div class="table-header">
         <div class="table-title">
-          Proyección para 
-          <select id="monthSelector" class="search-input" style="width: auto; font-weight: 700;" onchange="updateMesTable()">
+          Contratos a Facturar en 
+          <select id="monthSelector" class="search-input" style="width: auto;" onchange="updateMesTable()">
             </select>
         </div>
         <div style="display: flex; gap: 8px;">
@@ -299,45 +306,154 @@
                 <span id="resumenMesCrc" style="color:#a78bfa; font-weight:700; font-family:var(--mono); font-size:11px;">₡0.00</span>
             </div>
             <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblMes', this.value)">
-            <button onclick="exportarTablaVista('tblMes', 'Facturacion_Mensual')" class="btn-icon">⬇ Exportar</button>
+            <button onclick="exportarTablaVista('tblMes', 'Facturacion_Mes')" class="btn-icon">⬇ Exportar</button>
+            <button onclick="exportarFacturacionMes()" class="btn-icon">⬇ Exportar</button>
         </div>
       </div>
       <div class="table-wrap">
         <table id="tblMes">
-          <thead><tr><th>Contrato</th><th>Estado / Fecha</th><th>IVA</th><th class="num">Subtotal USD</th><th class="num">Total USD</th><th class="num">Subtotal CRC</th><th class="num">Total CRC</th></tr></thead>
+          <thead>
+            <tr>
+                <th>Contrato</th>
+                <th>Estado / Fecha</th>
+                <th>IVA</th>
+                <th class="num">Subtotal USD</th>
+                <th class="num">Total USD</th>
+                <th class="num">Subtotal CRC</th>
+                <th class="num">Total CRC</th>
+            </tr>
+          </thead>
           <tbody id="tbodyMes"></tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- PANEL: TODOS LOS CONTRATOS -->
   <div class="panel" id="tab-contratos">
     <div class="table-card">
       <div class="table-header">
-        <div class="table-title">Directorio de Contratos Activos</div>
+        <div class="table-title">Todos los Contratos Activos</div>
         <div style="display: flex; gap: 8px;">
           <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblAll', this.value)">
-          <button onclick="exportarTablaVista('tblAll', 'Contratos_Activos')" class="btn-icon">⬇ Exportar</button>
+          <button onclick="exportarTablaVista('tblAll', 'Todos_Los_Contratos')" class="btn-icon">⬇ Exportar</button>
         </div>
       </div>
       <div class="table-wrap">
         <table id="tblAll">
-          <thead><tr><th>Contrato</th><th>Sector</th><th>Responsable</th><th>Modalidad</th><th>Frecuencia</th><th>IVA</th><th class="num">Anual $</th><th class="num">Anual ₡</th><th>Expiración</th><th class="num">Urgencia</th></tr></thead>
+          <thead><tr><th>Contrato</th><th>Sector</th><th>Responsable</th><th>Modalidad</th><th>Facturación</th><th>IVA</th><th class="num">Anual $</th><th class="num">Anual ₡</th><th>Inicio</th><th>Vencimiento</th><th class="num">Días Restantes</th></tr></thead>
           <tbody id="tbodyAll"></tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- PANELES ADICIONALES OCULTOS POR ESPACIO PERO FUNCIONALES -->
-  <div class="panel" id="tab-renovar"><div class="table-card"><div class="table-header"><div class="table-title" style="color:var(--accent3);">Por Renovar (Próximos 90 días)</div></div><div class="table-wrap"><table id="tblRenovar"><thead><tr><th>Contrato</th><th>Frecuencia</th><th class="num">Anual $</th><th class="num">Anual ₡</th><th>Expiración</th><th class="num">Días</th></tr></thead><tbody id="tbodyRenovar"></tbody></table></div></div></div>
-  <div class="panel" id="tab-en-proceso"><div class="table-card"><div class="table-header"><div class="table-title" style="color:var(--accent3);">En Proceso de Renovación</div></div><div class="table-wrap"><table id="tblEnProceso"><thead><tr><th>Contrato</th><th>Responsable</th><th>Notas</th><th class="num">Anual $</th><th class="num">Anual ₡</th><th>Expiración</th></tr></thead><tbody id="tbodyEnProceso"></tbody></table></div></div></div>
-  <div class="panel" id="tab-perdidos"><div class="table-card"><div class="table-header"><div class="table-title" style="color:var(--danger);">Contratos Perdidos</div></div><div class="table-wrap"><table id="tblPerdidos"><thead><tr><th>Contrato</th><th>Responsable</th><th>Notas</th><th class="num">Anual $</th><th class="num">Anual ₡</th><th>Expiración</th></tr></thead><tbody id="tbodyPerdidos"></tbody></table></div></div></div>
+  <div class="panel" id="tab-renovar">
+    <div class="kpi-grid">
+      <div class="kpi amber" style="grid-column: span 1;"><div class="kpi-icon">⚠</div><div class="kpi-label">Por Renovar</div><div class="kpi-value" id="renovarTotal">0</div><div class="kpi-sub">próximos 90 días</div></div>
+      <div class="kpi red" style="grid-column: span 1;"><div class="kpi-icon">!</div><div class="kpi-label">Urgentes (&lt;30 días)</div><div class="kpi-value" id="urgentCount">0</div><div class="kpi-sub">acción inmediata</div></div>
+      <div class="kpi green" style="grid-column: span 2;"><div class="kpi-icon">◷</div><div class="kpi-label">Tiempo Promedio</div><div class="kpi-value" id="avgDays">0d</div><div class="kpi-sub">días promedio</div></div>
+    </div>
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-title">Contratos Por Renovar</div>
+        <div style="display: flex; gap: 8px;">
+          <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblRenovar', this.value)">
+          <button onclick="exportarTablaVista('tblRenovar', 'Contratos_Renovar')" class="btn-icon">⬇ Exportar</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="tblRenovar">
+          <thead><tr><th>Contrato</th><th>Facturación</th><th class="num">Anual $</th><th class="num">Anual ₡</th><th>Vencimiento</th><th>Urgencia</th><th class="num">Días</th></tr></thead>
+          <tbody id="tbodyRenovar"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
-</div>
+  <div class="panel" id="tab-en-proceso">
+    <div class="kpi-grid">
+      <div class="kpi amber" style="grid-column: span 2;">
+        <div class="kpi-icon">↻</div>
+        <div class="kpi-label">Total Contratos En Proceso</div>
+        <div class="kpi-value" id="kpiEnProcesoTotal">0</div>
+        <div class="kpi-sub">marcados como 'EN PROCESO'</div>
+      </div>
+      <div class="kpi amber" style="grid-column: span 2;">
+        <div class="kpi-icon">$</div>
+        <div class="kpi-label">Valor Potencial Anual (USD)</div>
+        <div class="kpi-value" id="kpiEnProcesoUsd">$0.00</div>
+        <div class="kpi-sub">suma del monto anual en USD</div>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-title" style="color: var(--accent3);">Contratos en Proceso de Renovación</div>
+        <div style="display: flex; gap: 8px;">
+          <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblEnProceso', this.value)">
+          <button onclick="exportarTablaVista('tblEnProceso', 'Contratos_En_Proceso')" class="btn-icon">⬇ Exportar</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="tblEnProceso">
+          <thead>
+            <tr>
+              <th>Contrato</th>
+              <th>Responsable</th>
+              <th>Notas / Mapeo</th>
+              <th class="num">Anual $</th>
+              <th class="num">Anual ₡</th>
+              <th>Fecha Expiración</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyEnProceso"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="panel" id="tab-perdidos">
+    <div class="kpi-grid">
+      <div class="kpi red" style="grid-column: span 2;">
+        <div class="kpi-icon">✕</div>
+        <div class="kpi-label">Total Contratos Perdidos</div>
+        <div class="kpi-value" id="kpiPerdidosTotal">0</div>
+        <div class="kpi-sub">marcados como estado 'PERDIDO'</div>
+      </div>
+      <div class="kpi red" style="grid-column: span 2;">
+        <div class="kpi-icon">$</div>
+        <div class="kpi-label">Impacto Financiero Anual (USD)</div>
+        <div class="kpi-value" id="kpiPerdidosUsd">$0.00</div>
+        <div class="kpi-sub">suma del monto anual en USD</div>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-title" style="color: var(--danger);">Historial de Contratos Perdidos</div>
+        <div style="display: flex; gap: 8px;">
+          <input class="search-input" type="text" placeholder="🔍 Buscar..." oninput="filterTable('tblPerdidos', this.value)">
+          <button onclick="exportarTablaVista('tblPerdidos', 'Contratos_Perdidos')" class="btn-icon">⬇ Exportar</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="tblPerdidos">
+          <thead>
+            <tr>
+              <th>Contrato</th>
+              <th>Responsable</th>
+              <th>Notas / Mapeo</th>
+              <th class="num">Anual $</th>
+              <th class="num">Anual ₡</th>
+              <th>Fecha Expiración</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyPerdidos"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  </div>
 
-<!-- ====== MODAL DE DETALLE Y OPERACIONES ====== -->
 <div class="modal-overlay" id="modalDetalleContrato" onclick="if(event.target===this) cerrarDetalleContrato()">
   <div class="modal-content" id="modalContentBox">
     <button class="modal-close" onclick="cerrarDetalleContrato()" title="Cerrar">&times;</button>
@@ -347,7 +463,7 @@
         <div class="modal-badges" id="mdlBadges"></div>
       </div>
       <div style="display:flex; align-items:center; gap:8px;">
-        <span style="font-size: 11px; color: var(--muted); font-family: var(--mono); font-weight: 700;">EDITAR CONF.</span>
+        <span style="font-size: 11px; color: var(--muted); font-family: var(--mono); font-weight: 600;">EDITAR</span>
         <label class="switch">
           <input type="checkbox" id="chkEditMode" onchange="toggleEditMode(this.checked)">
           <span class="slider"></span>
@@ -356,75 +472,45 @@
     </div>
     <div class="modal-grid">
 
-      <!-- MÓDULOS OPERATIVOS Y FINANCIEROS (NUEVO) -->
-      <div class="modal-section-title" style="color: var(--accent4);">Centro de Operaciones</div>
-      
-      <button class="btn-toggle-specs" onclick="toggleBox('boxFact')" style="grid-column: 1 / -1; border-color: var(--accent4); color: var(--accent4);">
-        💰 Control de Cuentas por Cobrar (Hoja: Registro_Facturacion)
-      </button>
-      <div id="boxFact" class="specs-wrapper">
-        <table class="specs-table">
-          <thead><tr><th>Mes</th><th>N° Factura</th><th>Monto Real</th><th>Estado</th><th>Fecha Acción</th></tr></thead>
-          <tbody id="mdlFact_view"></tbody>
+      <div class="modal-section-title">Datos Generales del Servicio</div>
+      <div class="modal-field"><div class="modal-field-label">Sector</div><div class="modal-field-value" id="mdlSector_view" style="font-size: 15px;">-</div></div>
+      <div class="modal-field"><div class="modal-field-label">Responsable</div><div class="modal-field-value" id="mdlResponsable_view" style="font-size: 15px;">-</div></div>
+      <div class="modal-field" style="grid-column: 1 / -1;"><div class="modal-field-label">Cobertura de Repuestos</div><div class="modal-field-value" id="mdlRepuestos_view" style="font-size: 15px;">-</div></div>
+
+      <div class="modal-section-title">Equipos Cubiertos</div>
+      <div class="modal-field" style="grid-column: 1 / -1; padding: 0; background: transparent; border: none;">
+        <table class="equipos-table">
+            <thead>
+                <tr style="background: var(--surface2);">
+                    <th>TIPO DE EQUIPO</th>
+                    <th style="text-align: right; width: 100px;">CANTIDAD</th>
+                </tr>
+            </thead>
+            <tbody id="mdlEquipos_view">
+                </tbody>
         </table>
-        <div class="form-row">
-          <input type="text" id="addFactMes" placeholder="Mes (Ej: Marzo)">
-          <input type="text" id="addFactNum" placeholder="N° Factura">
-          <input type="number" id="addFactMonto" placeholder="Monto (Número)">
-          <select id="addFactEstado">
-            <option value="Pendiente">Pendiente</option>
-            <option value="Pagado">Pagado</option>
-            <option value="Anulado">Anulado</option>
-          </select>
-          <input type="date" id="addFactFecha" title="Fecha de Pago o Emisión">
-          <button class="btn-add" onclick="agregarFactura()">✚ Registrar</button>
+
+        <button id="btnToggleSpecs" class="btn-toggle-specs" style="display:none;" onclick="toggleSpecsBox()">
+          📋 Ver Especificaciones Detalladas (Hoja EQUIPOS)
+        </button>
+        <div id="boxSpecs" class="specs-wrapper">
+            <table class="specs-table">
+                <thead id="specsHead"></thead>
+                <tbody id="specsBody"></tbody>
+            </table>
         </div>
-      </div>
-
-      <button class="btn-toggle-specs" onclick="toggleBox('boxBit')" style="grid-column: 1 / -1; border-color: var(--accent3); color: var(--accent3);">
-        🛠️ Bitácora de Visitas Técnicas (Hoja: Bitacora_Servicios)
-      </button>
-      <div id="boxBit" class="specs-wrapper">
-        <table class="specs-table">
-          <thead><tr><th>F. Planificada</th><th>F. Ejecutada</th><th>Técnico</th><th>Estado</th><th>Notas</th></tr></thead>
-          <tbody id="mdlBit_view"></tbody>
-        </table>
-        <div class="form-row">
-          <input type="date" id="addBitPlan" title="Fecha Planificada">
-          <input type="date" id="addBitReal" title="Fecha Real (Ejecutada)">
-          <input type="text" id="addBitTech" placeholder="Técnico a cargo">
-          <select id="addBitEstado">
-            <option value="Pendiente">Pendiente</option>
-            <option value="Completado">Completado</option>
-            <option value="Reprogramado">Reprogramado</option>
-          </select>
-          <input type="text" id="addBitObs" placeholder="Observaciones del trabajo..." style="flex: 2;">
-          <button class="btn-add" style="background: var(--accent3);" onclick="agregarBitacora()">✚ Registrar</button>
         </div>
-      </div>
+      <div class="modal-section-title">Datos Financieros (Anual Base)</div>
+      <div class="modal-field highlight"><div class="modal-field-label">Monto Anual USD</div><div class="modal-field-value" id="mdlAnualUsd">$0.00</div></div>
+      <div class="modal-field highlight-crc"><div class="modal-field-label">Monto Anual CRC</div><div class="modal-field-value" id="mdlAnualCrc">₡0.00</div></div>
 
-      <button class="btn-toggle-specs" onclick="toggleBox('boxSpecs')" style="grid-column: 1 / -1; display:none;" id="btnToggleSpecs">
-        📋 Equipos Detallados (Hoja: EQUIPOS)
-      </button>
-      <div id="boxSpecs" class="specs-wrapper">
-        <table class="specs-table"><thead id="specsHead"></thead><tbody id="specsBody"></tbody></table>
-      </div>
+      <div class="modal-section-title">Vigencia y Tiempos</div>
+      <div class="modal-field"><div class="modal-field-label">Fecha de Inicio</div><div class="modal-field-value" id="mdlInicio">-</div></div>
+      <div class="modal-field"><div class="modal-field-label">Fecha de Expiración</div><div class="modal-field-value" id="mdlFin">-</div></div>
 
-      <!-- DATOS GENERALES LECTURA EXCEL -->
-      <div class="modal-section-title">Parámetros del Contrato Base</div>
-      <div class="modal-field"><div class="modal-field-label">Sector</div><div class="modal-field-value" id="mdlSector_view">-</div></div>
-      <div class="modal-field"><div class="modal-field-label">Responsable</div><div class="modal-field-value" id="mdlResponsable_view">-</div></div>
-      
-      <div class="modal-field highlight"><div class="modal-field-label">Anual USD (Base)</div><div class="modal-field-value" id="mdlAnualUsd">$0.00</div></div>
-      <div class="modal-field highlight-crc"><div class="modal-field-label">Anual CRC (Base)</div><div class="modal-field-value" id="mdlAnualCrc">₡0.00</div></div>
-
-      <div class="modal-field view-mode"><div class="modal-field-label">Expiración y Urgencia</div><div class="modal-field-value" id="mdlDias">-</div></div>
-      <div class="modal-field view-mode"><div class="modal-field-label">Condición IVA</div><div class="modal-field-value" id="mdlIva">-</div></div>
-
-      <!-- REGLAS DE FACTURACIÓN (SOBRESCRIBIBLES) -->
-      <div class="modal-section-title">Reglas de Proyección Mensual</div>
+      <div class="modal-section-title">Preferencia de Facturación</div>
       <div class="modal-field">
-        <div class="modal-field-label">Frecuencia Original</div>
+        <div class="modal-field-label">Frecuencia Principal</div>
         <div class="modal-field-value view-mode" style="font-family:var(--mono);" id="mdlFrecuencia_view">-</div>
         <select class="modal-input edit-mode" id="mdlFrecuencia_edit">
           <option value="MENSUAL">MENSUAL (/12)</option>
@@ -433,21 +519,21 @@
           <option value="CUATRIMESTRAL">CUATRIMESTRAL (/3)</option>
           <option value="SEMESTRAL">SEMESTRAL (/2)</option>
           <option value="ANUAL">ANUAL (/1)</option>
-          <option value="PERSONALIZADA">OTRA (Por selecc. manual)</option>
+          <option value="PERSONALIZADA">OTRA (Divide por checks marcados)</option>
         </select>
       </div>
       <div class="modal-field">
         <div class="modal-field-label">Exactitud de Facturación</div>
         <div class="modal-field-value view-mode" style="font-family:var(--mono);" id="mdlTipoFact_view">-</div>
         <select class="modal-input edit-mode" id="mdlTipoFact_edit" onchange="toggleFormatoFact()">
-          <option value="mes">Auto - Según Frecuencia</option>
-          <option value="dia">Auto - Día Específico del Mes</option>
-          <option value="manual_mes">Forzar - Elegir Meses Manualmente</option>
+          <option value="mes">Automático - Mes General</option>
+          <option value="dia">Automático - Día Específico</option>
+          <option value="manual_mes">Personalizado - Elegir Meses Manualmente</option>
+          <option value="manual_dia">Personalizado - Elegir Meses y Día Exacto</option>
         </select>
       </div>
-      
       <div class="modal-field" id="boxMesesCustom" style="display:none; grid-column: 1 / -1;">
-        <div class="modal-field-label">Meses Forzados</div>
+        <div class="modal-field-label">Seleccionar Meses Específicos</div>
         <div class="modal-field-value view-mode" style="font-family:var(--mono); color:var(--accent);" id="mdlMesesCustom_view">-</div>
         <div class="edit-mode checkbox-grid" id="mesesCheckboxes"></div>
       </div>
@@ -456,54 +542,60 @@
         <div class="modal-field-value view-mode" style="font-family:var(--mono);" id="mdlDiaFact_view">-</div>
         <input type="number" class="modal-input edit-mode" id="mdlDiaFact_edit" min="1" max="31" placeholder="Ej: 15">
       </div>
-      
-      <div class="modal-field" style="grid-column: 1 / -1;">
-        <div class="modal-field-label">Notas y Mapeo del Cliente</div>
-        <div class="modal-field-value view-mode" id="mdlMapeo_view" style="font-size: 13px; font-weight: 500; font-family: var(--font); white-space: pre-wrap;">-</div>
-        <textarea class="modal-input edit-mode" id="mdlMapeo_edit" style="resize: vertical; min-height: 60px; font-family: var(--font);"></textarea>
+      <div class="modal-field" id="boxCuotaUsd">
+        <div class="modal-field-label">Cuota USD (Fracción) <span id="mdlFrecuenciaLabelUsd" style="opacity:0.6;font-size:9px;"></span></div>
+        <div class="modal-field-value view-mode" style="color:var(--accent); font-family:var(--mono);" id="mdlCuotaUsd">$0.00</div>
+        <div class="modal-field-label view-mode" style="margin-top:4px;" id="mdlCuotaUsdTot">Total con IVA: $0.00</div>
+        <div class="modal-input edit-mode" style="color:var(--muted); background:var(--bg); cursor:not-allowed;">Auto-calculable</div>
+      </div>
+      <div class="modal-field" id="boxCuotaCrc">
+        <div class="modal-field-label">Cuota CRC (Fracción) <span id="mdlFrecuenciaLabelCrc" style="opacity:0.6;font-size:9px;"></span></div>
+        <div class="modal-field-value view-mode" style="color:#a78bfa; font-family:var(--mono);" id="mdlCuotaCrc">₡0.00</div>
+        <div class="modal-field-label view-mode" style="margin-top:4px;" id="mdlCuotaCrcTot">Total con IVA: ₡0.00</div>
+        <div class="modal-input edit-mode" style="color:var(--muted); background:var(--bg); cursor:not-allowed;">Auto-calculable</div>
       </div>
 
-      <button class="btn-primary edit-mode" style="grid-column: 1 / -1; margin-top: 10px;" onclick="guardarCambiosAjustes()">💾 Sincronizar Cambios de Configuración</button>
+      <div class="modal-section-title">Mapeo y Notas</div>
+      <div class="modal-field" style="grid-column: 1 / -1;">
+        <div class="modal-field-label">Mapeo del Cliente / Información Adicional</div>
+        <div class="modal-field-value view-mode" id="mdlMapeo_view" style="font-size: 13px; font-weight: 500; font-family: var(--font); color: var(--text); white-space: pre-wrap; line-height: 1.5;">-</div>
+        <textarea class="modal-input edit-mode" id="mdlMapeo_edit" style="resize: vertical; min-height: 80px; font-family: var(--font);" placeholder="Escribe aquí el mapeo del cliente, notas, etc..."></textarea>
+      </div>
+
+      <div class="modal-section-title">Estado e Información Extra</div>
+      <div class="modal-field view-mode"><div class="modal-field-label">Días Restantes</div><div class="modal-field-value" id="mdlDias">-</div></div>
+      <div class="modal-field view-mode"><div class="modal-field-label">Condición del IVA</div><div class="modal-field-value" id="mdlIva">-</div></div>
+
+      <div class="modal-field view-mode">
+        <div class="modal-field-label">Estado del Contrato</div>
+        <div class="modal-field-value" id="mdlEstado_view" style="font-weight: 800;">-</div>
+      </div>
+      <button class="btn-save edit-mode" onclick="guardarCambiosContrato()">Guardar Cambios Localmente</button>
     </div>
   </div>
 </div>
 
 <script>
-// ================================================================
-// 1. ESTADO GLOBAL DE LA APLICACIÓN
-// ================================================================
-let fileHandle = null; 
+// ──────────────────────────────────────────────────────────────
+// ESTADO GLOBAL Y CONFIGURACIÓN
+// ──────────────────────────────────────────────────────────────
+let fileHandle = null;
 let jsonFileHandle = null; 
 let tasaCambio = 515;
 let contratoEnEdicion = null; 
 let configGuardada = {}; 
 
-const DATA = { 
-  all_contracts: [], 
-  equipos_bd: [], 
-  facturacion_bd: [], 
-  bitacora_bd: [],
-  sheetNames: {}, // Para respetar el nombre original de las pestañas del usuario
-  
-  // Datos calculados para la vista
-  renew_contracts: [], lost_contracts: [], en_proceso_contracts: [], 
-  billing_by_month: Array.from({length: 12}, () => []), 
-  projection_usd: Array(12).fill(0), projection_crc: Array(12).fill(0) 
-};
-
+const DATA = { all_contracts: [], renew_contracts: [], lost_contracts: [], en_proceso_contracts: [], equipos_bd: [], billing_by_month: Array.from({length: 12}, () => []), current_month_billing: [], projection_usd: [], projection_crc: [] };
 const COLORS = ['#00e5ff','#7c3aed','#f59e0b','#10b981','#ef4444','#f472b6','#a78bfa','#34d399'];
-Chart.defaults.color = '#6b7280'; Chart.defaults.font.family = "'JetBrains Mono', monospace"; Chart.defaults.font.size = 10;
+Chart.defaults.color = '#6b7280'; Chart.defaults.font.family = "'JetBrains Mono', monospace"; Chart.defaults.font.size = 11;
 
 const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 const HOY = new Date(); const MES_ACTUAL = HOY.getMonth(); const ANIO_ACTUAL = HOY.getFullYear();
 
-// ================================================================
-// 2. INICIALIZACIÓN
-// ================================================================
 document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('lblMesKPI').innerText = MESES[MES_ACTUAL];
   document.getElementById('lblYearProy').innerText = ANIO_ACTUAL;
-  
+
   const monthSelector = document.getElementById('monthSelector');
   MESES.forEach((m, idx) => {
       let opt = document.createElement('option'); opt.value = idx; opt.text = m.toUpperCase() + ' ' + ANIO_ACTUAL;
@@ -516,35 +608,24 @@ document.addEventListener('DOMContentLoaded', async () => {
       boxMeses.appendChild(lbl);
   });
 
-  // Restaurar Handles previos
   fileHandle = await idbKeyval.get('excelHandle');
   jsonFileHandle = await idbKeyval.get('jsonFileHandle');
 
-  if (fileHandle) document.getElementById('btnSync').innerText = "▶ Conectar y Leer Base de Datos";
-  if (jsonFileHandle) marcarJSONEnlazado();
+  if (fileHandle) {
+      document.getElementById('btnSync').innerText = "▶ Cargar Datos Guardados";
+      document.getElementById('btnElegirNuevo').style.display = "flex";
+  }
+  if (jsonFileHandle) {
+      marcarJSONEnlazado();
+  }
 });
 
-// Utils
-const fmtUSD = (v) => '$' + (v||0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-const fmtCRC = (v) => '₡' + (v||0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-const parseNum = (v) => { if (!v) return 0; if (typeof v === 'number') return v; const c = parseFloat(v.toString().replace(/[^\d.-]/g, '')); return isNaN(c) ? 0 : c; };
-const parseDateObj = (v) => { if (!v) return null; if (v instanceof Date) return v; if (typeof v === 'number') return new Date(Math.round((v - 25569) * 86400 * 1000)); let p = new Date(v); return isNaN(p) ? null : p; };
-const parseDateStr = (d) => { if (!d) return '—'; return d.toLocaleDateString('es-CR'); };
-const inputDateStr = (d) => { if (!d) return ''; const dt = new Date(d); return dt.toISOString().split('T')[0]; }; // Para los inputs type=date
+function fmtUSD(v) { return '$' + v.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+function fmtCRC(v) { return '₡' + v.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
 
-// ================================================================
-// 3. LOGICA DE LECTURA Y CONEXIÓN CON ARCHIVOS (FSA API)
-// ================================================================
 async function accionPrincipal() {
-    if (fileHandle) {
-        try {
-            const hasAccess = await verificarPermiso(fileHandle, 'readwrite'); // Requerimos escritura desde el inicio
-            if(hasAccess) await cargarDatosDelExcel();
-            else await seleccionarNuevoExcel();
-        } catch(e) { await seleccionarNuevoExcel(); }
-    } else {
-        await seleccionarNuevoExcel();
-    }
+    if (fileHandle) { await cargarDatosDelExcel(); } 
+    else { await seleccionarNuevoExcel(); }
 }
 
 async function seleccionarNuevoExcel() {
@@ -555,211 +636,214 @@ async function seleccionarNuevoExcel() {
     await cargarDatosDelExcel();
   } catch (error) { console.log("Selección de Excel cancelada"); }
 }
-    
-    await idbKeyval.set('excelHandle', fileHandle);
-    document.getElementById('btnElegirNuevo').style.display = "flex";
-    await cargarDatosDelExcel();
-  } catch (error) { 
-    console.log("Selección de Excel cancelada"); 
-  }
+
+async function vincularAutoGuardadoJSON() {
+    try {
+        const handle = await window.showSaveFilePicker({
+            suggestedName: 'Ajustes_Contratos.json',
+            types: [{ description: 'Archivo de Configuración JSON', accept: {'application/json': ['.json']} }]
+        });
+        jsonFileHandle = handle;
+        await idbKeyval.set('jsonFileHandle', jsonFileHandle); 
+        marcarJSONEnlazado();
+        await escribirJSONEnDisco();
+        alert("¡Éxito! Tu configuración ahora se guardará automáticamente en este archivo cada vez que edites algo.");
+    } catch (error) {
+        if (error.name !== 'AbortError') console.error("Error al vincular JSON:", error);
+    }
+}
+
+function marcarJSONEnlazado() {
+    const btn = document.getElementById('btnJsonSync');
+    btn.innerText = "JSON Enlazado ✓";
+    btn.style.background = "var(--accent4)";
+    btn.style.color = "#000";
+    btn.style.border = "none";
 }
 
 async function verificarPermiso(handle) {
-  const options = { mode: 'readwrite' }; // o 'read'
+  const options = { mode: 'read' };
   if ((await handle.queryPermission(options)) === 'granted') return true;
   if ((await handle.requestPermission(options)) === 'granted') return true;
-  
-  // SI FALLA, LIMPIAMOS EL HANDLE PARA QUE TE DEJE ELEGIR OTRO
-  fileHandle = null;
-  await idbKeyval.del('excelHandle');
   return false;
 }
 
 async function cargarJSONGuardado() {
     if (!jsonFileHandle) return;
     try {
-        if (await verificarPermiso(jsonFileHandle, 'readwrite')) {
-            const file = await jsonFileHandle.getFile();
-            const text = await file.text();
-            if (text) configGuardada = JSON.parse(text);
+        const options = { mode: 'readwrite' }; 
+        if ((await jsonFileHandle.queryPermission(options)) !== 'granted') {
+            if ((await jsonFileHandle.requestPermission(options)) !== 'granted') { return; }
         }
-    } catch(e) { console.error("Error JSON:", e); }
+        const file = await jsonFileHandle.getFile();
+        const text = await file.text();
+        if (text) configGuardada = JSON.parse(text);
+    } catch(e) { console.error("Error leyendo JSON físico:", e); }
 }
 
+async function escribirJSONEnDisco() {
+    if (!jsonFileHandle) return;
+    try {
+        const options = { mode: 'readwrite' };
+        if ((await jsonFileHandle.queryPermission(options)) !== 'granted') {
+            if ((await jsonFileHandle.requestPermission(options)) !== 'granted') return;
+        }
+        const writable = await jsonFileHandle.createWritable();
+        await writable.write(JSON.stringify(configGuardada, null, 2));
+        await writable.close();
+    } catch(e) { console.error("Fallo al escribir el JSON físicamente:", e); }
+}
+
+const parseNum = (v) => { if (!v) return 0; if (typeof v === 'number') return v; const c = parseFloat(v.toString().replace(/[^\d.-]/g, '')); return isNaN(c) ? 0 : c; };
+function parseDateObject(v) { if (!v) return null; if (v instanceof Date) return v; if (typeof v === 'number') return new Date(Math.round((v - 25569) * 86400 * 1000)); let p = new Date(v); return isNaN(p) ? null : p; }
+const parseDateString = (d) => { if (!d) return '—'; return d.toLocaleDateString('es-CR'); };
+function calcularDias(fObj) { if (!fObj) return 0; let f = new Date(fObj); f.setHours(0,0,0,0); let h = new Date(HOY); h.setHours(0,0,0,0); return Math.ceil((f - h) / (1000 * 60 * 60 * 24)); }
+
 async function cargarDatosDelExcel() {
-  document.getElementById('statusText').innerText = "Analizando Arquitectura del Excel...";
+  if (!fileHandle) return;
+  document.getElementById('statusText').innerText = "Solicitando permisos de seguridad...";
   tasaCambio = parseFloat(document.getElementById('inputTC').value) || 515;
-  
+
   try {
+    const pExcel = await verificarPermiso(fileHandle); 
+    if (!pExcel) {
+        document.getElementById('statusText').innerText = "Permiso denegado para acceder al Excel.";
+        return;
+    }
+
     await cargarJSONGuardado();
-    
-    // Si no hay archivo enlazado físicamente, buscamos en cache local temporal
+
     if (Object.keys(configGuardada).length === 0) {
         const saved = await idbKeyval.get('contractEdits');
         if (saved) configGuardada = saved;
     }
 
+    document.getElementById('statusText').innerText = "Analizando lógica y aplicando ajustes...";
     const file = await fileHandle.getFile();
     const arrayBuffer = await file.arrayBuffer();
     const workbook = XLSX.read(arrayBuffer, { type: 'array', cellDates: true });
-    
-    // Identificar nombres exactos de las hojas para no romper el Excel del usuario
-    DATA.sheetNames = {
-        contratos: workbook.SheetNames[0],
-        equipos: workbook.SheetNames.find(n => n.toUpperCase() === 'EQUIPOS') || 'EQUIPOS',
-        facturacion: workbook.SheetNames.find(n => n.toUpperCase().includes('FACTURACION')) || 'Registro_Facturacion',
-        bitacora: workbook.SheetNames.find(n => n.toUpperCase().includes('BITACORA')) || 'Bitacora_Servicios'
-    };
 
-    // Lectura de las 4 bases de datos relacionales
-    const rawContratos = XLSX.utils.sheet_to_json(workbook.Sheets[DATA.sheetNames.contratos], { raw: false, defval: "" });
-    DATA.equipos_bd = workbook.Sheets[DATA.sheetNames.equipos] ? XLSX.utils.sheet_to_json(workbook.Sheets[DATA.sheetNames.equipos], { raw: false, defval: "" }) : [];
-    DATA.facturacion_bd = workbook.Sheets[DATA.sheetNames.facturacion] ? XLSX.utils.sheet_to_json(workbook.Sheets[DATA.sheetNames.facturacion], { raw: false, defval: "" }) : [];
-    DATA.bitacora_bd = workbook.Sheets[DATA.sheetNames.bitacora] ? XLSX.utils.sheet_to_json(workbook.Sheets[DATA.sheetNames.bitacora], { raw: false, defval: "" }) : [];
+    // ==== LECTURA PRINCIPAL DE CONTRATOS ====
+    const jsonDatos = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { raw: false, range: 1, defval: "" });
 
-    // Mapeo Principal
-    DATA.all_contracts = rawContratos.map(fila => {
+    // ==== LECTURA DE LA HOJA "EQUIPOS" (SI EXISTE) ====
+    const sheetNameEquipos = workbook.SheetNames.find(n => n.toUpperCase() === 'EQUIPOS');
+    if (sheetNameEquipos) {
+        DATA.equipos_bd = XLSX.utils.sheet_to_json(workbook.Sheets[sheetNameEquipos], { raw: false, defval: "" });
+    } else {
+        DATA.equipos_bd = [];
+    }
+
+    DATA.all_contracts = jsonDatos.map(fila => {
       const getExact = (key) => { if (fila[key] !== undefined) return fila[key]; const clean = key.replace(/^\//, '').trim().toLowerCase(); for (let k of Object.keys(fila)) { if (k.replace(/^\//, '').trim().toLowerCase() === clean) return fila[k]; } return null; };
 
       const nombre = getExact('Nombre de contrato') || 'Desconocido';
-      let rawIni = parseDateObj(getExact('/Fecha de inicio'));
-      let rawExp = parseDateObj(getExact('/Fecha de expiración'));
+      let rawIni = parseDateObject(getExact('/Fecha de inicio'));
+      let rawExp = parseDateObject(getExact('/Fecha de expiración'));
       let anual_usd = parseNum(getExact('/Monto Anual $'));
       let anual_crc = parseNum(getExact('/Monto anual ₡'));
       let frecuencia = getExact('/Facturación') || '—';
       let mapeo_cliente = getExact('Mapeo del Cliente') || '';
-      
+      let ivaStr = getExact('/IVA') || '—';
       let tipo_facturacion = 'mes', dia_facturacion = null, meses_custom = [];
-      let diasFormula = getExact('/Días restantes para renovar');
-      
-      // Aplicar Overrides del JSON (Prioridad a las reglas de facturación personalizadas)
+
+      let sector = getExact('Sector') || '';
+      let repuestos = getExact('Cobertura de repuestos') || '';
+      let responsable = getExact('Responsable') || '';
+      let equipo1 = getExact('Tipo de equipo1') || '';
+      let cant1 = getExact('Cantidad1') || '';
+      let equipo2 = getExact('Tipo de equipo2') || '';
+      let cant2 = getExact('Cantidad2') || '';
+      let equipo3 = getExact('Tipo de equipo3') || '';
+      let cant3 = getExact('Cantidad3') || '';
+      let equipo4 = getExact('Tipo de equipo4') || '';
+      let cant4 = getExact('Cantidad4') || '';
+
+      // El estado SIEMPRE se lee únicamente del Excel
+      let estado = getExact('Estado') || 'ACTIVO'; 
+
       const editado = configGuardada[nombre];
       if (editado) {
+          // SOLO permitimos que el JSON sobrescriba estas variables de facturación y notas
           if (editado.frecuencia !== undefined) frecuencia = editado.frecuencia;
           if (editado.tipo_facturacion !== undefined) tipo_facturacion = editado.tipo_facturacion;
           if (editado.dia_facturacion !== undefined) dia_facturacion = editado.dia_facturacion;
           if (editado.meses_custom !== undefined) meses_custom = editado.meses_custom;
+          if (editado.mapeo_cliente !== undefined) mapeo_cliente = editado.mapeo_cliente;
       }
 
       return {
-        nombre: nombre, 
-        modalidad: getExact('Modalidad') || '—', 
-        frecuencia: frecuencia, 
-        iva: getExact('/IVA') || '—',
-        anual_usd: anual_usd, 
-        anual_crc: anual_crc, 
-        inicio_obj: rawIni, 
-        expiracion_obj: rawExp,
-        inicio: parseDateStr(rawIni), 
-        expiracion: parseDateStr(rawExp), 
-        mapeo_cliente: mapeo_cliente, // El texto puro viene de Excel
-        // Si la celda de días está vacía, calculamos localmente
-        dias: (diasFormula !== null && diasFormula !== "") ? parseInt(parseNum(diasFormula)) : calcularDiasMath(rawExp),
-        tipo_facturacion, dia_facturacion, meses_custom,
-        sector: getExact('Sector') || '', 
-        repuestos: getExact('Cobertura de repuestos') || '', 
-        responsable: getExact('Responsable') || '', 
-        equipo1: getExact('Tipo de equipo1') || '', cant1: getExact('Cantidad1') || '', 
-        equipo2: getExact('Tipo de equipo2') || '', cant2: getExact('Cantidad2') || '', 
-        equipo3: getExact('Tipo de equipo3') || '', cant3: getExact('Cantidad3') || '', 
-        equipo4: getExact('Tipo de equipo4') || '', cant4: getExact('Cantidad4') || '',
-        estado: getExact('Estado') || 'ACTIVO'
+        nombre: nombre, modalidad: getExact('Modalidad') || '—', frecuencia: frecuencia, iva: ivaStr,
+        anual_usd: anual_usd, anual_crc: anual_crc, inicio_obj: rawIni, expiracion_obj: rawExp,
+        inicio: parseDateString(rawIni), expiracion: parseDateString(rawExp), mapeo_cliente: mapeo_cliente,
+        dias: getExact('/Días restantes para renovar') !== null && !editado ? parseInt(parseNum(getExact('/Días restantes para renovar'))) : calcularDias(rawExp),
+        tipo_facturacion: tipo_facturacion, dia_facturacion: dia_facturacion, meses_custom: meses_custom,
+        sector, repuestos, responsable, equipo1, cant1, equipo2, cant2, equipo3, cant3, equipo4, cant4,
+        estado: estado
       };
     });
 
-    procesarLogicaUI();
+    procesarLogicaInteligente();
+    document.getElementById('btnExport').style.display = 'flex';
     document.getElementById('btnSync').innerText = "↻ Refrescar Datos";
-    document.getElementById('statusText').innerText = `Base de datos sincronizada: ${new Date().toLocaleTimeString()}`;
-  } catch (error) { 
-      console.error("Error interpretando Excel:", error); 
-      document.getElementById('statusText').innerText = "Error crítico leyendo formato. Ver consola."; 
-  }
+    document.getElementById('statusText').innerText = `Carga exitosa con ajustes aplicados: ${new Date().toLocaleTimeString()}`;
+  } catch (error) { console.error("Error interpretando Excel:", error); document.getElementById('statusText').innerText = "Error leyendo formato del Excel."; }
 }
 
-function calcularDiasMath(fObj) { if (!fObj) return 0; let f = new Date(fObj); f.setHours(0,0,0,0); let h = new Date(HOY); h.setHours(0,0,0,0); return Math.ceil((f - h) / (1000 * 60 * 60 * 24)); }
-
-// ================================================================
-// 4. LÓGICA DE ESCRITURA EN EXCEL (FSA API DIRECTA)
-// ================================================================
-async function guardarExcelDirecto() {
-    if (!fileHandle) { alert("Archivo fuente no enlazado."); return; }
-    
-    try {
-        const hasAccess = await verificarPermiso(fileHandle, 'readwrite');
-        if(!hasAccess) return alert("El navegador bloqueó la escritura. Permite los permisos solicitados.");
-        
-        document.getElementById('statusText').innerText = "Escribiendo en disco duro...";
-
-        const wb = XLSX.utils.book_new();
-        
-        // Hoja 1: Reconstrucción de Contratos (Manteniendo orden de columnas originales)
-        const wsContratos = XLSX.utils.json_to_sheet(DATA.all_contracts.map(c => ({
-            'Nombre de contrato': c.nombre,
-            'Sector': c.sector,
-            'Responsable': c.responsable,
-            'Modalidad': c.modalidad,
-            'Cobertura de repuestos': c.repuestos,
-            '/Facturación': c.frecuencia, // Exportamos la modifcada si aplica
-            '/Monto Anual $': c.anual_usd, 
-            '/Monto anual ₡': c.anual_crc, 
-            '/IVA': c.iva,
-            '/Fecha de inicio': c.inicio_obj ? c.inicio_obj : '', 
-            '/Fecha de expiración': c.expiracion_obj ? c.expiracion_obj : '',
-            '/Días restantes para renovar': c.dias, 
-            'Mapeo del Cliente': c.mapeo_cliente,
-            'Tipo de equipo1': c.equipo1, 'Cantidad1': c.cant1,
-            'Tipo de equipo2': c.equipo2, 'Cantidad2': c.cant2,
-            'Tipo de equipo3': c.equipo3, 'Cantidad3': c.cant3,
-            'Tipo de equipo4': c.equipo4, 'Cantidad4': c.cant4,
-            'Estado': c.estado
-        })));
-        XLSX.utils.book_append_sheet(wb, wsContratos, DATA.sheetNames.contratos);
-        
-        // Hojas transaccionales y de equipos
-        const wsEquipos = XLSX.utils.json_to_sheet(DATA.equipos_bd);
-        XLSX.utils.book_append_sheet(wb, wsEquipos, DATA.sheetNames.equipos);
-        
-        const wsFact = XLSX.utils.json_to_sheet(DATA.facturacion_bd);
-        XLSX.utils.book_append_sheet(wb, wsFact, DATA.sheetNames.facturacion);
-        
-        const wsBit = XLSX.utils.json_to_sheet(DATA.bitacora_bd);
-        XLSX.utils.book_append_sheet(wb, wsBit, DATA.sheetNames.bitacora);
-        
-        // Proceso de buffer y escritura
-        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array', cellDates: true });
-        const writable = await fileHandle.createWritable();
-        await writable.write(excelBuffer);
-        await writable.close();
-        
-        document.getElementById('statusText').innerText = `Base actualizada en disco: ${new Date().toLocaleTimeString()}`;
-    } catch(e) {
-        console.error(e);
-        document.getElementById('statusText').innerText = "Fallo al escribir en Excel. Documento protegido o abierto en otro programa.";
-    }
+function exportarExcel() {
+  if (!DATA.all_contracts || DATA.all_contracts.length === 0) return;
+  const datosParaExportar = DATA.all_contracts.map(c => ({
+      'Nombre de contrato': c.nombre,
+      'Sector': c.sector || '',
+      'Responsable': c.responsable || '',
+      'Modalidad': c.modalidad,
+      'Cobertura de repuestos': c.repuestos || '',
+      '/Facturación': c.frecuencia,
+      '/Monto Anual $': c.anual_usd, 
+      '/Monto anual ₡': c.anual_crc, 
+      '/IVA': c.iva,
+      '/Fecha de inicio': c.inicio_obj ? c.inicio_obj : '', 
+      '/Fecha de expiración': c.expiracion_obj ? c.expiracion_obj : '',
+      '/Días restantes para renovar': c.dias, 
+      'Mapeo del Cliente': c.mapeo_cliente || '',
+      'Tipo de equipo1': c.equipo1 || '',
+      'Cantidad1': c.cant1 || '',
+      'Tipo de equipo2': c.equipo2 || '',
+      'Cantidad2': c.cant2 || '',
+      'Tipo de equipo3': c.equipo3 || '',
+      'Cantidad3': c.cant3 || '',
+      'Tipo de equipo4': c.equipo4 || '',
+      'Cantidad4': c.cant4 || '',
+      'Estado': c.estado || 'ACTIVO'
+  }));
+  const worksheet = XLSX.utils.json_to_sheet(datosParaExportar);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Dashboard Contratos");
+  XLSX.writeFile(workbook, "Contratos_Actualizados_Dashboard.xlsx");
 }
 
-// ================================================================
-// 5. CÁLCULOS MATEMÁTICOS DE PROYECCIÓN 
-// ================================================================
-function determinarMesCobro(c, mesObj, anioObj) {
-  if (c.estado.toUpperCase().includes('PERDIDO') || c.estado.toUpperCase().includes('PROCESO')) return false;
-  if (c.tipo_facturacion && c.tipo_facturacion.includes('manual')) return c.meses_custom && c.meses_custom.includes(mesObj);
+function determinaFacturacion(c, mesObjetivo, anioObjetivo) {
+  if (c.estado && (c.estado.toUpperCase().includes('PERDIDO') || c.estado.toUpperCase().includes('PROCESO'))) return false;
+
+  if (c.tipo_facturacion && c.tipo_facturacion.includes('manual')) return c.meses_custom && c.meses_custom.includes(mesObjetivo);
   const freq = (c.frecuencia || '').toUpperCase();
   if (!c.inicio_obj || isNaN(c.inicio_obj)) return freq.includes('MENSUAL') && !freq.includes('BIMENSUAL');
-  
-  const mesesDiff = (anioObj - c.inicio_obj.getFullYear()) * 12 + (mesObj - c.inicio_obj.getMonth());
-  if (mesesDiff < 0) return false; 
-  
-  if (freq.includes('BIMENSUAL')) return mesesDiff % 2 === 0;
+
+  const mesesDiferencia = (anioObjetivo - c.inicio_obj.getFullYear()) * 12 + (mesObjetivo - c.inicio_obj.getMonth());
+  if (mesesDiferencia < 0) return false; 
+
+  // SOLUCIÓN: El orden fue invertido aquí
+  if (freq.includes('BIMENSUAL')) return mesesDiferencia % 2 === 0;
   if (freq.includes('MENSUAL')) return true; 
-  if (freq.includes('TRIMESTRAL')) return mesesDiff % 3 === 0;
-  if (freq.includes('CUATRIMESTRAL')) return mesesDiff % 4 === 0;
-  if (freq.includes('SEMESTRAL')) return mesesDiff % 6 === 0;
-  if (freq.includes('ANUAL')) return mesesDiff % 12 === 0;
+  if (freq.includes('TRIMESTRAL')) return mesesDiferencia % 3 === 0;
+  if (freq.includes('CUATRIMESTRAL')) return mesesDiferencia % 4 === 0;
+  if (freq.includes('SEMESTRAL')) return mesesDiferencia % 6 === 0;
+  if (freq.includes('ANUAL')) return mesesDiferencia % 12 === 0;
+
   return false;
 }
 
-function dividirAnualidad(c, montoAnual) {
+function fraccionarMonto(c, montoAnual) {
   if (!montoAnual) return 0;
   const freq = (c.frecuencia || '').toUpperCase();
   if (freq.includes('BIMENSUAL') || freq.includes('BIMESTRAL')) return montoAnual / 6; 
@@ -775,303 +859,468 @@ function dividirAnualidad(c, montoAnual) {
   return 0; 
 }
 
-function procesarLogicaUI() {
-  const activos = DATA.all_contracts.filter(c => !c.estado.toUpperCase().includes('PERDIDO') && !c.estado.toUpperCase().includes('PROCESO'));
-  DATA.lost_contracts = DATA.all_contracts.filter(c => c.estado.toUpperCase().includes('PERDIDO'));
-  DATA.en_proceso_contracts = DATA.all_contracts.filter(c => c.estado.toUpperCase().includes('PROCESO'));
-  DATA.renew_contracts = activos.filter(c => c.dias >= 0 && c.dias <= 90);
-  
-  DATA.projection_usd = Array(12).fill(0); DATA.projection_crc = Array(12).fill(0); 
-  DATA.billing_by_month = Array.from({length: 12}, () => []);
-  
-  activos.forEach(c => {
-    c.cuota_usd = dividirAnualidad(c, c.anual_usd); 
-    c.cuota_crc = dividirAnualidad(c, c.anual_crc);
+function procesarLogicaInteligente() {
+  const contratosActivos = DATA.all_contracts.filter(c => !(c.estado || '').toUpperCase().includes('PERDIDO') && !(c.estado || '').toUpperCase().includes('PROCESO'));
+  DATA.lost_contracts = DATA.all_contracts.filter(c => (c.estado || '').toUpperCase().includes('PERDIDO'));
+  DATA.en_proceso_contracts = DATA.all_contracts.filter(c => (c.estado || '').toUpperCase().includes('PROCESO'));
+
+  DATA.renew_contracts = contratosActivos.filter(c => c.dias >= 0 && c.dias <= 90);
+  DATA.projection_usd = Array(12).fill(0); DATA.projection_crc = Array(12).fill(0); DATA.billing_by_month = Array.from({length: 12}, () => []);
+
+  contratosActivos.forEach(c => {
+    c.cuota_usd_mes = fraccionarMonto(c, c.anual_usd); 
+    c.cuota_crc_mes = fraccionarMonto(c, c.anual_crc);
+
     c.tiene_iva = (c.iva || '').toUpperCase().includes('GRAVADO');
-    c.factor = c.tiene_iva ? 1.13 : 1;
+    c.factor_iva = c.tiene_iva ? 1.13 : 1;
+
+    c.cuota_usd_mes_total = c.cuota_usd_mes * c.factor_iva;
+    c.cuota_crc_mes_total = c.cuota_crc_mes * c.factor_iva;
 
     for (let m = 0; m < 12; m++) {
-      let facturaEsteMes = determinarMesCobro(c, m, ANIO_ACTUAL);
-      let vigenciaValida = true;
+      let facturaEnMesM = determinaFacturacion(c, m, ANIO_ACTUAL);
+      let activoEnMes = true;
       if (c.expiracion_obj) {
-        let limite = new Date(ANIO_ACTUAL, m + 1, 0); 
-        if (Math.ceil((c.expiracion_obj - limite) / (1000 * 60 * 60 * 24)) < -30) vigenciaValida = false;
+        let fechaEval = new Date(ANIO_ACTUAL, m + 1, 0); 
+        if (Math.ceil((c.expiracion_obj - fechaEval) / (1000 * 60 * 60 * 24)) < -30) activoEnMes = false;
       }
-      if (facturaEsteMes && vigenciaValida && (c.cuota_usd > 0 || c.cuota_crc > 0)) {
-        DATA.projection_usd[m] += c.cuota_usd; 
-        DATA.projection_crc[m] += c.cuota_crc; 
+      if (facturaEnMesM && activoEnMes && c.cuota_usd_mes + c.cuota_crc_mes >= 0) {
+        DATA.projection_usd[m] += c.cuota_usd_mes; 
+        DATA.projection_crc[m] += c.cuota_crc_mes; 
         DATA.billing_by_month[m].push(c);
       }
     }
   });
-  
-  renderizarPantallas();
+  DATA.current_month_billing = DATA.billing_by_month[MES_ACTUAL] || [];
+  actualizarUI();
 }
+function recalcularFinanzas() { tasaCambio = parseFloat(document.getElementById('inputTC').value) || 515; if (DATA.all_contracts.length > 0) procesarLogicaInteligente(); }
 
-function actualizarFinanzasUI() { tasaCambio = parseFloat(document.getElementById('inputTC').value) || 515; if (DATA.all_contracts.length > 0) procesarLogicaUI(); }
-
-// ================================================================
-// 6. FUNCIONALIDADES DEL MODAL OPERATIVO
-// ================================================================
-function toggleBox(boxId) { document.getElementById(boxId).classList.toggle('active'); }
+// FUNCIÓN PARA EL BOTÓN DESPLEGABLE
+function toggleSpecsBox() {
+    const box = document.getElementById('boxSpecs');
+    box.classList.toggle('active');
+}
 
 function mostrarDetalleContrato(c) {
   contratoEnEdicion = c; toggleEditMode(false); document.getElementById('chkEditMode').checked = false;
   document.getElementById('mdlNombre').innerText = c.nombre;
-  document.getElementById('mdlBadges').innerHTML = `${freqBadge(c.frecuencia)} <span class="badge badge-gray">${c.modalidad}</span> ${c.estado.includes('PERDIDO') ? '<span class="badge badge-red">PERDIDO</span>' : c.estado.includes('PROCESO') ? '<span class="badge badge-amber">EN PROCESO</span>' : '<span class="badge badge-green">ACTIVO</span>'}`;
-  
+
+  let statusBadge = '';
+  if (c.estado && c.estado.toUpperCase().includes('PERDIDO')) statusBadge = `<span class="badge badge-red">PERDIDO</span>`;
+  else if (c.estado && c.estado.toUpperCase().includes('PROCESO')) statusBadge = `<span class="badge badge-amber">EN PROCESO</span>`;
+  else statusBadge = `<span class="badge badge-green">ACTIVO</span>`;
+
+  document.getElementById('mdlBadges').innerHTML = `${freqBadge(c.frecuencia)} <span class="badge badge-gray">${c.modalidad}</span> ${statusBadge}`;
+
+  // Estos datos solo se leen desde el Excel
   document.getElementById('mdlAnualUsd').innerText = c.anual_usd > 0 ? fmtUSD(c.anual_usd) : '—'; 
   document.getElementById('mdlAnualCrc').innerText = c.anual_crc > 0 ? fmtCRC(c.anual_crc) : '—';
   document.getElementById('mdlSector_view').innerText = c.sector || '—';
   document.getElementById('mdlResponsable_view').innerText = c.responsable || '—';
-  document.getElementById('mdlDias').innerHTML = daysBadge(c.dias); 
-  document.getElementById('mdlIva').innerHTML = ivaBadge(c.iva);
+  document.getElementById('mdlRepuestos_view').innerText = c.repuestos || '—';
+  document.getElementById('mdlInicio').innerText = c.inicio; 
+  document.getElementById('mdlFin').innerText = c.expiracion; 
 
-  // Mapeo
-  document.getElementById('mdlMapeo_view').innerText = c.mapeo_cliente || 'Sin notas.';
-  document.getElementById('mdlMapeo_edit').value = c.mapeo_cliente || '';
+  document.getElementById('mdlFrecuencia_view').innerText = c.frecuencia || 'No Definido';
 
-  // Configuración JSON
-  document.getElementById('mdlFrecuencia_view').innerText = c.frecuencia || '—';
-  document.getElementById('mdlTipoFact_view').innerText = c.tipo_facturacion === 'mes' ? 'Automático General' : c.tipo_facturacion === 'dia' ? `Automático (Día ${c.dia_facturacion})` : 'Forzado Manual';
-  document.getElementById('mdlDiaFact_view').innerText = c.dia_facturacion ? `Día ${c.dia_facturacion}` : '—';
-  
+  if (c.tipo_facturacion === 'mes') document.getElementById('mdlTipoFact_view').innerText = 'Automático - Mes General';
+  else if (c.tipo_facturacion === 'dia') document.getElementById('mdlTipoFact_view').innerText = 'Automático - Día Específico';
+  else if (c.tipo_facturacion === 'manual_mes') document.getElementById('mdlTipoFact_view').innerText = 'Personalizado - Elegir Meses';
+  else if (c.tipo_facturacion === 'manual_dia') document.getElementById('mdlTipoFact_view').innerText = 'Personalizado - Meses y Día';
+
+  if (c.tipo_facturacion.includes('dia') && c.dia_facturacion) document.getElementById('mdlDiaFact_view').innerText = `Día ${c.dia_facturacion} del mes`;
+
   if (c.tipo_facturacion.includes('manual')) {
       document.getElementById('boxMesesCustom').style.display = 'block';
-      document.getElementById('mdlMesesCustom_view').innerText = (c.meses_custom && c.meses_custom.length > 0) ? c.meses_custom.map(idx => MESES[idx].substring(0,3)).join(', ') : 'Ninguno';
+      document.getElementById('mdlMesesCustom_view').innerText = (c.meses_custom && c.meses_custom.length > 0) ? c.meses_custom.map(idx => MESES[idx].substring(0,3).toUpperCase()).join(', ') : 'Ningún mes seleccionado';
   } else { document.getElementById('boxMesesCustom').style.display = 'none'; }
 
-  // Cargar tablas operativas (Cruces relacionales)
-  cargarTablaFacturas(c.nombre);
-  cargarTablaBitacora(c.nombre);
-  cargarTablaEquipos(c.nombre);
+  document.getElementById('mdlCuotaUsd').innerText = c.cuota_usd_mes > 0 ? fmtUSD(c.cuota_usd_mes) : '—'; 
+  document.getElementById('mdlCuotaCrc').innerText = c.cuota_crc_mes > 0 ? fmtCRC(c.cuota_crc_mes) : '—';
 
-  // Set Inputs Edit
+  document.getElementById('mdlCuotaUsdTot').innerText = c.cuota_usd_mes > 0 ? `Total con IVA: ${fmtUSD(c.cuota_usd_mes_total)}` : '';
+  document.getElementById('mdlCuotaCrcTot').innerText = c.cuota_crc_mes > 0 ? `Total con IVA: ${fmtCRC(c.cuota_crc_mes_total)}` : '';
+
+  const freqLabel = c.frecuencia ? `(Base Subtotal: ${c.frecuencia})` : ''; document.getElementById('mdlFrecuenciaLabelUsd').innerText = freqLabel; document.getElementById('mdlFrecuenciaLabelCrc').innerText = freqLabel;
+  document.getElementById('mdlDias').innerHTML = daysBadge(c.dias); document.getElementById('mdlIva').innerHTML = ivaBadge(c.iva);
+
+  document.getElementById('mdlMapeo_view').innerText = c.mapeo_cliente || 'No hay notas o mapeo registrado.';
+  document.getElementById('mdlMapeo_edit').value = c.mapeo_cliente || '';
+
+  let eqHtml = '';
+  if(c.equipo1) eqHtml += `<tr><td>${c.equipo1}</td><td style="text-align: right;">${c.cant1 || 1}</td></tr>`;
+  if(c.equipo2) eqHtml += `<tr><td>${c.equipo2}</td><td style="text-align: right;">${c.cant2 || 1}</td></tr>`;
+  if(c.equipo3) eqHtml += `<tr><td>${c.equipo3}</td><td style="text-align: right;">${c.cant3 || 1}</td></tr>`;
+  if(c.equipo4) eqHtml += `<tr><td>${c.equipo4}</td><td style="text-align: right;">${c.cant4 || 1}</td></tr>`;
+  if(!eqHtml) eqHtml = `<tr><td colspan="2" style="text-align: center; color: var(--muted); border: none;">No hay equipos principales registrados</td></tr>`;
+  document.getElementById('mdlEquipos_view').innerHTML = eqHtml;
+
+  // === LÓGICA PARA LLENAR LA TABLA DETALLADA DESDE LA HOJA EQUIPOS ===
+  const btnToggleSpecs = document.getElementById('btnToggleSpecs');
+  const boxSpecs = document.getElementById('boxSpecs');
+  boxSpecs.classList.remove('active');
+
+  const equiposDetallados = DATA.equipos_bd.filter(eq => {
+      const nombreEnHoja = eq['Nombre de contrato'] || eq['Contrato'] || eq['Cliente'] || '';
+      return nombreEnHoja.trim().toLowerCase() === c.nombre.trim().toLowerCase();
+  });
+
+  if (equiposDetallados.length > 0) {
+      btnToggleSpecs.style.display = 'block';
+      btnToggleSpecs.innerHTML = `📋 Ver Especificaciones Detalladas (${equiposDetallados.length} equipos)`;
+
+      const columnasBase = ['TIPO DE EQUIPO', 'MARCA', 'MODELO', 'MODELO2', 'CAPACIDAD', 'POTENCIA', 'VOLTAJE', 'FASE', 'NÚMERO DE SERIE', 'UBICACIÓN', 'NOTAS'];
+      const columnasAMostrar = columnasBase.filter(col => equiposDetallados.some(e => e[col] !== undefined && e[col] !== ""));
+      let columnasFinales = columnasAMostrar.length > 0 ? columnasAMostrar : Object.keys(equiposDetallados[0]).filter(k => !['Nombre de contrato', 'Contrato', 'Cliente'].includes(k));
+
+      document.getElementById('specsHead').innerHTML = `<tr>${columnasFinales.map(col => `<th>${col}</th>`).join('')}</tr>`;
+      document.getElementById('specsBody').innerHTML = equiposDetallados.map(eq => `
+          <tr>${columnasFinales.map(col => `<td>${eq[col] || '-'}</td>`).join('')}</tr>
+      `).join('');
+  } else {
+      btnToggleSpecs.style.display = 'none';
+      document.getElementById('specsBody').innerHTML = '';
+  }
+
+  let colorEstado = 'var(--accent4)';
+  if (c.estado && c.estado.toUpperCase() === 'PERDIDO') colorEstado = 'var(--danger)';
+  else if (c.estado && c.estado.toUpperCase() === 'EN PROCESO') colorEstado = 'var(--accent3)';
+
+  document.getElementById('mdlEstado_view').innerText = c.estado || 'ACTIVO';
+  document.getElementById('mdlEstado_view').style.color = colorEstado;
+
+  // EDIT MODE (Solo se configuran los datos de Facturación y Mapeo)
   let matchFreq = Array.from(document.getElementById('mdlFrecuencia_edit').options).some(o => o.value === (c.frecuencia||'').toUpperCase());
   document.getElementById('mdlFrecuencia_edit').value = matchFreq ? (c.frecuencia||'').toUpperCase() : 'PERSONALIZADA';
-  document.getElementById('mdlTipoFact_edit').value = c.tipo_facturacion || 'mes'; 
-  document.getElementById('mdlDiaFact_edit').value = c.dia_facturacion || '';
+  document.getElementById('mdlTipoFact_edit').value = c.tipo_facturacion || 'mes'; document.getElementById('mdlDiaFact_edit').value = c.dia_facturacion || '';
   document.querySelectorAll('.chk-mes').forEach(chk => { chk.checked = c.meses_custom ? c.meses_custom.includes(parseInt(chk.value)) : false; });
 
   document.getElementById('modalDetalleContrato').classList.add('active');
 }
 function cerrarDetalleContrato() { document.getElementById('modalDetalleContrato').classList.remove('active'); contratoEnEdicion = null; }
+
 function toggleFormatoFact() { const val = document.getElementById('mdlTipoFact_edit').value; document.getElementById('boxDiaFacturacion').style.display = val.includes('dia') ? 'block' : 'none'; document.getElementById('boxMesesCustom').style.display = val.includes('manual') ? 'block' : 'none'; }
-function toggleEditMode(isEdit) { document.getElementById('modalContentBox').classList.toggle('is-editing', isEdit); toggleFormatoFact(); }
-
-// Tablas Interiores del Modal
-function cargarTablaFacturas(nombre) {
-    const records = DATA.facturacion_bd.filter(r => r['Nombre de contrato'] === nombre);
-    document.getElementById('mdlFact_view').innerHTML = records.map(r => `
-        <tr>
-            <td>${r['Mes']||'-'}</td><td>${r['N° Factura']||'-'}</td>
-            <td style="color:var(--accent); font-weight:700;">${r['Monto Cobrado Real'] ? fmtUSD(r['Monto Cobrado Real']) : '-'}</td>
-            <td><span class="badge ${r['Estado de Pago']==='Pagado'?'badge-green':r['Estado de Pago']==='Anulado'?'badge-red':'badge-amber'}">${r['Estado de Pago']||'-'}</span></td>
-            <td>${r['Fecha de Pago'] ? parseDateStr(r['Fecha de Pago']) : '-'}</td>
-        </tr>
-    `).join('') || `<tr><td colspan="5" style="text-align:center; color:var(--muted); border:none;">No hay facturas registradas</td></tr>`;
+function toggleEditMode(isEdit) {
+  const modalBox = document.getElementById('modalContentBox');
+  if (isEdit) { modalBox.classList.add('is-editing'); toggleFormatoFact(); document.getElementById('boxCuotaUsd').style.display = 'none'; document.getElementById('boxCuotaCrc').style.display = 'none'; } 
+  else { modalBox.classList.remove('is-editing'); document.getElementById('boxCuotaUsd').style.display = 'block'; document.getElementById('boxCuotaCrc').style.display = 'block'; if (contratoEnEdicion) { document.getElementById('boxDiaFacturacion').style.display = contratoEnEdicion.tipo_facturacion.includes('dia') ? 'block' : 'none'; document.getElementById('boxMesesCustom').style.display = contratoEnEdicion.tipo_facturacion.includes('manual') ? 'block' : 'none'; } }
 }
 
-function cargarTablaBitacora(nombre) {
-    const records = DATA.bitacora_bd.filter(r => r['Nombre de contrato'] === nombre);
-    document.getElementById('mdlBit_view').innerHTML = records.map(r => `
-        <tr>
-            <td>${r['Fecha Planificada'] ? parseDateStr(r['Fecha Planificada']) : '-'}</td>
-            <td>${r['Fecha Real Ejecutada'] ? parseDateStr(r['Fecha Real Ejecutada']) : '-'}</td>
-            <td style="font-weight:700;">${r['Técnico']||'-'}</td>
-            <td><span class="badge ${r['Estado de la Visita']==='Completado'?'badge-cyan':r['Estado de la Visita']==='Reprogramado'?'badge-amber':'badge-gray'}">${r['Estado de la Visita']||'-'}</span></td>
-            <td><div style="max-width:200px; overflow:hidden; text-overflow:ellipsis;" title="${r['Observaciones']||''}">${r['Observaciones']||'-'}</div></td>
-        </tr>
-    `).join('') || `<tr><td colspan="5" style="text-align:center; color:var(--muted); border:none;">No hay visitas registradas</td></tr>`;
-}
-
-function cargarTablaEquipos(nombre) {
-    const btn = document.getElementById('btnToggleSpecs');
-    const records = DATA.equipos_bd.filter(r => r['Nombre de contrato'] === nombre);
-    if(records.length > 0) {
-        btn.style.display = 'block'; btn.innerHTML = `📋 Especificaciones Detalladas (${records.length} Equipos)`;
-        const cols = ['TIPO DE EQUIPO', 'MARCA', 'MODELO', 'CAPACIDAD', 'NÚMERO DE SERIE', 'UBICACIÓN'];
-        document.getElementById('specsHead').innerHTML = `<tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr>`;
-        document.getElementById('specsBody').innerHTML = records.map(r => `<tr>${cols.map(c => `<td>${r[c]||'-'}</td>`).join('')}</tr>`).join('');
-    } else { btn.style.display = 'none'; document.getElementById('specsBody').innerHTML = ''; }
-}
-
-// ================================================================
-// 7. ESCRITURA TRANSACCIONAL (Agrega filas nuevas a las matrices)
-// ================================================================
-async function agregarFactura() {
-    if(!contratoEnEdicion) return;
-    const mes = document.getElementById('addFactMes').value;
-    const num = document.getElementById('addFactNum').value;
-    const monto = parseFloat(document.getElementById('addFactMonto').value);
-    const estado = document.getElementById('addFactEstado').value;
-    const fecha = document.getElementById('addFactFecha').value;
-
-    if(!mes || isNaN(monto)) return alert("El Mes y el Monto (número) son obligatorios.");
-
-    DATA.facturacion_bd.push({
-        'Nombre de contrato': contratoEnEdicion.nombre,
-        'Mes': mes, 'N° Factura': num, 'Monto Cobrado Real': monto,
-        'Estado de Pago': estado, 'Fecha de Pago': fecha ? new Date(fecha) : ''
-    });
-
-    await guardarExcelDirecto();
-    
-    // Limpiar form y recargar UI
-    document.getElementById('addFactMes').value = ''; document.getElementById('addFactNum').value = ''; document.getElementById('addFactMonto').value = ''; document.getElementById('addFactFecha').value = '';
-    cargarTablaFacturas(contratoEnEdicion.nombre);
-}
-
-async function agregarBitacora() {
-    if(!contratoEnEdicion) return;
-    const plan = document.getElementById('addBitPlan').value;
-    const real = document.getElementById('addBitReal').value;
-    const tech = document.getElementById('addBitTech').value;
-    const estado = document.getElementById('addBitEstado').value;
-    const obs = document.getElementById('addBitObs').value;
-
-    if(!tech) return alert("Debes ingresar el nombre del técnico.");
-
-    DATA.bitacora_bd.push({
-        'Nombre de contrato': contratoEnEdicion.nombre,
-        'Fecha Planificada': plan ? new Date(plan) : '',
-        'Fecha Real Ejecutada': real ? new Date(real) : '',
-        'Técnico': tech, 'Estado de la Visita': estado, 'Observaciones': obs
-    });
-
-    await guardarExcelDirecto();
-    
-    // Limpiar form y recargar UI
-    document.getElementById('addBitPlan').value = ''; document.getElementById('addBitReal').value = ''; document.getElementById('addBitTech').value = ''; document.getElementById('addBitObs').value = '';
-    cargarTablaBitacora(contratoEnEdicion.nombre);
-}
-
-async function guardarCambiosAjustes() {
+async function guardarCambiosContrato() {
   if(!contratoEnEdicion) return;
+
+  // Extraemos del formulario los únicos datos que queremos guardar en el JSON
   contratoEnEdicion.frecuencia = document.getElementById('mdlFrecuencia_edit').value;
   contratoEnEdicion.tipo_facturacion = document.getElementById('mdlTipoFact_edit').value;
   contratoEnEdicion.mapeo_cliente = document.getElementById('mdlMapeo_edit').value;
 
   if (contratoEnEdicion.tipo_facturacion.includes('manual')) {
-      let selecc = []; document.querySelectorAll('.chk-mes:checked').forEach(c => selecc.push(parseInt(c.value))); contratoEnEdicion.meses_custom = selecc;
+      let seleccionados = []; document.querySelectorAll('.chk-mes:checked').forEach(chk => seleccionados.push(parseInt(chk.value))); contratoEnEdicion.meses_custom = seleccionados;
   }
-  let dia = parseInt(document.getElementById('mdlDiaFact_edit').value);
-  contratoEnEdicion.dia_facturacion = (contratoEnEdicion.tipo_facturacion.includes('dia') && dia > 0 && dia < 32) ? dia : null;
+  let diaInput = parseInt(document.getElementById('mdlDiaFact_edit').value);
+  if (contratoEnEdicion.tipo_facturacion.includes('dia') && diaInput >= 1 && diaInput <= 31) contratoEnEdicion.dia_facturacion = diaInput;
+  else { contratoEnEdicion.dia_facturacion = null; if (contratoEnEdicion.tipo_facturacion === 'dia') contratoEnEdicion.tipo_facturacion = 'mes'; if (contratoEnEdicion.tipo_facturacion === 'manual_dia') contratoEnEdicion.tipo_facturacion = 'manual_mes'; }
 
-  // Actualizar RAM, JSON y Excel
+  // Solo inyectamos los datos de control en el configGuardada (sin ESTADO ni MONTOS)
   configGuardada[contratoEnEdicion.nombre] = {
-      frecuencia: contratoEnEdicion.frecuencia, tipo_facturacion: contratoEnEdicion.tipo_facturacion,
-      dia_facturacion: contratoEnEdicion.dia_facturacion, meses_custom: contratoEnEdicion.meses_custom
+      frecuencia: contratoEnEdicion.frecuencia,
+      tipo_facturacion: contratoEnEdicion.tipo_facturacion,
+      dia_facturacion: contratoEnEdicion.dia_facturacion,
+      meses_custom: contratoEnEdicion.meses_custom,
+      mapeo_cliente: contratoEnEdicion.mapeo_cliente
   };
-  
-  // Guardado Híbrido
-  await idbKeyval.set('contractEdits', configGuardada);
-  
-  if (jsonFileHandle) {
-      try {
-          const opt = { mode: 'readwrite' };
-          if(await verificarPermiso(jsonFileHandle, 'readwrite')){
-            const w = await jsonFileHandle.createWritable();
-            await w.write(JSON.stringify(configGuardada, null, 2)); await w.close();
-          }
-      } catch(e){}
-  }
-  
-  // El Mapeo del cliente y frecuencia sí se manda al Excel
-  const target = DATA.all_contracts.find(c => c.nombre === contratoEnEdicion.nombre);
-  if(target) { target.mapeo_cliente = contratoEnEdicion.mapeo_cliente; target.frecuencia = contratoEnEdicion.frecuencia; }
-  await guardarExcelDirecto();
 
-  procesarLogicaUI(); mostrarDetalleContrato(contratoEnEdicion);
+  await idbKeyval.set('contractEdits', configGuardada);
+  await escribirJSONEnDisco();
+
+  procesarLogicaInteligente(); mostrarDetalleContrato(contratoEnEdicion);
 }
 
-// ================================================================
-// 8. RENDERIZADO DEL DOM Y GRÁFICOS
-// ================================================================
-function renderizarPantallas() {
-  const activos = DATA.all_contracts.filter(c => !c.estado.toUpperCase().includes('PERDIDO') && !c.estado.toUpperCase().includes('PROCESO'));
-  let tUsd = 0, tCrc = 0, exp = 0; activos.forEach(c => { tUsd += c.anual_usd; tCrc += c.anual_crc; if (c.dias < 0) exp++; });
-  
-  document.getElementById('kpiTotalUsd').innerText = fmtUSD(tUsd); 
-  document.getElementById('kpiTotalCrc').innerText = fmtCRC(tCrc); 
-  document.getElementById('kpiConsolidadoUsd').innerText = fmtUSD(tUsd + (tCrc / tasaCambio)); 
-  if(document.getElementById('lblTasaCambio')) document.getElementById('lblTasaCambio').innerText = `TC: ₡${tasaCambio}`;
-  document.getElementById('kpiActivos').innerText = activos.length; 
-  document.getElementById('kpiRenovar').innerText = DATA.renew_contracts.length; 
-  document.getElementById('kpiExpirados').innerText = exp;
-  
-  updateMesTable(); // Pinta la tabla de mes actual
-  
-  // Generar HTML interno masivo para evitar recalcular DOM (Reflow Optimizer)
-  document.getElementById('tbodyAll').innerHTML = activos.map(c => `<tr class="clickable" onclick='mostrarDetalleContrato(DATA.all_contracts.find(x=>x.nombre==="${c.nombre.replace(/"/g, '&quot;')}"))'><td class="name-cell">${c.nombre}</td><td><span class="badge badge-outline">${c.sector||'-'}</span></td><td>${c.responsable||'-'}</td><td><span class="badge badge-gray">${c.modalidad}</span></td><td>${freqBadge(c.frecuencia)}</td><td>${ivaBadge(c.iva)}</td><td class="num">${c.anual_usd>0?fmtUSD(c.anual_usd):'-'}</td><td class="num">${c.anual_crc>0?fmtCRC(c.anual_crc):'-'}</td><td>${c.expiracion}</td><td class="num">${daysBadge(c.dias)}</td></tr>`).join('');
-  document.getElementById('tbodyRenovar').innerHTML = DATA.renew_contracts.map(c => `<tr class="clickable" onclick='mostrarDetalleContrato(DATA.all_contracts.find(x=>x.nombre==="${c.nombre.replace(/"/g, '&quot;')}"))'><td class="name-cell">${c.nombre}</td><td>${freqBadge(c.frecuencia)}</td><td class="num">${c.anual_usd>0?fmtUSD(c.anual_usd):'-'}</td><td class="num">${c.anual_crc>0?fmtCRC(c.anual_crc):'-'}</td><td>${c.expiracion}</td><td class="num">${daysBadge(c.dias)}</td></tr>`).join('');
-  document.getElementById('tbodyEnProceso').innerHTML = DATA.en_proceso_contracts.map(c => `<tr class="clickable" onclick='mostrarDetalleContrato(DATA.all_contracts.find(x=>x.nombre==="${c.nombre.replace(/"/g, '&quot;')}"))'><td class="name-cell">${c.nombre}</td><td>${c.responsable||'-'}</td><td>${c.mapeo_cliente||'-'}</td><td class="num" style="color:var(--accent3);">${c.anual_usd>0?fmtUSD(c.anual_usd):'-'}</td><td class="num" style="color:var(--accent3);">${c.anual_crc>0?fmtCRC(c.anual_crc):'-'}</td><td>${c.expiracion}</td></tr>`).join('');
-  document.getElementById('tbodyPerdidos').innerHTML = DATA.lost_contracts.map(c => `<tr class="clickable" onclick='mostrarDetalleContrato(DATA.all_contracts.find(x=>x.nombre==="${c.nombre.replace(/"/g, '&quot;')}"))'><td class="name-cell">${c.nombre}</td><td>${c.responsable||'-'}</td><td>${c.mapeo_cliente||'-'}</td><td class="num" style="color:var(--danger);">${c.anual_usd>0?fmtUSD(c.anual_usd):'-'}</td><td class="num" style="color:var(--danger);">${c.anual_crc>0?fmtCRC(c.anual_crc):'-'}</td><td>${c.expiracion}</td></tr>`).join('');
+function actualizarUI() {
+  let totalUsd = 0, totalCrc = 0, expirados = 0, mesActualUsd = 0, mesActualCrc = 0;
+  const contratosActivos = DATA.all_contracts.filter(c => !(c.estado || '').toUpperCase().includes('PERDIDO') && !(c.estado || '').toUpperCase().includes('PROCESO'));
 
-  pintarGraficos(activos);
+  contratosActivos.forEach(c => { totalUsd += c.anual_usd; totalCrc += c.anual_crc; if (c.dias < 0) expirados++; });
+  DATA.current_month_billing.forEach(c => { mesActualUsd += c.cuota_usd_mes; mesActualCrc += c.cuota_crc_mes; });
+  let consolidadoUsd = totalUsd + (totalCrc / tasaCambio);
+
+  document.getElementById('kpiTotalUsd').innerText = fmtUSD(totalUsd); 
+  document.getElementById('kpiTotalCrc').innerText = fmtCRC(totalCrc); 
+  document.getElementById('kpiConsolidadoUsd').innerText = fmtUSD(consolidadoUsd); 
+  if(document.getElementById('lblTasaCambio')) { document.getElementById('lblTasaCambio').innerText = `TC: ₡${tasaCambio}`; }
+
+  document.getElementById('kpiActivos').innerText = contratosActivos.length; 
+  if(document.getElementById('kpiTotalContratos')) { document.getElementById('kpiTotalContratos').innerText = `${contratosActivos.length} contratos en vigencia`; }
+
+  document.getElementById('kpiRenovar').innerText = DATA.renew_contracts.length; 
+  document.getElementById('kpiExpirados').innerText = expirados;
+
+  document.getElementById('kpiMesUsd').innerText = fmtUSD(mesActualUsd); 
+  document.getElementById('kpiMesCrc').innerText = fmtCRC(mesActualCrc);
+
+  document.getElementById('tbodyAll').innerHTML = ''; document.getElementById('tbodyRenovar').innerHTML = ''; document.getElementById('tbodyMes').innerHTML = ''; 
+  document.getElementById('tbodyPerdidos').innerHTML = ''; 
+  document.getElementById('tbodyEnProceso').innerHTML = '';
+
+  for (let id in Chart.instances) Chart.instances[id].destroy();
+  initCharts(); updateMesTable(); buildAll(); buildRenew(); buildLost(); buildEnProceso();
+}
+
+function ivaBadge(iva) { if(!iva) return `<span class="badge badge-gray">—</span>`; if(iva.toUpperCase().includes('GRAVADO')) return `<span class="badge badge-amber">IVA 13%</span>`; if(iva.toUpperCase().includes('EXONERADO')) return `<span class="badge badge-green">Exonerado</span>`; return `<span class="badge badge-gray">${iva}</span>`; }
+function freqBadge(f) { if(!f) return `<span class="badge badge-gray">—</span>`; const t=f.toUpperCase(); if(t.includes('BIMENSUAL') || t.includes('BIMESTRAL')) return `<span class="badge badge-green">${f}</span>`; if(t.includes('MENSUAL')) return `<span class="badge badge-cyan">${f}</span>`; if(t.includes('CUATRIMESTRAL')) return `<span class="badge badge-amber">${f}</span>`; if(t.includes('TRIMESTRAL')) return `<span class="badge badge-purple">${f}</span>`; if(t.includes('SEMESTRAL')) return `<span class="badge badge-amber">${f}</span>`; return `<span class="badge badge-red">${f}</span>`; }
+function daysBadge(d) { if(d<0) return `<span class="badge badge-red">VENCIDO</span>`; if(d<30) return `<span style="color:var(--danger);font-weight:700">${d}</span>`; if(d<90) return `<span style="color:var(--accent3);font-weight:700">${d}</span>`; return `<span style="color:var(--accent4)">${d}</span>`; }
+
+function switchTab(id) { document.querySelectorAll('.panel').forEach(p => p.classList.remove('active')); document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-' + id).classList.add('active'); event.target.classList.add('active'); }
+function filterTable(tableId, query) { const q = query.toLowerCase(); document.querySelectorAll(`#${tableId} tbody tr`).forEach(tr => { tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none'; }); }
+
+function initCharts() {
+  const contratosActivos = DATA.all_contracts.filter(c => !(c.estado || '').toUpperCase().includes('PERDIDO') && !(c.estado || '').toUpperCase().includes('PROCESO'));
+  if (contratosActivos.length === 0) return;
+
+  let freqCounts = {}, modCounts = { '24x7': 0, '8x5 / Otras': 0 };
+  let ivaCounts = {};
+  let estadoCounts = { 'Vigentes (Seguros)': 0, 'Por Renovar (<90d)': 0, 'Expirados': 0 };
+
+  contratosActivos.forEach(c => { 
+      freqCounts[c.frecuencia] = (freqCounts[c.frecuencia] || 0) + 1; 
+      if (c.modalidad && c.modalidad.includes('24x7')) modCounts['24x7']++; else modCounts['8x5 / Otras']++; 
+
+      let ivaClean = (c.iva || 'No definido').toUpperCase();
+      if(ivaClean.includes('GRAVADO')) ivaClean = 'Aplica IVA (13%)';
+      else if(ivaClean.includes('EXONERADO')) ivaClean = 'Exonerados';
+      else ivaClean = 'No definidos';
+      ivaCounts[ivaClean] = (ivaCounts[ivaClean] || 0) + 1;
+
+      if (c.dias < 0) estadoCounts['Expirados']++;
+      else if (c.dias <= 90) estadoCounts['Por Renovar (<90d)']++;
+      else estadoCounts['Vigentes (Seguros)']++;
+  });
+
+  const topUsd = [...contratosActivos].sort((a,b) => b.anual_usd - a.anual_usd).slice(0, 8);
+  new Chart(document.getElementById('chartTop'), { type: 'bar', data: { labels: topUsd.map(c => c.nombre.substring(0,20)), datasets: [{ data: topUsd.map(c => c.anual_usd), backgroundColor: 'rgba(0,229,255,0.25)', borderColor: '#00e5ff', borderWidth: 1.5, borderRadius: 6 }] }, options: { indexAxis: 'y', plugins: { legend: { display: false } } } });
+
+  const topCrc = [...contratosActivos].sort((a,b) => b.anual_crc - a.anual_crc).slice(0, 8);
+  new Chart(document.getElementById('chartTopCrc'), { type: 'bar', data: { labels: topCrc.map(c => c.nombre.substring(0,20)), datasets: [{ data: topCrc.map(c => c.anual_crc), backgroundColor: 'rgba(124,58,237,0.25)', borderColor: '#7c3aed', borderWidth: 1.5, borderRadius: 6 }] }, options: { indexAxis: 'y', plugins: { legend: { display: false } } } });
+
+  new Chart(document.getElementById('chartFreq'), { type: 'doughnut', data: { labels: Object.keys(freqCounts), datasets: [{ data: Object.values(freqCounts), backgroundColor: COLORS, borderWidth: 0 }] }, options: { cutout: '68%', plugins: { legend: { position: 'right' } } } });
+  new Chart(document.getElementById('chartModalidad'), { type: 'pie', data: { labels: Object.keys(modCounts), datasets: [{ data: Object.values(modCounts), backgroundColor: ['#00e5ff', '#7c3aed'], borderWidth: 0 }] } });
+  new Chart(document.getElementById('chartIva'), { type: 'doughnut', data: { labels: Object.keys(ivaCounts), datasets: [{ data: Object.values(ivaCounts), backgroundColor: ['#f59e0b', '#10b981', '#6b7280'], borderWidth: 0 }] }, options: { cutout: '60%', plugins: { legend: { position: 'right' } } } });
+  new Chart(document.getElementById('chartEstado'), { type: 'pie', data: { labels: Object.keys(estadoCounts), datasets: [{ data: Object.values(estadoCounts), backgroundColor: ['#00e5ff', '#f59e0b', '#ef4444'], borderWidth: 0 }] }, options: { plugins: { legend: { position: 'right' } } } });
+
+  new Chart(document.getElementById('chartProyeccionMensual'), { type: 'bar', data: { labels: MESES.map(m=>m.substring(0,3)), datasets: [{ label: 'Facturación USD', data: DATA.projection_usd, backgroundColor: '#00e5ff', borderRadius: 4, yAxisID: 'y' }, { label: 'Facturación CRC', data: DATA.projection_crc, backgroundColor: '#7c3aed', borderRadius: 4, yAxisID: 'y1' }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { type: 'linear', position: 'left', grid: { color: 'rgba(255,255,255,0.05)' } }, y1: { type: 'linear', position: 'right', grid: { drawOnChartArea: false } } } } });
+  let acumuladoData = [], sum = 0; for(let i=0; i<12; i++) { sum += DATA.projection_usd[i] + (DATA.projection_crc[i] / tasaCambio); acumuladoData.push(sum); }
+  new Chart(document.getElementById('chartFlujoAcumulado'), { type: 'line', data: { labels: MESES.map(m=>m.substring(0,3)), datasets: [{ label: 'Ingreso Acumulado (Eq. USD)', data: acumuladoData, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#10b981' }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } } } } });
 }
 
 function updateMesTable() {
   const mIdx = parseInt(document.getElementById('monthSelector').value); 
-  const datos = DATA.billing_by_month[mIdx] || []; 
-  let mU = 0, mC = 0;
-  
-  if(mIdx === MES_ACTUAL) {
-      datos.forEach(c => { mU += c.cuota_usd; mC += c.cuota_crc; });
-      document.getElementById('kpiMesUsd').innerText = fmtUSD(mU);
-      document.getElementById('kpiMesCrc').innerText = fmtCRC(mC);
+  const tbody = document.getElementById('tbodyMes'); 
+  tbody.innerHTML = ''; 
+  const dataDelMes = DATA.billing_by_month[mIdx] || []; 
+
+  let sumaMesUsdTot = 0, sumaMesCrcTot = 0;
+
+  dataDelMes.forEach(c => {
+     sumaMesUsdTot += c.cuota_usd_mes; 
+      sumaMesCrcTot += c.cuota_crc_mes;
+
+    const tr = document.createElement('tr'); 
+    tr.className = "clickable"; 
+    tr.onclick = () => mostrarDetalleContrato(c); 
+
+    let estadoBadge = `<span class="badge badge-outline">Factura en ${MESES[mIdx].substring(0,3)}</span>`; 
+    if (c.tipo_facturacion.includes('dia') && c.dia_facturacion) estadoBadge = `<span class="badge badge-cyan">Día ${c.dia_facturacion} (${MESES[mIdx].substring(0,3)})</span>`;
+
+    let ivaBadgeCol = c.tiene_iva ? `<span class="badge badge-amber">13%</span>` : `<span class="badge badge-gray">0%</span>`;
+
+    tr.innerHTML = `
+      <td class="name-cell" title="${c.nombre}">${c.nombre}</td>
+      <td>${estadoBadge}</td>
+      <td>${ivaBadgeCol}</td>
+      <td class="num" style="color:var(--accent); font-weight:700">${c.cuota_usd_mes>0 ? fmtUSD(c.cuota_usd_mes) : '—'}</td>
+              <td class="num" style="color:var(--muted);">${c.cuota_usd_mes>0 ? fmtUSD(c.cuota_usd_mes_total) : '—'}</td>
+      
+              <td class="num" style="color:#a78bfa; font-weight:700">${c.cuota_crc_mes>0 ? fmtCRC(c.cuota_crc_mes) : '—'}</td>
+              <td class="num" style="color:var(--muted);">${c.cuota_crc_mes>0 ? fmtCRC(c.cuota_crc_mes_total) : '—'}</td>
+    `; 
+    tbody.appendChild(tr);
+  });
+
+  if(dataDelMes.length > 0) { 
+        document.getElementById('resumenMesSeleccionado').style.display = 'flex'; 
+        document.getElementById('resumenMesUsd').innerText = `Subtotal a Facturar (s/IVA): ${fmtUSD(sumaMesUsdTot)}`;
+        document.getElementById('resumenMesCrc').innerText = `Subtotal a Facturar (s/IVA): ${fmtCRC(sumaMesCrcTot)}`; 
+     } else { 
+      document.getElementById('resumenMesSeleccionado').style.display = 'none'; 
+  }
+}
+
+function buildAll() { 
+    const tbody = document.getElementById('tbodyAll');
+    const activos = DATA.all_contracts.filter(c => !(c.estado || '').toUpperCase().includes('PERDIDO') && !(c.estado || '').toUpperCase().includes('PROCESO'));
+    activos.forEach(c => { 
+        const tr = document.createElement('tr'); 
+        tr.className = "clickable"; 
+        tr.onclick = () => mostrarDetalleContrato(c); 
+        tr.innerHTML = `
+        <td class="name-cell" title="${c.nombre}">${c.nombre}</td>
+        <td><span class="badge badge-outline">${c.sector || '—'}</span></td>
+        <td style="font-weight: 500;">${c.responsable || '—'}</td>
+        <td><span class="badge badge-gray">${c.modalidad}</span></td>
+        <td>${freqBadge(c.frecuencia)}</td>
+        <td>${ivaBadge(c.iva)}</td>
+        <td class="num">${c.anual_usd>0?fmtUSD(c.anual_usd):'—'}</td>
+        <td class="num">${c.anual_crc>0?fmtCRC(c.anual_crc):'—'}</td>
+        <td>${c.inicio}</td>
+        <td>${c.expiracion}</td>
+        <td class="num">${daysBadge(c.dias)}</td>`; 
+        tbody.appendChild(tr); 
+    }); 
+}
+
+function buildRenew() {
+  const tbody = document.getElementById('tbodyRenovar'); let urgent = 0, validDays = DATA.renew_contracts.filter(c => c.dias >= 0); const avg = validDays.length ? Math.round(validDays.reduce((s,c)=>s+c.dias,0)/validDays.length) : 0;
+  DATA.renew_contracts.forEach(c => {
+    if (c.dias < 30) urgent++; const pct = Math.min(100, Math.max(0, (90 - c.dias) / 90 * 100)); const barColor = c.dias < 0 ? '#ef4444' : c.dias < 30 ? '#ef4444' : c.dias < 60 ? '#f59e0b' : '#10b981';
+    const tr = document.createElement('tr'); tr.className = "clickable"; tr.onclick = () => mostrarDetalleContrato(c); tr.innerHTML = `<td class="name-cell" title="${c.nombre}">${c.nombre}</td><td>${freqBadge(c.frecuencia)}</td><td class="num">${c.anual_usd>0?fmtUSD(c.anual_usd):'—'}</td><td class="num">${c.anual_crc>0?fmtCRC(c.anual_crc):'—'}</td><td>${c.expiracion}</td><td><div class="urgency-bar"><div class="urgency-track"><div class="urgency-fill" style="width:${pct}%;background:${barColor}"></div></div></div></td><td class="num">${daysBadge(c.dias)}</td>`; tbody.appendChild(tr);
+  });
+  document.getElementById('urgentCount').textContent = urgent; document.getElementById('avgDays').textContent = avg + 'd'; document.getElementById('renovarTotal').textContent = DATA.renew_contracts.length;
+}
+
+function buildEnProceso() {
+  const tbody = document.getElementById('tbodyEnProceso');
+  let totalUsdEnProceso = 0;
+
+  DATA.en_proceso_contracts.forEach(c => {
+      totalUsdEnProceso += c.anual_usd + (c.anual_crc / tasaCambio);
+      const tr = document.createElement('tr');
+      tr.className = "clickable";
+      tr.onclick = () => mostrarDetalleContrato(c);
+
+      let mapeoPrevio = (c.mapeo_cliente || 'Sin registro').substring(0, 40);
+      if(c.mapeo_cliente && c.mapeo_cliente.length > 40) mapeoPrevio += '...';
+
+      // Guardamos el texto completo intacto, escapando comillas para no romper el HTML
+      let mapeoCompleto = (c.mapeo_cliente || 'Sin registro').replace(/"/g, '&quot;');
+
+      tr.innerHTML = `
+        <td class="name-cell" title="${c.nombre}">${c.nombre}</td>
+        <td style="font-weight: 500;">${c.responsable || '—'}</td>
+        <td style="font-size: 11px; color: var(--muted);" data-full="${mapeoCompleto}">${mapeoPrevio}</td>
+        <td class="num" style="color:var(--accent3);">${c.anual_usd>0 ? fmtUSD(c.anual_usd) : '—'}</td>
+        <td class="num" style="color:var(--accent3);">${c.anual_crc>0 ? fmtCRC(c.anual_crc) : '—'}</td>
+        <td>${c.expiracion}</td>
+        <td><span class="badge badge-amber">EN PROCESO</span></td>
+      `;
+      tbody.appendChild(tr);
+  });
+
+  document.getElementById('kpiEnProcesoTotal').textContent = DATA.en_proceso_contracts.length;
+  document.getElementById('kpiEnProcesoUsd').textContent = fmtUSD(totalUsdEnProceso);
+}
+
+function buildLost() {
+  const tbody = document.getElementById('tbodyPerdidos');
+  let totalUsdPerdido = 0;
+
+  DATA.lost_contracts.forEach(c => {
+      totalUsdPerdido += c.anual_usd;
+      const tr = document.createElement('tr');
+      tr.className = "clickable";
+      tr.onclick = () => mostrarDetalleContrato(c);
+
+      let mapeoPrevio = (c.mapeo_cliente || 'Sin registro').substring(0, 40);
+      if(c.mapeo_cliente && c.mapeo_cliente.length > 40) mapeoPrevio += '...';
+
+      // Guardamos el texto completo intacto, escapando comillas para no romper el HTML
+      let mapeoCompleto = (c.mapeo_cliente || 'Sin registro').replace(/"/g, '&quot;');
+
+      tr.innerHTML = `
+        <td class="name-cell" title="${c.nombre}">${c.nombre}</td>
+        <td style="font-weight: 500;">${c.responsable || '—'}</td>
+        <td style="font-size: 11px; color: var(--muted);" data-full="${mapeoCompleto}">${mapeoPrevio}</td>
+        <td class="num" style="color:var(--danger);">${c.anual_usd>0 ? fmtUSD(c.anual_usd) : '—'}</td>
+        <td class="num" style="color:var(--danger);">${c.anual_crc>0 ? fmtCRC(c.anual_crc) : '—'}</td>
+        <td>${c.expiracion}</td>
+        <td><span class="badge badge-red">PERDIDO</span></td>
+      `;
+      tbody.appendChild(tr);
+  });
+
+  document.getElementById('kpiPerdidosTotal').textContent = DATA.lost_contracts.length;
+  document.getElementById('kpiPerdidosUsd').textContent = fmtUSD(totalUsdPerdido);
+}
+
+// ====== EXPORTAR TABLA ESPECÍFICA (RESPETANDO FILTROS) ======
+function exportarTablaVista(tableId, nombreArchivo) {
+function exportarTablaVista(tableId, nombreArchivo, filasExtra = []) {
+  const tabla = document.getElementById(tableId);
+  if (!tabla) return;
+
+  const datosExportar = [];
+
+  // 1. Obtener las cabeceras
+  const cabeceras = [];
+  tabla.querySelectorAll('thead th').forEach(th => {
+      cabeceras.push(th.textContent.trim()); // Usar textContent evita cortes visuales
+  });
+  datosExportar.push(cabeceras);
+
+  // 2. Obtener las filas del cuerpo (solo las VISIBLES)
+  tabla.querySelectorAll('tbody tr').forEach(tr => {
+      if (tr.style.display !== 'none') {
+          const fila = [];
+          tr.querySelectorAll('td').forEach(td => {
+              // Si existe el texto original en "data-full", úsalo. Si no, usa el contenido limpio.
+              let valor = td.getAttribute('data-full');
+              if (valor === null) {
+                  valor = td.textContent.trim();
+              }
+              fila.push(valor);
+          });
+          datosExportar.push(fila);
+      }
+  });
+
+  // 3. Crear el libro de Excel y descargar
+  // 3. Agregar filas extra al final si existen
+  if (filasExtra.length > 0) {
+      datosExportar.push([]); // Fila vacía para separar
+      filasExtra.forEach(fila => datosExportar.push(fila));
   }
 
-  document.getElementById('tbodyMes').innerHTML = datos.map(c => {
-      let b = `<span class="badge badge-outline">Factura ${MESES[mIdx].substring(0,3)}</span>`;
-      if(c.tipo_facturacion==='dia' && c.dia_facturacion) b = `<span class="badge badge-cyan">Día ${c.dia_facturacion}</span>`;
-      return `<tr class="clickable" onclick='mostrarDetalleContrato(DATA.all_contracts.find(x=>x.nombre==="${c.nombre.replace(/"/g, '&quot;')}"))'>
-      <td class="name-cell">${c.nombre}</td><td>${b}</td><td>${c.tiene_iva?`<span class="badge badge-amber">13%</span>`:`<span class="badge badge-gray">0%</span>`}</td>
-      <td class="num" style="color:var(--accent); font-weight:700">${c.cuota_usd>0?fmtUSD(c.cuota_usd):'-'}</td>
-      <td class="num" style="color:var(--muted);">${c.cuota_usd>0?fmtUSD(c.cuota_usd*c.factor):'-'}</td>
-      <td class="num" style="color:#a78bfa; font-weight:700">${c.cuota_crc>0?fmtCRC(c.cuota_crc):'-'}</td>
-      <td class="num" style="color:var(--muted);">${c.cuota_crc>0?fmtCRC(c.cuota_crc*c.factor):'-'}</td></tr>`;
-  }).join('');
+  // 4. Crear el libro de Excel y descargar
+  const ws = XLSX.utils.aoa_to_sheet(datosExportar);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Datos");
+
+  const fecha = new Date().toISOString().slice(0, 10);
+  XLSX.writeFile(wb, `${nombreArchivo}_${fecha}.xlsx`);
 }
 
-function pintarGraficos(activos) {
-  for (let id in Chart.instances) Chart.instances[id].destroy();
-  if (!activos.length) return;
-  
-  let fQ = {}, ivaQ = {}; activos.forEach(c => { fQ[c.frecuencia] = (fQ[c.frecuencia]||0)+1; let i = (c.iva||'').toUpperCase(); ivaQ[i.includes('GRAVADO')?'Aplica IVA':i.includes('EXONERADO')?'Exonerado':'Sin Definir'] = (ivaQ[i.includes('GRAVADO')?'Aplica IVA':i.includes('EXONERADO')?'Exonerado':'Sin Definir']||0)+1; });
+function exportarFacturacionMes() {
+    // 1. Obtenemos los totales (máximos a facturar) directamente de la interfaz
+    let resumenUsdText = document.getElementById('resumenMesUsd').innerText;
+    let resumenCrcText = document.getElementById('resumenMesCrc').innerText;
+    
+    let maxUsd = resumenUsdText.includes(':') ? resumenUsdText.split(': ')[1] : '$0.00';
+    let maxCrc = resumenCrcText.includes(':') ? resumenCrcText.split(': ')[1] : '₡0.00';
 
-  const topU = [...activos].sort((a,b)=>b.anual_usd-a.anual_usd).slice(0, 8);
-  const topC = [...activos].sort((a,b)=>b.anual_crc-a.anual_crc).slice(0, 8);
-  
-  new Chart(document.getElementById('chartTop'),{type:'bar',data:{labels:topU.map(c=>c.nombre.substring(0,18)),datasets:[{data:topU.map(c=>c.anual_usd),backgroundColor:'rgba(0,229,255,0.25)',borderColor:'#00e5ff',borderWidth:1,borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false}}}});
-  new Chart(document.getElementById('chartTopCrc'),{type:'bar',data:{labels:topC.map(c=>c.nombre.substring(0,18)),datasets:[{data:topC.map(c=>c.anual_crc),backgroundColor:'rgba(124,58,237,0.25)',borderColor:'#7c3aed',borderWidth:1,borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false}}}});
-  new Chart(document.getElementById('chartFreq'),{type:'doughnut',data:{labels:Object.keys(fQ),datasets:[{data:Object.values(fQ),backgroundColor:COLORS,borderWidth:0}]},options:{cutout:'68%',plugins:{legend:{position:'right'}}}});
-  new Chart(document.getElementById('chartIva'),{type:'doughnut',data:{labels:Object.keys(ivaQ),datasets:[{data:Object.values(ivaQ),backgroundColor:['#f59e0b','#10b981','#6b7280'],borderWidth:0}]},options:{cutout:'60%',plugins:{legend:{position:'right'}}}});
+    // 2. Obtenemos el nombre del mes seleccionado para el nombre del archivo
+    const mesSelector = document.getElementById('monthSelector');
+    const mesNombre = mesSelector.options[mesSelector.selectedIndex].text.replace(/ /g, '_');
 
-  new Chart(document.getElementById('chartProyeccionMensual'),{type:'bar',data:{labels:MESES.map(m=>m.substring(0,3)),datasets:[{label:'USD s/IVA',data:DATA.projection_usd,backgroundColor:'#00e5ff',borderRadius:2,yAxisID:'y'},{label:'CRC s/IVA',data:DATA.projection_crc,backgroundColor:'#7c3aed',borderRadius:2,yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{type:'linear',position:'left',grid:{color:'rgba(255,255,255,0.05)'}},y1:{type:'linear',position:'right',grid:{drawOnChartArea:false}}}}});
-  let acData = [], s = 0; for(let i=0;i<12;i++){ s += DATA.projection_usd[i]+(DATA.projection_crc[i]/tasaCambio); acData.push(s); }
-  new Chart(document.getElementById('chartFlujoAcumulado'),{type:'line',data:{labels:MESES.map(m=>m.substring(0,3)),datasets:[{label:'Ingreso Eq. USD',data:acData,borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.1)',fill:true,tension:0.4,borderWidth:2,pointRadius:4,pointBackgroundColor:'#10b981'}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{grid:{color:'rgba(255,255,255,0.05)'}}}}});
+    // 3. Preparamos las filas extra que irán al final de la tabla
+    const filasExtra = [
+        ["MÁXIMO A FACTURAR USD:", maxUsd],
+        ["MÁXIMO A FACTURAR CRC:", maxCrc]
+    ];
+
+    // 4. Llamamos a la función de exportación
+    exportarTablaVista('tblMes', `Facturacion_${mesNombre}`, filasExtra);
 }
 
-// Helpers de Estilos 
-function ivaBadge(i) { if(!i) return `<span class="badge badge-gray">-</span>`; if(i.toUpperCase().includes('GRAVADO')) return `<span class="badge badge-amber">13%</span>`; if(i.toUpperCase().includes('EXONERADO')) return `<span class="badge badge-green">0%</span>`; return `<span class="badge badge-gray">${i}</span>`; }
-function freqBadge(f) { if(!f) return `<span class="badge badge-gray">-</span>`; const t=f.toUpperCase(); if(t.includes('BIMENSUAL')||t.includes('BIMESTRAL')) return `<span class="badge badge-green">${f}</span>`; if(t.includes('MENSUAL')) return `<span class="badge badge-cyan">${f}</span>`; if(t.includes('CUATRIMESTRAL')) return `<span class="badge badge-amber">${f}</span>`; if(t.includes('TRIMESTRAL')) return `<span class="badge badge-purple">${f}</span>`; return `<span class="badge badge-red">${f}</span>`; }
-function daysBadge(d) { if(d<0) return `<span class="badge badge-red">VENCIDO</span>`; if(d<30) return `<span style="color:var(--danger);font-weight:700">${d}d</span>`; if(d<90) return `<span style="color:var(--accent3);font-weight:700">${d}d</span>`; return `<span style="color:var(--accent4); font-weight:700">${d}d</span>`; }
-
-function switchTab(id) { document.querySelectorAll('.panel, .tab').forEach(e => e.classList.remove('active')); document.getElementById('tab-'+id).classList.add('active'); event.target.classList.add('active'); }
-function filterTable(id, q) { q = q.toLowerCase(); document.querySelectorAll(`#${id} tbody tr`).forEach(tr => tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none'); }
-function exportarTablaVista(id, nom) { const d = []; const t = document.getElementById(id); const h = []; t.querySelectorAll('thead th').forEach(th => h.push(th.textContent.trim())); d.push(h); t.querySelectorAll('tbody tr').forEach(tr => { if (tr.style.display!=='none') { const f = []; tr.querySelectorAll('td').forEach(td => f.push(td.textContent.trim())); d.push(f); }}); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(d), "Export"); XLSX.writeFile(wb, `${nom}_${new Date().toISOString().slice(0,10)}.xlsx`); }
-
-// Archivo JSON Helper
-async function vincularAutoGuardadoJSON() {
-    try {
-        jsonFileHandle = await window.showSaveFilePicker({ suggestedName: 'Ajustes_Contratos.json', types: [{ description: 'JSON', accept: {'application/json': ['.json']} }] });
-        await idbKeyval.set('jsonFileHandle', jsonFileHandle); marcarJSONEnlazado();
-        const w = await jsonFileHandle.createWritable(); await w.write(JSON.stringify(configGuardada, null, 2)); await w.close();
-        alert("Archivo enlazado correctamente.");
-    } catch (error) { if (error.name !== 'AbortError') console.error("Error JSON:", error); }
-}
-function marcarJSONEnlazado() { const b = document.getElementById('btnJsonSync'); b.innerText = "JSON Vinculado ✓"; b.style.background = "var(--accent4)"; b.style.color = "#000"; b.style.border = "none"; }
 </script>
 </body>
 </html>
