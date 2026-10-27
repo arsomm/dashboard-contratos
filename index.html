@@ -549,19 +549,12 @@ async function accionPrincipal() {
 
 async function seleccionarNuevoExcel() {
   try {
-    // Forzamos limpiar el registro viejo antes de abrir el selector
-    await idbKeyval.del('excelHandle');
-    fileHandle = null;
-
-    [fileHandle] = await window.showOpenFilePicker({ 
-      types: [{ 
-        description: 'Archivo Excel', 
-        accept: { 
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
-          'application/vnd.ms-excel.sheet.macroEnabled.12': ['.xlsm'] 
-        } 
-      }] 
-    });
+    [fileHandle] = await window.showOpenFilePicker({ types: [{ description: 'Archivo Excel', accept: { 'application/vnd.ms-excel.sheet.macroEnabled.12': ['.xlsm'], 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] } }] });
+    await idbKeyval.set('excelHandle', fileHandle);
+    document.getElementById('btnElegirNuevo').style.display = "flex";
+    await cargarDatosDelExcel();
+  } catch (error) { console.log("Selección de Excel cancelada"); }
+}
     
     await idbKeyval.set('excelHandle', fileHandle);
     document.getElementById('btnElegirNuevo').style.display = "flex";
