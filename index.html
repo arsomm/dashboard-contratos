@@ -549,18 +549,36 @@ async function accionPrincipal() {
 
 async function seleccionarNuevoExcel() {
   try {
+    // Forzamos limpiar el registro viejo antes de abrir el selector
+    await idbKeyval.del('excelHandle');
+    fileHandle = null;
+
     [fileHandle] = await window.showOpenFilePicker({ 
-        types: [{ description: 'Excel', accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'], 'application/vnd.ms-excel.sheet.macroEnabled.12': ['.xlsm'] } }] 
+      types: [{ 
+        description: 'Archivo Excel', 
+        accept: { 
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+          'application/vnd.ms-excel.sheet.macroEnabled.12': ['.xlsm'] 
+        } 
+      }] 
     });
+    
     await idbKeyval.set('excelHandle', fileHandle);
+    document.getElementById('btnElegirNuevo').style.display = "flex";
     await cargarDatosDelExcel();
-  } catch (error) { console.log("Selección cancelada", error); }
+  } catch (error) { 
+    console.log("Selección de Excel cancelada"); 
+  }
 }
 
-async function verificarPermiso(handle, modeStr) {
-  const options = { mode: modeStr };
+async function verificarPermiso(handle) {
+  const options = { mode: 'readwrite' }; // o 'read'
   if ((await handle.queryPermission(options)) === 'granted') return true;
   if ((await handle.requestPermission(options)) === 'granted') return true;
+  
+  // SI FALLA, LIMPIAMOS EL HANDLE PARA QUE TE DEJE ELEGIR OTRO
+  fileHandle = null;
+  await idbKeyval.del('excelHandle');
   return false;
 }
 
